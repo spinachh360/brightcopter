@@ -1,6 +1,6 @@
 # Bright Copter
 
-A responsive React + TypeScript storefront for Bright Copter, with frosted surfaces, locally hosted fonts, the supplied Base model and Jumbohead photographs, and WhatsApp order checkout. Built with Vite, React Router, Tailwind CSS 4, Motion and Lucide icons, with a shadcn-compatible component structure.
+A responsive React + TypeScript storefront for Bright Copter, with frosted surfaces, locally hosted fonts, the supplied fan photographs, and WhatsApp order checkout. Built with Vite, React Router, Tailwind CSS 4, Motion and Lucide icons, with a shadcn-compatible component structure.
 
 The refreshed design uses white, restrained rose glass and Bright Copter red. Shared tokens in `src/styles.css` define the surfaces, control shadows, typography, focus rings and motion. Primary actions use red; secondary buttons and selected tabs use translucent white. The responsive stylesheet replaces the previous layered styling rather than adding another override sheet.
 
@@ -103,11 +103,13 @@ Copy `.env.example` to `.env.local` if you need to override the public numbers o
 
 `src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/base/`.
 
-The catalogue contains Base model, Jumbohead model and Jumbohead Wood model. Base model has four colours: Black, White, Brown and Ivory. A 2-year warranty costs ₹2,350; a 3-year warranty costs ₹2,550. Each warranty uses a stable variant ID (`base-model-2-year`, `base-model-3-year`), so different warranties in the same colour remain distinct bag lines. Model cards group variants by `modelId` and offer a warranty selector. Category and model identity are separate, so Jumbohead and Jumbohead Wood share a category while retaining separate products, photos and price schedules. Both the chosen photo and price follow the selection through the bag, review and WhatsApp message.
+The catalogue contains Base model, Jumbohead model, Jumbohead Wood model, Nanohead model and Nanohead Wood model. Base model has four colours: Black, White, Brown and Ivory. A 2-year warranty costs ₹2,350; a 3-year warranty costs ₹2,550. Each warranty uses a stable variant ID (`base-model-2-year`, `base-model-3-year`), so different warranties in the same colour remain distinct bag lines. Model cards group variants by `modelId` and offer a warranty selector. Category and model identity are separate, so Jumbohead and Jumbohead Wood share a category while retaining separate products, photos and price schedules. Both the chosen photo and price follow the selection through the bag, review and WhatsApp message.
 
 Jumbohead model is available in Black, White and Brown. Its 3-, 5- and 7-year warranty prices are ₹3,550, ₹3,750 and ₹4,300. Jumbohead Wood model is a separate product with a fixed Wood finish and prices of ₹3,950, ₹4,150 and ₹4,700 for the same durations. Wood is excluded from the standard model's colour selector. Both products belong to the Jumbohead model category; each warranty has its own stable variant ID.
 
-The photographs are exact PNGs extracted from `base model colors.zip` and `jumbohead colors.zip`, matched by their supplied filenames. They have not been regenerated, cropped or recoloured. Nanohead model has a category filter but no purchasable products until its photos and prices are supplied. Old sample catalogue items are discarded from persisted bags and comparison selections by existing validation. Motor type, power, speed, remote features and dimensions have not been assumed from the photographs.
+Nanohead model is available in Black, Silver, White and Brown. Its 3-, 5- and 7-year warranty prices are ₹3,350, ₹3,650 and ₹4,000. Nanohead Wood model is a separate product with a fixed Wood finish and prices of ₹3,750, ₹4,050 and ₹4,400 for the same durations. Both belong to the Nanohead model category. Standard models cannot select Wood through colour options or URL parameters.
+
+The photographs are exact PNGs extracted from `base model colors.zip`, `jumbohead colors.zip` and `nanohead colors.zip`, matched by their supplied filenames. They have not been regenerated, cropped or recoloured. The extra Nanohead Ivory photograph is preserved at `src/assets/products/nanohead/ivory.png` but is not imported into the catalogue: the owner explicitly limited the standard Nanohead prices to Black, Silver, White and Brown. Old sample catalogue items are discarded from persisted bags and comparison selections by existing validation. Motor type, power, speed, remote features and dimensions have not been assumed from the photographs.
 
 The original lion-and-cub logo from `Bright Copter Lion Bond Logo.zip` is included at `src/assets/brand-logo.png` and displayed in the header and footer. Its red background, wordmark and tagline are preserved, without cropping or redrawing. `src/brand.ts` bundles the original PNG automatically; the downloadable preview embeds the image so it works without an external logo URL. The header scales it for smaller screens, and the footer uses a larger version. `VITE_BRAND_LOGO_URL` remains an optional override for a separately hosted image.
 
@@ -119,7 +121,7 @@ The privacy page includes a two-step action to remove saved requests. Request cr
 
 ## Before public launch
 
-1. Add Nanohead photographs, prices, finishes and warranty options. Base model, Jumbohead, Jumbohead Wood and the original logo are included.
+1. Review the supplied photographs and pricing for all five listed products. Confirm Nanohead Ivory availability and price before adding it to the catalogue.
 2. Supply any additional model numbers and verified specifications.
 3. Supply complete warranty coverage/returns, tax, delivery and installation terms for the owner-supplied prices.
 4. Verify the published address and all public contact details. The order number was explicitly supplied by the owner for WhatsApp checkout.

@@ -8,6 +8,12 @@ import jumboWhite from "./assets/products/jumbohead/white.png";
 import jumboBrown from "./assets/products/jumbohead/brown.png";
 import jumboWood from "./assets/products/jumbohead/wood.png";
 
+import nanoBlack from "./assets/products/nanohead/black.png";
+import nanoSilver from "./assets/products/nanohead/silver.png";
+import nanoWhite from "./assets/products/nanohead/white.png";
+import nanoBrown from "./assets/products/nanohead/brown.png";
+import nanoWood from "./assets/products/nanohead/wood.png";
+
 export type Product = {
   id: string;
   modelId: string;
@@ -58,6 +64,29 @@ const jumboheadWood = {
   kind: "fan" as const,
 };
 
+const nanohead = {
+  modelId: "nanohead-model",
+  name: "Nanohead model",
+  category: "Nanohead model" as const,
+  finish: "Black",
+  colors: ["Black", "Silver", "White", "Brown"],
+  images: { Black: nanoBlack, Silver: nanoSilver, White: nanoWhite, Brown: nanoBrown },
+  description: "The Bright Copter Nanohead model ceiling fan, available in Black, Silver, White and Brown. Choose a 3-year, 5-year or 7-year warranty option.",
+  tag: "Ceiling fan",
+  kind: "fan" as const,
+};
+const nanoheadWood = {
+  modelId: "nanohead-wood-model",
+  name: "Nanohead Wood model",
+  category: "Nanohead model" as const,
+  finish: "Wood",
+  colors: ["Wood"],
+  images: { Wood: nanoWood },
+  description: "The Bright Copter Nanohead Wood model ceiling fan in a Wood finish. Choose a 3-year, 5-year or 7-year warranty option.",
+  tag: "Wood finish",
+  kind: "fan" as const,
+};
+
 // Each warranty has a stable variant ID so different warranties remain separate
 // bag lines and the chosen price is used throughout checkout and WhatsApp.
 export const products: Product[] = [
@@ -69,6 +98,12 @@ export const products: Product[] = [
   { ...jumboheadWood, id: "jumbohead-wood-model-3-year", warranty: 3, price: 3950 },
   { ...jumboheadWood, id: "jumbohead-wood-model-5-year", warranty: 5, price: 4150 },
   { ...jumboheadWood, id: "jumbohead-wood-model-7-year", warranty: 7, price: 4700 },
+  { ...nanohead, id: "nanohead-model-3-year", warranty: 3, price: 3350 },
+  { ...nanohead, id: "nanohead-model-5-year", warranty: 5, price: 3650 },
+  { ...nanohead, id: "nanohead-model-7-year", warranty: 7, price: 4000 },
+  { ...nanoheadWood, id: "nanohead-wood-model-3-year", warranty: 3, price: 3750 },
+  { ...nanoheadWood, id: "nanohead-wood-model-5-year", warranty: 5, price: 4050 },
+  { ...nanoheadWood, id: "nanohead-wood-model-7-year", warranty: 7, price: 4400 },
 ];
 export const modelProducts = products.filter(
   (product, index) => products.findIndex(p => p.modelId === product.modelId) === index,
@@ -94,6 +129,7 @@ export const mapLink = "https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8";
 export const finishes: Record<string, string> = {
   Black: "#242424",
   White: "#f2f2f2",
+  Silver: "#b2b6bb",
   Brown: "#80451f",
   Ivory: "#e7dec2",
   Wood: "#ab642c",

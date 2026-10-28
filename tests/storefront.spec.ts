@@ -50,11 +50,11 @@ test("catalogue filters, search and reset expose the right offerings", async ({
   page,
 }) => {
   await page.goto("/products");
-  await expect(page.locator(".product-card")).toHaveCount(3);
+  await expect(page.locator(".product-card")).toHaveCount(5);
   await page.getByRole("button", { name: "Jumbohead model", exact: true }).click();
   await expect(page.locator(".product-card")).toHaveCount(2);
   await page.getByRole("button", { name: "Nanohead model", exact: true }).click();
-  await expect(page.locator(".product-card")).toHaveCount(0);
+  await expect(page.locator(".product-card")).toHaveCount(2);
   await page.getByRole("button", { name: "All fans", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Filter products" })
@@ -63,7 +63,7 @@ test("catalogue filters, search and reset expose the right offerings", async ({
     page.getByRole("heading", { name: "No matches just yet." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Show all products" }).click();
-  await expect(page.locator(".product-card")).toHaveCount(3);
+  await expect(page.locator(".product-card")).toHaveCount(5);
 });
 
 test("finish, quantities and bag survive navigation and reload", async ({

@@ -865,8 +865,8 @@ function Products() {
           {!shown.length && (
             <div className="empty-state glass">
               <Search size={36} />
-              <h2>{!query && ["Jumbohead model", "Nanohead model"].includes(category) ? category : "No matches just yet."}</h2>
-              <p>{!query && ["Jumbohead model", "Nanohead model"].includes(category) ? "Photos and pricing will be added soon." : "Try another search or explore all fans."}</p>
+              <h2>No matches just yet.</h2>
+              <p>Try another search or explore all fans.</p>
               <button className="button" onClick={() => setParams({})}>
                 Show all products
               </button>
@@ -1242,7 +1242,7 @@ function Compare() {
       <PageIntro
         eyebrow="A CLOSER LOOK"
         title="Find the one for you."
-        description="Compare Base model, Jumbohead and Jumbohead Wood warranty options and their prices side by side."
+        description="Compare Base model, Jumbohead, Nanohead and their Wood versions, with warranty options and prices side by side."
       />
       <section className="container compare-section">
         <div className="compare-selection glass">
@@ -1918,7 +1918,7 @@ const faqItems = [
   },
   {
     q: "What warranty options are available?",
-    a: "Base model has 2-year and 3-year warranty choices. Jumbohead model and the separately listed Jumbohead Wood model each have 3-year, 5-year and 7-year warranty choices, with different prices for Wood. Choose a product and warranty to see the price. Confirm covered parts, exclusions and service arrangements with Bright Copter before purchase.",
+    a: "Base model has 2-year and 3-year warranty choices. Jumbohead and Nanohead each have 3-year, 5-year and 7-year warranty choices. Their Wood versions are separate products with their own prices. Choose a product and warranty to see the price. Confirm covered parts, exclusions and service arrangements with Bright Copter before purchase.",
   },
   {
     q: "Can you deliver to my location?",
@@ -2018,7 +2018,7 @@ function Support() {
               <IconTile icon={ShieldCheck} />
               <h2>Reassurance starts with clarity.</h2>
               <p>
-                Base model offers 2-year and 3-year warranties. Jumbohead and Jumbohead Wood offer 3-year, 5-year and 7-year warranties. Exact coverage and any extension conditions are confirmed at purchase.
+                Base model offers 2-year and 3-year warranties. Jumbohead, Nanohead and their Wood versions offer 3-year, 5-year and 7-year warranties. Exact coverage and any extension conditions are confirmed at purchase.
               </p>
               <WarrantyPrices />
               <h3>Before you request support</h3>
@@ -2614,7 +2614,7 @@ function Policies() {
           <>
             <h2>Confirm the details for your actual product</h2>
             <p>
-              Bright Copter supplies Base model, Jumbohead model and the separately priced Jumbohead Wood model. Product photographs and these warranty prices are supplied by the business.
+              Bright Copter supplies Base model, Jumbohead model and Nanohead model. Jumbohead Wood and Nanohead Wood are separate products with their own warranty prices. Product photographs and these warranty prices are supplied by the business.
             </p>
             <p>
               Confirm the current model, features, finish, stock, full price
