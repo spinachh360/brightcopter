@@ -27,7 +27,6 @@ import {
   Wind,
   ShieldCheck,
   Headphones,
-  Zap,
   Truck,
   MapPin,
   Phone,
@@ -65,6 +64,7 @@ import {
   modelProducts,
   productOptions,
   money,
+  cataloguePriceRange,
   finishes,
   readStorage,
   writeStorage,
@@ -257,9 +257,9 @@ function Header() {
   return (
     <>
       <div className="announcement">
-        <span>From our home in Kerala, to yours.</span>
+        <span>Ceiling fan service across Kerala.</span>
         <Link to="/support">
-          Real people. A message away. <ArrowUpRight size={12} />
+          Request service <ArrowUpRight size={12} />
         </Link>
       </div>
       <header
@@ -367,12 +367,9 @@ function Footer() {
           <div className="footer-brand">
             <Brand light />
             <p>
-              A little more comfort.
-              <br />A lasting connection.
+              Ceiling fans from Parappur, Thrissur.
+              <br />Service across Kerala.
             </p>
-            <span className="brand-tagline">
-              LONG LASTING BONDING LIKE A FATHER
-            </span>
           </div>
           <div>
             <h3>Explore</h3>
@@ -444,12 +441,12 @@ function Home() {
         <section className="hero-section container">
           <div className="hero-copy">
             <div className="hero-label">
-              <span className="live-dot" /> EVERYDAY LIVING, A LITTLE BRIGHTER
+              <span className="live-dot" /> BASE · JUMBOHEAD · NANOHEAD
             </div>
             <h1>Comfort.<br />Considered.<br /><span>Yours.</span></h1>
             <p>
-              A better breeze. A brighter home. Explore our ceiling fans,
-              with a real team to help you choose.
+              Ceiling fans priced {cataloguePriceRange}, with 2-, 3-, 5- or 7-year
+              warranty options depending on the model. Service available across Kerala.
             </p>
             <div className="hero-cta">
               <Link className="button" to="/products">
@@ -470,9 +467,9 @@ function Home() {
             <span className="hero-stage-type" aria-hidden="true">breathe.</span>
             <div className="hero-product-caption">
               <span>THE BASE MODEL</span>
-              <b>Less fuss. More comfort.</b>
+              <b>2- or 3-year warranty</b>
             </div>
-            <span className="hero-edition"><Fan size={16} /> Made for your everyday</span>
+            <span className="hero-edition"><Fan size={16} /> 4 colour choices</span>
             <div className="hero-render" key={heroFinish}>
               <ProductPhoto hero finish={heroFinish} />
             </div>
@@ -492,7 +489,7 @@ function Home() {
               </div>
             </div>
             <Link to="/products" className="hero-product-link">
-              <span>Find your everyday favourite<small>From {money(2350)} · 2-year warranty</small></span>
+              <span>View Base model<small>From {money(2350)} · 2-year warranty</small></span>
               <span className="round-arrow"><ArrowUpRight size={21} /></span>
             </Link>
             <span className="visual-label">Base model · {heroFinish}</span>
@@ -505,24 +502,24 @@ function Home() {
       >
         {[
           {
-            icon: Zap,
-            title: "A smarter breeze",
-            sub: "Explore our ceiling fans",
+            icon: ShoppingBag,
+            title: cataloguePriceRange,
+            sub: "Across the current fan range",
           },
           {
             icon: ShieldCheck,
-            title: "Reassurance, built in",
-            sub: "Warranty options up to 7 years",
+            title: "2–7 year warranty options",
+            sub: "2, 3, 5 or 7 years by model",
           },
           {
-            icon: Wind,
-            title: "Made to feel at home",
-            sub: "Find a finish for your space",
+            icon: MapPin,
+            title: "Service across Kerala",
+            sub: "Request help from customer care",
           },
           {
-            icon: Headphones,
-            title: "People you can talk to",
-            sub: "Personal support from Kerala",
+            icon: MessageCircle,
+            title: "WhatsApp checkout",
+            sub: "Staff confirms payment and delivery",
           },
         ].map((item) => (
           <div className="benefit" key={item.title}>
@@ -536,15 +533,15 @@ function Home() {
       </section>
       <section className="section container home-products">
         <SectionTitle
-          eyebrow="THE EVERYDAY COLLECTION"
-          title="Good things for your home."
+          eyebrow="CEILING FAN COLLECTION"
+          title="Compare models, colours and warranties."
           action={
             <Link className="text-button" to="/products">
               Explore all products <ArrowUpRight size={17} />
             </Link>
           }
         >
-          Explore the range. Find your finish. Make it part of your everyday.
+          Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
         </SectionTitle>
         <div className="category-tabs" aria-label="Product categories">
           {categories
@@ -574,48 +571,49 @@ function Home() {
           <div className="story-square" />
           <ProductPhoto finish="Brown" />
           <div className="story-art-caption">
-            <span>MADE FOR YOUR MOMENTS</span>
+            <span>BASE MODEL · BROWN</span>
             <strong>
-              Comfort that feels
+              2-year: {money(2350)}
               <br />
-              like coming home.
+              3-year: {money(2550)}
             </strong>
           </div>
-          <span className="story-art-number">01 — EVERYDAY LIVING</span>
+          <span className="story-art-number">BLACK · WHITE · BROWN · IVORY</span>
         </div>
         <div className="story-copy">
           <p className="eyebrow">
             <span />
-            MORE THAN AN APPLIANCE
+            WARRANTY & SERVICE
           </p>
           <h2>
-            Part of your home.
+            2 to 7 years.
             <br />
-            <span>Here for the long run.</span>
+            <span>Service across Kerala.</span>
           </h2>
           <p>
-            From the breeze that starts your morning to the kitchen that brings
-            everyone together — the little things make a home.
+            Choose the warranty duration shown for your model. Before purchase,
+            our team explains covered parts, exclusions and service arrangements.
           </p>
           <p>
-            At Bright Copter, we bring ceiling fans and personal support
-            together. Because a lasting connection begins with everyday care.
+            For service anywhere in Kerala, share your model, purchase details
+            and location with customer care on +91 94008 85633. The team will
+            confirm the next step, appointment arrangements and any charges.
           </p>
-          <Link to="/about" className="button button-outline">
-            Get to know us <ArrowUpRight size={17} />
+          <Link to="/support?tab=service" className="button button-outline">
+            Request fan service <ArrowUpRight size={17} />
           </Link>
           <div className="story-signature">
-            <Heart size={18} />
-            <span>Long lasting bonding like a father.</span>
+            <MapPin size={18} />
+            <span>Based in Parappur, Thrissur, Kerala.</span>
           </div>
         </div>
       </section>
       <section className="section container steps-section">
         <SectionTitle
-          eyebrow="FROM OUR RANGE TO YOUR ROOM"
-          title="From your bag to a conversation."
+          eyebrow="ORDER IN THREE STEPS"
+          title="How WhatsApp checkout works."
         >
-          A personal way to order. Our team confirms every detail with you.
+          Review your selection and address before sending your order. Staff confirms the final total, delivery and payment method on WhatsApp.
         </SectionTitle>
         <div className="home-steps">
           {[
@@ -652,7 +650,7 @@ function Home() {
         <span>
           <Building2 size={24} />
           <div>
-            <h3>A brighter business partnership.</h3>
+            <h3>Dealer & bulk orders.</h3>
             <p>Exploring bulk orders or becoming a dealer? Let's talk.</p>
           </div>
         </span>
@@ -672,14 +670,14 @@ function SupportBanner() {
         <span className="support-dot" />
       </div>
       <div>
-        <p className="eyebrow">A LITTLE HELP GOES A LONG WAY</p>
-        <h2>Real people. Ready to help.</h2>
+        <p className="eyebrow">BRIGHT COPTER CUSTOMER CARE</p>
+        <h2>Fan service across Kerala.</h2>
         <p>
-          Questions about a fan? Need a little product care? We're right here.
+          Call +91 94008 85633 for warranty questions or prepare a service request with your model and purchase details.
         </p>
       </div>
       <Link className="button button-white" to="/support">
-        Let's sort it out <ArrowUpRight size={18} />
+        Get product support <ArrowUpRight size={18} />
       </Link>
       <div className="support-decoration" aria-hidden="true" />
     </section>

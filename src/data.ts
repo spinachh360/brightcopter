@@ -117,6 +117,8 @@ export const money = (amount: number) =>
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(amount);
+const cataloguePrices = products.flatMap(product => product.price === undefined ? [] : [product.price]);
+export const cataloguePriceRange = `${money(Math.min(...cataloguePrices))}–${money(Math.max(...cataloguePrices))}`;
 export const careNumber =
   import.meta.env.VITE_CUSTOMER_CARE_WHATSAPP || "919400885633";
 export const orderNumber =

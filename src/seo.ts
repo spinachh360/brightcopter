@@ -1,4 +1,4 @@
-import { products } from './data';
+import { products, cataloguePriceRange } from './data';
 import { legalPages } from './policies';
 export const siteUrl = __SITE_URL__;
 export const publicRoutes = [
@@ -8,7 +8,7 @@ export const publicRoutes = [
 ];
 export const privateRoutes = ['/cart', '/checkout', '/compare', '/order/confirmation', '/track'];
 const pages: Record<string, [string, string]> = {
-  '/': ['Ceiling fans for everyday comfort', 'Explore Bright Copter Base model, Jumbohead and Nanohead ceiling fans. Choose your colour and warranty and order with our team on WhatsApp.'],
+  '/': ['Ceiling fans for everyday comfort', `Bright Copter ceiling fans priced ${cataloguePriceRange}, with 2-, 3-, 5- or 7-year warranty options by model. Service across Kerala. Order on WhatsApp.`],
   '/products': ['Ceiling fan collection', 'Compare Bright Copter ceiling fans, colours, warranty options and prices. Wood versions are listed separately.'],
   '/support': ['Product support & warranty guidance', 'Get help with Bright Copter ceiling fans, warranty questions and service requests from our team in Kerala.'],
   '/business': ['Dealer & bulk enquiries', 'Discuss Bright Copter fan quantities, availability, delivery and trade enquiries with our team.'],
