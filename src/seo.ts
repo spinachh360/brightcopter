@@ -1,5 +1,6 @@
 import { products, cataloguePriceRange } from './data';
 import { legalPages } from './policies';
+import { careNumber, orderNumber, careDisplay, orderDisplay } from './contacts';
 export const siteUrl = __SITE_URL__;
 export const publicRoutes = [
   '/', '/products', '/support', '/business', '/about', '/contact',
@@ -13,7 +14,7 @@ const pages: Record<string, [string, string]> = {
   '/support': ['Product support & warranty guidance', 'Get help with Bright Copter ceiling fans, warranty questions and service requests from our team in Kerala.'],
   '/business': ['Dealer & bulk enquiries', 'Discuss Bright Copter fan quantities, availability, delivery and trade enquiries with our team.'],
   '/about': ['About Bright Copter', 'Bright Copter is an appliance brand and electronic goods manufacturer based in Parappur, Thrissur, Kerala, India.'],
-  '/contact': ['Contact Bright Copter', 'Contact Bright Copter customer care on +91 94008 85633 or the WhatsApp order team on +91 79073 44474. Based in Parappur, Thrissur, Kerala.'],
+  '/contact': ['Contact Bright Copter', `Contact Bright Copter customer care on ${careDisplay} or the WhatsApp order team on ${orderDisplay}. Based in Parappur, Thrissur, Kerala.`],
   '/policies/privacy': ['Privacy & browser storage', 'How Bright Copter handles locally prepared requests, browser storage and WhatsApp handoffs. No optional visitor tracking is currently installed.'],
   '/policies/warranty': ['Warranty information', 'Compare Bright Copter warranty durations and prices and learn how to request warranty or service assistance.'],
   '/cart': ['Your shopping bag', 'Review your selected fans before starting WhatsApp checkout.'],
@@ -37,13 +38,13 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const business = {
     '@type': ['Organization', 'LocalBusiness'], '@id': businessId, name: 'Bright Copter', url: `${siteUrl}/`,
     description: 'Appliance brand and electronic goods manufacturer based in Parappur, Thrissur, Kerala, India.',
-    logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/og-image.png`, telephone: '+919400885633',
+    logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/og-image.png`, telephone: `+${careNumber}`,
     address: { '@type': 'PostalAddress', addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', addressCountry: 'IN' },
     hasMap: 'https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8',
     sameAs: ['https://www.facebook.com/p/Bright-Copter-61566378232921/', 'https://www.indiamart.com/bright-copter/aboutus.html'],
     contactPoint: [
-      { '@type': 'ContactPoint', telephone: '+917907344474', contactType: 'sales' },
-      { '@type': 'ContactPoint', telephone: '+919400885633', contactType: 'customer service' },
+      { '@type': 'ContactPoint', telephone: `+${orderNumber}`, contactType: 'sales' },
+      { '@type': 'ContactPoint', telephone: `+${careNumber}`, contactType: 'customer service' },
     ],
   };
   // Portable previews inline photos; do not duplicate large data URLs in social

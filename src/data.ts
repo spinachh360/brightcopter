@@ -119,14 +119,7 @@ export const money = (amount: number) =>
   }).format(amount);
 const cataloguePrices = products.flatMap(product => product.price === undefined ? [] : [product.price]);
 export const cataloguePriceRange = `${money(Math.min(...cataloguePrices))}–${money(Math.max(...cataloguePrices))}`;
-export const careNumber =
-  import.meta.env.VITE_CUSTOMER_CARE_WHATSAPP || "919400885633";
-export const orderNumber =
-  import.meta.env.VITE_ORDER_WHATSAPP || "917907344474";
-export const whatsapp = (message: string) =>
-  `https://wa.me/${careNumber}?text=${encodeURIComponent(message)}`;
-export const orderWhatsapp = (message: string) =>
-  `https://wa.me/${orderNumber}?text=${encodeURIComponent(message)}`;
+export { careNumber, orderNumber, careDisplay, orderDisplay, whatsapp, orderWhatsapp } from './contacts';
 export const mapLink = "https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8";
 export const finishes: Record<string, string> = {
   Black: "#242424",

@@ -91,17 +91,19 @@ Browser tests use the installed `/usr/bin/chromium` if available. Else run `npx 
 - Finish selection, quantities, and a shopping bag persisted in browser local storage.
 - Fan warranty option comparison.
 - Two website steps: delivery/contact details and payment preference, then review. The third progress milestone is the WhatsApp handoff.
-- Final action opens WhatsApp for **+91 79073 44474** with the complete order message. The customer still taps Send in WhatsApp.
+- Final action opens WhatsApp for the configured order team with the complete order message. The customer still taps Send in WhatsApp.
 - Payment preference is **not** a guaranteed or processed payment method. Staff confirms the final method, price, actual model, stock and fulfillment directly on WhatsApp.
 - A fallback WhatsApp link and downloadable request copy remain available if an app handoff is blocked or unavailable.
-- Service and dealer enquiry forms prepare separate handoffs to the supplied customer care number, **+91 94008 85633**.
+- Service and dealer enquiry forms prepare separate handoffs to the configured customer care number.
 - Saved request lookup is local to the browser. It does not claim to track actual acceptance, payment, shipment or message delivery.
 - Support FAQs, warranty guidance, contact, story and explanatory policy pages.
 - Reduced-motion support, keyboard navigation, labelled forms and responsive layouts.
 
 ## Configuration
 
-Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Rebuild after changing `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
+Default customer care and order numbers are defined once in `shared/contacts.ts`. `src/contacts.ts` resolves public environment overrides and derives display text and WhatsApp links; existing imports through `src/data.ts` remain supported. Call links, checkout notices, FAQs, recovery screens, policies, static HTML and SEO/schema all use these shared values.
+
+Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Leave the number overrides blank to use the shared defaults; otherwise enter international digits including the country code without `+` or spaces. Rebuild after changing numbers or `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
 
 `src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/base/`.
 

@@ -26,6 +26,7 @@ try {
   const { pageMetadata, safeJson, publicRoutes, privateRoutes } = await server.ssrLoadModule('/src/seo.ts');
   const { legalPages } = await server.ssrLoadModule('/src/policies.ts');
   const { products, money } = await server.ssrLoadModule('/src/data.ts');
+  const { careNumber, careDisplay, orderWhatsapp } = await server.ssrLoadModule('/src/contacts.ts');
   const { NIMBUS_CSS } = await server.ssrLoadModule('/components/ui/liquid-glass-navbar.tsx');
   const styleHash = `'sha256-${createHash('sha256').update(NIMBUS_CSS).digest('base64')}'`;
   const hashes = new Set();
@@ -53,11 +54,11 @@ try {
       content += legal.sections.map(section => `<section><h2 id="policy-${section.id}">${escape(section.title)}</h2>${section.paragraphs.map(p => `<p>${escape(p)}</p>`).join('')}</section>`).join('');
     } else if (meta.product) {
       const product = meta.product;
-      content += `<img class="product-photo" src="${escape(resolveAsset(product.images[product.finish]))}" alt="${escape(product.name)} in ${escape(product.finish)}" width="640" height="440"><h2>${escape(money(product.price))} · ${product.warranty}-year warranty</h2><p>Colours: ${escape(product.colors.join(', '))}. Staff confirms warranty coverage, availability, final total, delivery and payment on WhatsApp.</p><a href="https://wa.me/917907344474">Contact the order team</a>`;
+      content += `<img class="product-photo" src="${escape(resolveAsset(product.images[product.finish]))}" alt="${escape(product.name)} in ${escape(product.finish)}" width="640" height="440"><h2>${escape(money(product.price))} · ${product.warranty}-year warranty</h2><p>Colours: ${escape(product.colors.join(', '))}. Staff confirms warranty coverage, availability, final total, delivery and payment on WhatsApp.</p><a href="${escape(orderWhatsapp())}">Contact the order team</a>`;
     } else if (['/', '/products'].includes(meta.path)) {
       content += `<h2>Models and warranty prices</h2><ul>${products.map(product => `<li><a href="/product/${product.id}">${escape(product.name)} · ${product.warranty} years · ${escape(money(product.price))}</a></li>`).join('')}</ul>`;
     }
-    content += '<p>Customer care: <a href="tel:+919400885633">+91 94008 85633</a>. Parappur, Thrissur, Kerala, India.</p><noscript><p>JavaScript is needed for the interactive bag, colour selection and checkout. Contact our team directly if scripts are disabled.</p></noscript></article>';
+    content += `<p>Customer care: <a href="tel:+${escape(careNumber)}">${escape(careDisplay)}</a>. Parappur, Thrissur, Kerala, India.</p><noscript><p>JavaScript is needed for the interactive bag, colour selection and checkout. Contact our team directly if scripts are disabled.</p></noscript></article>`;
     return nav + `<main id="main-content">${content}</main><footer class="container"><a href="/return-policy">Returns & refunds</a> · <a href="/terms-and-conditions">Terms & conditions</a> · <a href="/policies/privacy">Privacy</a></footer>`;
   }
   for (const route of [...publicRoutes, ...privateRoutes, '/404']) {

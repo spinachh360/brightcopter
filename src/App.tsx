@@ -68,6 +68,9 @@ import {
   productOptions,
   money,
   cataloguePriceRange,
+  careNumber,
+  careDisplay,
+  orderDisplay,
   finishes,
   readStorage,
   writeStorage,
@@ -373,8 +376,8 @@ function Footer() {
           </div>
           <div className="footer-contact">
             <h3>Let's stay connected</h3>
-            <a href="tel:+919400885633">
-              <Phone size={15} /> +91 94008 85633
+            <a href={`tel:+${careNumber}`}>
+              <Phone size={15} /> {careDisplay}
             </a>
             <a
               href={whatsapp(
@@ -577,7 +580,7 @@ function Home() {
           </p>
           <p>
             For service anywhere in Kerala, share your model, purchase details
-            and location with customer care on +91 94008 85633. The team will
+            and location with customer care on {careDisplay}. The team will
             confirm the next step, appointment arrangements and any charges.
           </p>
           <Link to="/support?tab=service" className="button button-outline">
@@ -654,7 +657,7 @@ function SupportBanner() {
         <p className="eyebrow">BRIGHT COPTER CUSTOMER CARE</p>
         <h2>Fan service across Kerala.</h2>
         <p>
-          Call +91 94008 85633 for warranty questions or prepare a service request with your model and purchase details.
+          Call {careDisplay} for warranty questions or prepare a service request with your model and purchase details.
         </p>
       </div>
       <Link className="button button-white" to="/support">
@@ -1728,7 +1731,7 @@ function Checkout() {
                   <MessageCircle size={19} />
                   <p>
                     Your order details will open in WhatsApp for{" "}
-                    <strong>+91 79073 44474</strong>. Tap Send there to share
+                    <strong>{orderDisplay}</strong>. Tap Send there to share
                     your request. Staff will confirm availability, final total,
                     delivery and payment. No payment is collected here.
                   </p>
@@ -1780,7 +1783,7 @@ function Checkout() {
             confirmed by our team.
           </p>
           <span className="summary-reassurance">
-            <MessageCircle size={16} /> WhatsApp orders: +91 79073 44474
+            <MessageCircle size={16} /> WhatsApp orders: {orderDisplay}
           </span>
           <div className="checkout-promise">
             <ShieldCheck size={17} />
@@ -1916,7 +1919,7 @@ const faqItems = [
   },
   {
     q: "How do I place an order?",
-    a: "Add your selection to the bag, enter your delivery address and choose a payment preference. Review the details and select Place order via WhatsApp. A ready-to-send order message opens for +91 79073 44474. Tap Send in WhatsApp; our staff then confirms the actual product, total, delivery and final payment mode. No payment is collected on the website.",
+    a: `Add your selection to the bag, enter your delivery address and choose a payment preference. Review the details and select Place order via WhatsApp. A ready-to-send order message opens for ${orderDisplay}. Tap Send in WhatsApp; our staff then confirms the actual product, total, delivery and final payment mode. No payment is collected on the website.`,
   },
   {
     q: "What if my product needs care or repair?",
@@ -1990,8 +1993,8 @@ function Support() {
               >
                 <MessageCircle size={17} /> Chat on WhatsApp
               </a>
-              <a className="text-button" href="tel:+919400885633">
-                <Phone size={16} /> +91 94008 85633
+              <a className="text-button" href={`tel:+${careNumber}`}>
+                <Phone size={16} /> {careDisplay}
               </a>
               <small>Contact us for current response and opening hours.</small>
             </aside>
@@ -2271,7 +2274,7 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
             </div>
           </li>
         </ol>
-        <a className="text-button" href="tel:+919400885633">
+        <a className="text-button" href={`tel:+${careNumber}`}>
           <Phone size={16} /> Prefer to call?
         </a>
       </aside>
@@ -2407,8 +2410,8 @@ function Track() {
           >
             <MessageCircle size={16} /> Ask for an order update
           </a>
-          <a className="text-button" href="tel:+919400885633">
-            <Phone size={16} /> +91 94008 85633
+          <a className="text-button" href={`tel:+${careNumber}`}>
+            <Phone size={16} /> {careDisplay}
           </a>
         </aside>
       </section>
@@ -2511,10 +2514,10 @@ function Contact() {
             conversation on WhatsApp.
           </p>
           <strong>
-            +91 94008 85633 <ArrowUpRight size={17} />
+            {careDisplay} <ArrowUpRight size={17} />
           </strong>
         </a>
-        <a className="contact-card glass" href="tel:+919400885633">
+        <a className="contact-card glass" href={`tel:+${careNumber}`}>
           <IconTile icon={Phone} />
           <h2>Hear a friendly voice.</h2>
           <p>

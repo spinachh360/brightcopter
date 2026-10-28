@@ -1,3 +1,4 @@
+import { defaultContactNumbers } from '../shared/contacts';
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -154,7 +155,7 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   await popup.waitForLoadState();
   const handoff = new URL(popup.url());
   expect(handoff.hostname).toBe("wa.me");
-  expect(handoff.pathname).toBe("/917907344474");
+  expect(handoff.pathname).toBe(`/${defaultContactNumbers.orderNumber}`);
   const message = handoff.searchParams.get("text")!;
   for (const detail of [
     "Anu Test",
@@ -179,7 +180,7 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Open WhatsApp & send" }),
-  ).toHaveAttribute("href", /wa.me\/917907344474/);
+  ).toHaveAttribute("href", new RegExp(`wa\\.me/${defaultContactNumbers.orderNumber}`));
   const reference = await page.locator(".reference-box > strong").textContent();
   await page.goto("/track");
   await page.getByLabel("Request reference").fill(reference!);
@@ -205,7 +206,7 @@ test("service enquiry prepares an honest handoff to customer care", async ({
   await page.getByRole("button", { name: "Prepare service request" }).click();
   await expect(
     page.getByRole("link", { name: "Open WhatsApp & send" }),
-  ).toHaveAttribute("href", /wa.me\/919400885633/);
+  ).toHaveAttribute("href", new RegExp(`wa\\.me/${defaultContactNumbers.careNumber}`));
   await page.getByText("Preview the message you'll share").click();
   await expect(page.locator(".request-preview pre")).toContainText(
     "TEST-MODEL",
