@@ -294,6 +294,9 @@ p { line-height: 1.75; }
 .category-tab, .chip { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 46px; padding: 12px 19px; border-radius: 14px; background: transparent; border: 1px solid transparent; font-size: 13px; font-weight: 500; color: var(--neutral); white-space: nowrap; transition: background .2s, color .2s, box-shadow .2s; }
 .category-tab.selected, .chip.selected { color: var(--red-dark); background: #ffffffdb; border-color: #fff; box-shadow: var(--glass-control-shadow); }
 .category-tab:hover, .chip:hover { color: var(--red-dark); background: #ffffff8c; }
+.category-thumbnail { display: inline-grid; place-items: center; flex-shrink: 0; width: 56px; height: 42px; overflow: hidden; border: 1px solid #eee9ec; border-radius: 10px; background: #fff; }
+.category-thumbnail img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.model-category-tabs .category-tab { padding: 8px 12px; gap: 10px; }
 .product-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; }
 .product-card { min-width: 0; overflow: hidden; padding: 8px; border-radius: 27px; transition: box-shadow .3s, border-color .3s, transform .3s var(--ease); }
 .product-image { position: relative; height: 300px; border-radius: 20px; background: radial-gradient(ellipse at 60% 30%, #ffffffa8, transparent 75%), linear-gradient(135deg, #f5f1f2, #ecebed); overflow: hidden; }
@@ -374,6 +377,7 @@ p { line-height: 1.75; }
 .catalog-sidebar > button > svg:last-child { display: none; }
 .catalog-sidebar > button.active { color: var(--red-dark); background: #ffffffd9; border-color: white; box-shadow: var(--glass-control-shadow); }
 .catalog-sidebar > button:hover { background: #ffffff9c; }
+.catalog-sidebar > button { padding: 8px 12px; gap: 10px; }
 .catalog-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .search-field { display: flex; gap: 12px; align-items: center; width: min(480px,100%); padding: 0 17px; border: 1px solid var(--input); border-radius: 14px; background: #ffffffa6; color: var(--neutral); }
 .search-field input { width: 100%; min-width: 0; min-height: 48px; border: 0; background: transparent; font-size: 14px; }
@@ -782,6 +786,8 @@ p { line-height: 1.75; }
   .category-tabs, .support-tabs { overflow-x: auto; width: 100%; border-radius: 17px; padding: 5px; gap: 4px; margin-bottom: 22px; scrollbar-width: thin; }
   .category-tab { min-height: 44px; padding: 11px 14px; font-size: 12px; gap: 8px; border-radius: 12px; }
   .category-tab svg { width: 16px; }
+  .model-category-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
+  .model-category-tabs .category-tab { flex-direction: column; justify-content: flex-start; gap: 6px; padding: 8px 4px; font-size: 11px; line-height: 1.4; white-space: normal; }
   .product-grid { grid-template-columns: 1fr; gap: 20px; }
   .product-card { border-radius: 25px; }
   .product-image { height: 280px; }
@@ -834,8 +840,9 @@ p { line-height: 1.75; }
   .page-intro h1 { font-size: 38px; letter-spacing: -1.5px; margin-top: 15px; }
   .page-intro > p:last-child { font-size: 15px; margin-top: 18px; }
   .catalog-layout { padding-bottom: 50px; }
-  .catalog-sidebar { width: 100%; gap: 4px; padding: 5px; border-radius: 17px; margin-bottom: 23px; scrollbar-width: thin; }
-  .catalog-sidebar > button { min-height: 44px; padding-inline: 15px; font-size: 12px; }
+  .catalog-sidebar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 4px; padding: 5px; border-radius: 17px; margin-bottom: 23px; overflow: visible; }
+  .catalog-sidebar > button { min-width: 0; min-height: 64px; padding: 8px; gap: 8px; font-size: 11px; line-height: 1.4; white-space: normal; text-align: left; }
+  .catalog-sidebar .category-thumbnail { width: 40px; height: 30px; border-radius: 8px; }
   .catalog-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
   .search-field { width: 100%; }
   .search-field input, .sort-field select, .pin-check input, .field input, .field textarea, .field select { font-size: 16px; }

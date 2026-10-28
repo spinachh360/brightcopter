@@ -21,6 +21,7 @@ import {
   Minus,
   X,
   ShoppingBag,
+  LayoutGrid,
   House,
   Search,
   Wind,
@@ -50,6 +51,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ProductPhoto from "./ProductPhoto";
+import baseThumbnail from "./assets/products/thumbnails/base.webp";
+import jumboheadThumbnail from "./assets/products/thumbnails/jumbohead.webp";
+import nanoheadThumbnail from "./assets/products/thumbnails/nanohead.webp";
 import { LegalPage } from "./LegalPage";
 import { Metadata } from "./Metadata";
 import { useFormGuard } from "./FormGuard";
@@ -90,11 +94,16 @@ type Store = {
 const StoreContext = createContext<Store>(null!);
 const useStore = () => useContext(StoreContext);
 const categories = [
-  { label: "All fans", icon: Fan },
-  { label: "Base model", icon: Fan },
-  { label: "Jumbohead model", icon: Fan },
-  { label: "Nanohead model", icon: Fan },
+  { label: "All fans", thumbnail: undefined },
+  { label: "Base model", thumbnail: baseThumbnail },
+  { label: "Jumbohead model", thumbnail: jumboheadThumbnail },
+  { label: "Nanohead model", thumbnail: nanoheadThumbnail },
 ];
+function CategoryThumbnail({ src }: { src?: string }) {
+  return <span className="category-thumbnail" aria-hidden="true">
+    {src ? <img src={src} width={128} height={96} alt="" decoding="async" /> : <LayoutGrid size={20} />}
+  </span>;
+}
 const cx = (...values: (string | false | undefined)[]) =>
   values.filter(Boolean).join(" ");
 
@@ -515,18 +524,18 @@ function Home() {
         >
           Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
         </SectionTitle>
-        <div className="category-tabs" aria-label="Product categories">
+        <div className="category-tabs model-category-tabs" aria-label="Product categories">
           {categories
             .filter((c) => c.label !== "All fans")
-            .map(({ label, icon: Icon }) => (
+            .map(({ label, thumbnail }) => (
               <button
                 key={label}
                 onClick={() => setCategory(label)}
                 aria-pressed={category === label}
                 className={cx("category-tab", category === label && "selected")}
               >
-                <Icon size={17} />
-                {label}
+                <CategoryThumbnail src={thumbnail} />
+                <span>{label}</span>
               </button>
             ))}
         </div>
@@ -777,7 +786,7 @@ function Products() {
       <section className="container catalog-layout">
         <aside className="catalog-sidebar">
           <h2>Our collections</h2>
-          {categories.map(({ label, icon: Icon }) => (
+          {categories.map(({ label, thumbnail }) => (
             <button
               key={label}
               className={cx(category === label && "active")}
@@ -788,8 +797,8 @@ function Products() {
                 setParams(next);
               }}
             >
-              <Icon size={18} />
-              {label}
+              <CategoryThumbnail src={thumbnail} />
+              <span>{label}</span>
               <ChevronRight size={14} />
             </button>
           ))}
