@@ -20,7 +20,6 @@ import {
   Plus,
   Minus,
   X,
-  Menu,
   ShoppingBag,
   House,
   Search,
@@ -194,12 +193,14 @@ const primaryNavigation: LiquidNavItem[] = [
   },
   {
     label: "Our products",
+    shortLabel: "Products",
     href: "/products",
     icon: <Fan size={17} aria-hidden="true" />,
     fx: "spin",
   },
   {
     label: "Our story",
+    shortLabel: "Story",
     href: "/about",
     icon: <Heart size={17} aria-hidden="true" />,
     fx: "pop",
@@ -244,13 +245,11 @@ function navigationSection(pathname: string) {
 
 function Header() {
   const { cart } = useStore();
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    setOpen(false);
     setSearch(false);
   }, [location.pathname, location.search]);
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -265,11 +264,11 @@ function Header() {
       <header
         className="site-header"
         onKeyDown={(event) => {
-          if (event.key === "Escape" && open) {
-            setOpen(false);
+          if (event.key === "Escape" && search) {
+            setSearch(false);
             (
               event.currentTarget.querySelector(
-                ".mobile-menu",
+                ".search-toggle",
               ) as HTMLButtonElement | null
             )?.focus();
           }
@@ -278,29 +277,15 @@ function Header() {
         <div className="nav-shell container">
           <Brand />
           <LiquidNavbar
-            className={cx("main-nav liquid-main-nav", open && "is-open")}
+            className="main-nav liquid-main-nav"
             ariaLabel="Main navigation"
             items={primaryNavigation}
             active={navigationSection(location.pathname)}
             tone="light"
             compact={false}
             sound={false}
-            renderLink={({ href, onClick, ...props }) => (
-              <Link
-                {...props}
-                to={href || "/"}
-                onClick={(event) => {
-                  onClick?.(event);
-                  if (
-                    !event.metaKey &&
-                    !event.ctrlKey &&
-                    !event.shiftKey &&
-                    !event.altKey &&
-                    event.button === 0
-                  )
-                    setOpen(false);
-                }}
-              />
+            renderLink={({ href, ...props }) => (
+              <Link {...props} to={href || "/"} />
             )}
           />
           <div className="nav-actions">
@@ -323,14 +308,6 @@ function Header() {
             <Link className="button button-small nav-shop" to="/products">
               Explore products <ArrowUpRight size={15} />
             </Link>
-            <button
-              className="icon-button mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <X /> : <Menu />}
-            </button>
           </div>
         </div>
         {search && (
@@ -462,14 +439,10 @@ function Home() {
             </div>
           </div>
           <div className="hero-stage">
-            <div className="hero-orbit orbit-one" aria-hidden="true" />
-            <div className="hero-orbit orbit-two" aria-hidden="true" />
-            <span className="hero-stage-type" aria-hidden="true">breathe.</span>
             <div className="hero-product-caption">
               <span>THE BASE MODEL</span>
               <b>2- or 3-year warranty</b>
             </div>
-            <span className="hero-edition"><Fan size={16} /> 4 colour choices</span>
             <div className="hero-render" key={heroFinish}>
               <ProductPhoto hero finish={heroFinish} />
             </div>
@@ -492,7 +465,6 @@ function Home() {
               <span>View Base model<small>From {money(2350)} · 2-year warranty</small></span>
               <span className="round-arrow"><ArrowUpRight size={21} /></span>
             </Link>
-            <span className="visual-label">Base model · {heroFinish}</span>
           </div>
         </section>
       </FloatingPathsBackground>

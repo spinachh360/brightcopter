@@ -116,7 +116,9 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   await page.goto("/product/base-model-2-year");
   await page.getByRole("button", { name: "Choose Brown" }).click();
   await page.locator(".detail-copy").getByRole("button", { name: "Choose 3-year warranty" }).click();
+  await expect(page.locator(".detail-copy").getByRole("button", { name: "Choose 3-year warranty" })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Increase quantity" }).click();
+  await expect(page.locator(".quantity-control > span")).toHaveText("2");
   await page.getByRole("button", { name: "Add to bag" }).click();
   await page.goto("/checkout");
   await page.getByRole("button", { name: "Review your order" }).click();
@@ -237,13 +239,13 @@ test("mobile navigation and all public layouts fit a small screen", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Open menu" }).click();
+  await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
   await page
     .locator(".main-nav")
     .getByRole("link", { name: "Our products" })
     .click();
   await expect(page).toHaveURL(/products/);
-  await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     for (const route of [

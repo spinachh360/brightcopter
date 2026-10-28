@@ -106,29 +106,49 @@ test("CSS fallback moves the selection without WebGL and respects reduced motion
     .toBeLessThan(1);
 });
 
-test("the liquid navbar fits phone, tablet and desktop widths and closes on Escape", async ({
+test("navigation stays visible with labelled touch targets across phone, tablet and desktop widths", async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto("/");
   for (const width of [320, 390, 641, 768, 900, 901, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    if (width <= 640)
-      await page.getByRole("button", { name: "Open menu" }).click();
     const nav = page.getByRole("navigation", { name: "Main navigation" });
     await expect(nav).toBeVisible();
+    if (width <= 900) await expect(nav).toHaveAttribute('data-gl','off');
+    await expect(nav.getByRole("link")).toHaveCount(5);
+    const links = await nav.getByRole('link').evaluateAll(elements => elements.map(element => {
+      const rect = element.getBoundingClientRect();
+      const label = element.querySelector('.nimbus-label')!;
+      return {x:rect.x,width:rect.width,height:rect.height,labelVisible:label.getBoundingClientRect().width > 0};
+    }));
+    for (const box of links) {
+      expect(box.labelVisible).toBe(true);
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(width);
+    }
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
       `Navbar overflow at ${width}px`,
     ).toBeTruthy();
-    if (width <= 640) {
-      await nav.getByRole("link", { name: "Contact", exact: true }).focus();
+    if (width === 320) {
+      const search = page.getByRole('button', {name: 'Search products', exact: true});
+      await search.click();
+      await expect(page.getByRole('textbox', {name:'Search product catalogue'})).toBeFocused();
       await page.keyboard.press("Escape");
-      await expect(nav).toBeHidden();
-      await expect(
-        page.getByRole("button", { name: "Open menu" }),
-      ).toBeFocused();
+      await expect(search).toBeFocused();
+      await expect(page.getByRole('textbox', {name:'Search product catalogue'})).toHaveCount(0);
+      await expect(nav).toBeVisible();
     }
   }
+  await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>window.scrollTo(0,900));
+  await expect.poll(async()=> (await page.locator('.site-header').boundingBox())!.y).toBe(0);
+  await page.getByRole('navigation', {name:'Main navigation'}).getByRole('link', {name:'Contact',exact:true}).click();
+  await expect(page).toHaveURL(/\/contact$/);
+  await expect(page.getByRole('navigation', {name:'Main navigation'})).toBeVisible();
 });
