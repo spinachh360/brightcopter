@@ -146,7 +146,7 @@ Run `npm run preview:test` to rebuild the portable HTML and check it in a normal
 
 ## Technical files, policies and security
 
-The canonical origin is configured as `https://brightcopter.netlify.com`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
+The canonical origin is configured as `https://brightcopter.netlify.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
 
 The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, per-route static HTML with Open Graph/Twitter metadata, canonical links and JSON-LD, and Netlify security headers/routing. `public/` contains an ICO converted from the existing SVG favicon, an Apple icon and the original logo as the social image. Sitemap/robots snapshots in `public/` are refreshed from the same generator; the build always regenerates the deployed versions.
 

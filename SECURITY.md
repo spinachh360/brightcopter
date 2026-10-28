@@ -4,7 +4,7 @@ This is a static catalogue and customer-initiated WhatsApp handoff. There is no 
 
 ## Environment variables and credentials
 
-- `SITE_URL` is a public canonical HTTPS origin. The owner supplied `https://brightcopter.netlify.com`; change it and rebuild if the final canonical host changes.
+- `SITE_URL` is a public canonical HTTPS origin. The owner supplied `https://brightcopter.netlify.app`; change it and rebuild if the final canonical host changes.
 - The only browser overrides allowed are `VITE_ORDER_WHATSAPP`, `VITE_CUSTOMER_CARE_WHATSAPP`, and `VITE_BRAND_LOGO_URL`. They are public. Vite's automatic environment-prefix exposure is disabled; unknown `VITE_*` variables fail configuration review.
 - `.env`, `.env.local`, `.env.production`, `.env.server` and other real `.env.*` files are ignored. Only `.env.example` and `.env.server.example` are templates. The packaging script also excludes real environment files, even if they were accidentally tracked. Never put real credentials in those templates, source code, public assets, URLs or `VITE_*` variables.
 - Future database strings and provider credentials belong in the backend host's environment or secret manager. `.env.server.example` shows server-only names. The browser must call a validated API; it must not connect directly to a database or receive provider secrets.

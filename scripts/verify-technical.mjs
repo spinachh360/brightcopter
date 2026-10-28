@@ -29,7 +29,7 @@ try {
  assert.equal((sitemap.match(/<loc>/g)||[]).length,24);
  for(const page of ['return-policy','terms-and-conditions','product/nanohead-wood-model-7-year'])assert(sitemap.includes(page));
  for(const page of ['checkout','/cart','/track','/order/'])assert(!sitemap.includes(page));
- assert((await readFile(path.join(root,'robots.txt'),'utf8')).includes('Sitemap: https://brightcopter.netlify.com/sitemap.xml'));
+ assert((await readFile(path.join(root,'robots.txt'),'utf8')).includes('Sitemap: https://brightcopter.netlify.app/sitemap.xml'));
  const ico=await readFile(path.join(root,'favicon.ico'));assert.equal(ico.readUInt16LE(2),1);assert(ico.readUInt16LE(4)>=1);
  assert(headers['Content-Security-Policy'].includes("script-src 'self' 'sha256-"));
  assert(!headers['Content-Security-Policy'].includes("'unsafe-eval'"));
@@ -57,7 +57,7 @@ try {
  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
  await page.getByRole('link',{name:'Our products',exact:true}).click();
  await expect(page.locator('.product-card')).toHaveCount(5);
- await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter.netlify.com/products');
+ await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter.netlify.app/products');
  await page.goto(url+'/return-policy');
  await expect(page.getByRole('heading',{name:'Returns, replacements & refunds',exact:true})).toBeVisible();
  await expect(page).toHaveTitle('Returns, replacements & refunds | Bright Copter');
