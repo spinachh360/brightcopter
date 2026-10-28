@@ -1,4 +1,4 @@
-import { products, cataloguePriceRange } from './data';
+import { products, cataloguePriceRange, money } from './data';
 import { legalPages } from './policies';
 import { careNumber, orderNumber, careDisplay, orderDisplay } from './contacts';
 export const siteUrl = __SITE_URL__;
@@ -30,7 +30,7 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const legal = legalPages[path as keyof typeof legalPages];
   const found = publicRoutes.includes(path) || privateRoutes.includes(path);
   const [label, description] = product
-    ? [`${product.name} · ${product.warranty}-year warranty`, product.description]
+    ? [`${product.name} ceiling fan · ${product.warranty}-year warranty`, `${product.name} ceiling fan with ${product.warranty}-year warranty at ${money(product.price!)}. ${product.colors.join(', ')} finishes. Service across Kerala. Confirm total and delivery on WhatsApp.`]
     : legal ? [legal.title, legal.description]
     : pages[path] || ['404 — Page not found', 'This page could not be found. Explore Bright Copter ceiling fans or contact our team for help.'];
   const canonical = `${siteUrl}${path === '/' ? '/' : path}`;
@@ -38,7 +38,8 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const business = {
     '@type': ['Organization', 'LocalBusiness'], '@id': businessId, name: 'Bright Copter', url: `${siteUrl}/`,
     description: 'Appliance brand and electronic goods manufacturer based in Parappur, Thrissur, Kerala, India.',
-    logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/og-image.png`, telephone: `+${careNumber}`,
+    logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/social/base-model.jpg`, telephone: `+${careNumber}`,
+    areaServed: { '@type': 'State', name: 'Kerala' },
     address: { '@type': 'PostalAddress', addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', addressCountry: 'IN' },
     hasMap: 'https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8',
     sameAs: ['https://www.facebook.com/p/Bright-Copter-61566378232921/', 'https://www.indiamart.com/bright-copter/aboutus.html'],
@@ -51,8 +52,8 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   // tags or JSON-LD. Production builds use the real hashed HTTPS asset URLs.
   const productImages = product ? product.colors.map(colour => resolveAsset(product.images[colour]))
     .filter(source => !source.startsWith('data:')).map(source => new URL(source, `${siteUrl}/`).href) : [];
-  const image = productImages[0] || `${siteUrl}/og-image.png`;
-  const imageAlt = productImages.length ? `${product!.name} ceiling fan` : 'Bright Copter lion-and-cub logo';
+  const image = `${siteUrl}/social/${product?.modelId || 'base-model'}.jpg`;
+  const imageAlt = `Bright Copter ${product?.name || 'Base model'} ceiling fan`;
   const graph: unknown[] = [business, { '@type': 'WebSite', '@id': `${siteUrl}/#website`, url: `${siteUrl}/`, name: 'Bright Copter', publisher: { '@id': businessId } }];
   if (found && !privateRoutes.includes(path)) graph.push({ '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: label, description, isPartOf: { '@id': `${siteUrl}/#website` } });
   if (product) {
@@ -65,6 +66,6 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
       offers: { '@type': 'Offer', url: canonical, priceCurrency: 'INR', price: product.price, seller: { '@id': businessId } },
     });
   }
-  return { path, label, title: `${label} | Bright Copter`, description, canonical, image, imageAlt, product,
+  return { path, label, title: `${label}${product ? ' — ' : ' | '}Bright Copter`, description, canonical, image, imageAlt, product,
     index: __INDEXING_ALLOWED__ && found && !privateRoutes.includes(path), type: 'website', schema: { '@context': 'https://schema.org', '@graph': graph } };
 }

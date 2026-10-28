@@ -1,5 +1,5 @@
-import { products } from "./data";
-import type { Product } from "./data";
+import { products } from "../data";
+import type { Product } from "../data";
 
 export default function ProductPhoto({ product = products[0], finish, hero = false }: {
   product?: Product;

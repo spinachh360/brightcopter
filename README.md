@@ -8,8 +8,13 @@ The homepage includes interactive fan-finish previews and a simpler visual hiera
 
 Category thumbnails are checked-in 128 × 96 WebP derivatives, keeping the original product photos intact. Run `npm run assets:thumbnails` to regenerate them from the Base Black, Jumbohead Brown and Nanohead Silver photos. The normal build uses the checked-in files and does not need a browser for resizing.
 
+The warranty/service section lives in `src/components/WarrantyServiceSection.tsx`. Its image has a bounded frame, and the model caption and two warranty prices follow in normal document flow. Desktop columns align at the top; tablet and phone layouts stack the card above the service copy. The original product photograph is contained without cropping or covering the caption.
+
 ## Components, Tailwind and shadcn
 
+- `src/App.tsx` composes the router and site layout; individual routes live in `src/pages/`.
+- Website components such as `Brand`, `Field`, `ProductCard`, `Quantity` and forms live in `src/components/`, with header/footer under `src/components/layout/`.
+- `src/store/StoreProvider.tsx` owns the persistent cart, comparisons and notifications. `src/hooks/useFormGuard.tsx` handles form submission safeguards.
 - Reusable UI components: **`components/ui/` at the repository root**.
 - Shared utilities: `lib/utils.ts`, including the `cn` helper from `clsx` and `tailwind-merge`.
 - Global styles, Tailwind imports and theme tokens: **`src/styles.css`**.
@@ -47,7 +52,7 @@ import { FloatingPathsBackground } from "@/components/ui/floating-paths";
 </FloatingPathsBackground>;
 ```
 
-The standalone example is `components/ui/demo.tsx`. On the actual site, `src/App.tsx` wraps the existing homepage hero. `position` controls the curves, `className` controls the wrapper, and `children` holds the page content. The wrapper follows its content on mobile instead of forcing the demo's 16:9 ratio.
+The standalone example is `components/ui/demo.tsx`. On the actual site, `src/pages/Home.tsx` wraps the homepage hero. `position` controls the curves, `className` controls the wrapper, and `children` holds the page content. The wrapper follows its content on mobile instead of forcing the demo's 16:9 ratio.
 
 The background has 36 faint continuous tracks and 36 shorter highlights that travel along them. Highlights keep a fixed dash length and staggered phases, with seamless 6–8.4-second loops, so they visibly flow instead of fading into full stationary lines. The SVG is framed across the hero on desktop and mobile. Motion's `useReducedMotion` omits the moving highlights and retains the static tracks when requested. Timing is deterministic so parent state updates do not change it. The decorative SVG is hidden from assistive technology, clipped to its own bounds, and cannot intercept pointer events. Foreground content remains above it. The homepage uses brand-red styling in `src/styles.css`.
 
@@ -57,7 +62,7 @@ The optional `showControls` prop enables a small Play/Pause flow button and is e
 
 `components/ui/liquid-glass-navbar.tsx` contains the supplied Nimbus Waterline component, with its original attribution retained. `components/ui/liquid-glass-navbar-demo.tsx` contains the standalone example; the existing floating-paths demo is preserved.
 
-`src/App.tsx` uses the component in the sticky header with Home, Our products, Our story, Support and Contact. Its controlled `active` prop follows React Router, including product details, checkout, support and browser history. The added optional `renderLink` adapter renders real React Router links, retaining normal link behavior and uninterrupted liquid animation across page changes.
+`src/components/layout/Header.tsx` uses the component in the sticky header with Home, Our products, Our story, Support and Contact. Its controlled `active` prop follows React Router, including product details, checkout, support and browser history. The added optional `renderLink` adapter renders real React Router links, retaining normal link behavior and uninterrupted liquid animation across page changes.
 
 Props include `items`, `active` or `defaultActive`, `onChange`, `tone`, `compact`, `sound`, `className`, `style`, `ariaLabel` and `renderLink`. No new dependency, context provider or image asset is needed; React and Lucide were already installed. Sound is disabled on the storefront. Icon effects, ripples, stretch/split/merge physics and the WebGL shader are retained, with white/pale-red styling to fit the brand.
 
@@ -105,7 +110,7 @@ Default customer care and order numbers are defined once in `shared/contacts.ts`
 
 Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Leave the number overrides blank to use the shared defaults; otherwise enter international digits including the country code without `+` or spaces. Rebuild after changing numbers or `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
 
-`src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/base/`.
+`src/data.ts` holds the catalogue, prices and finish options, and re-exports the shared contact helpers. `src/components/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/`.
 
 The catalogue contains Base model, Jumbohead model, Jumbohead Wood model, Nanohead model and Nanohead Wood model. Base model has four colours: Black, White, Brown and Ivory. A 2-year warranty costs ₹2,350; a 3-year warranty costs ₹2,550. Each warranty uses a stable variant ID (`base-model-2-year`, `base-model-3-year`), so different warranties in the same colour remain distinct bag lines. Model cards group variants by `modelId` and offer a warranty selector. Category and model identity are separate, so Jumbohead and Jumbohead Wood share a category while retaining separate products, photos and price schedules. Both the chosen photo and price follow the selection through the bag, review and WhatsApp message.
 
@@ -134,7 +139,7 @@ The privacy page includes a two-step action to remove saved requests. Request cr
 
 ## Deploy
 
-Run `npm run build` and deploy `dist/` to a static host with HTTPS. Client-side routes must fall back to `index.html`; `public/_redirects` supplies the standard Netlify/Cloudflare Pages fallback. Configure an equivalent SPA fallback on another host.
+Run `npm run build` and deploy `dist/` to Netlify with HTTPS. The build renders each known route into its own HTML document and generates `_redirects` and `_headers`. Known routes serve their generated documents; unknown routes serve `404.html` with an HTTP 404. Configure equivalent static route resolution, response headers and 404 handling on another host.
 
 All fonts, icons and product illustrations are served locally. Browsing does not depend on a CDN. External contact links go to WhatsApp or the owner-supplied Google Maps link. No deployment or public publication is performed by the build command.
 
@@ -152,7 +157,9 @@ Run `npm run preview:test` to rebuild the portable HTML and check it in a normal
 
 The canonical origin is configured as `https://brightcopter.netlify.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
 
-The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, per-route static HTML with Open Graph/Twitter metadata, canonical links and JSON-LD, and Netlify security headers/routing. `public/` contains an ICO converted from the existing SVG favicon, an Apple icon and the original logo as the social image. Sitemap/robots snapshots in `public/` are refreshed from the same generator; the build always regenerates the deployed versions.
+The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, and prerendered HTML from the actual React pages through `src/prerender.tsx`. All 24 public routes contain their page content, Open Graph/Twitter metadata, canonical links and JSON-LD before JavaScript runs. Every warranty variant has a product-specific title, price-aware description and Product/Offer schema. The client then mounts the interactive app and reads the customer's local browser state. Private routes remain noindex and never include customer data in the build. Static forms show a call/JavaScript notice to avoid native GET submissions exposing customer details in URLs.
+
+`index.html` also contains fallback Open Graph/Twitter tags, a canonical URL and readable home content. Build-time generation replaces these with route-specific metadata using `SITE_URL`. Sharing images under `public/social/` are 1200 × 630 JPEG copies of the supplied model photos, approximately 21–32 KB each. Run `npm run assets:social` to regenerate them after changing product photos; normal builds use the checked-in files. The original logo remains at `public/og-image.png` for business schema and is unchanged. `public/` also contains the ICO converted from the existing SVG favicon and an Apple icon. Sitemap/robots/header snapshots are refreshed with `node scripts/build-technical.mjs --sync-public`; builds always regenerate the deployed versions.
 
 The footer links directly to `/return-policy` and `/terms-and-conditions`. Both use original Bright Copter wording, semantic sections and contents links, with static HTML in the build. Legacy policy links redirect. Returns guidance explains assessment and staff confirmation without inventing a return window, fee or refund deadline. Statutory consumer rights remain protected. Privacy and warranty pages describe the actual local-storage and WhatsApp flow.
 

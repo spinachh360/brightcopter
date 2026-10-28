@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
-import { careNumber, careDisplay } from './contacts';
+import { careNumber, careDisplay } from '../contacts';
 export class ErrorBoundary extends Component<{children: ReactNode}, {failed: boolean}> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }

@@ -1,0 +1,22 @@
+
+
+export function PageIntro({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="page-intro container">
+      <p className="eyebrow">
+        <span />
+        {eyebrow}
+      </p>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </div>
+  );
+}

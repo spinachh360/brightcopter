@@ -57,7 +57,7 @@ ReactDOM.createRoot`);
   html = html.replace('/favicon.svg', `data:image/svg+xml;base64,${favicon.toString('base64')}`);
   // Kept outside the React root so a blocked script or startup error leaves
   // useful opening instructions instead of an empty page.
-  html = html.replace('<div id="root"></div>', `<aside id="preview-opening-help" aria-label="Opening the website" style="max-width:620px;margin:48px auto;padding:28px;font:16px/1.7 system-ui,sans-serif;color:#29252b;background:white;border:1px solid #e8dde2;border-radius:20px">
+  html = html.replace(/<!-- STATIC_CONTENT_START -->[\s\S]*?<!-- STATIC_CONTENT_END -->/, `<aside id="preview-opening-help" aria-label="Opening the website" style="max-width:620px;margin:48px auto;padding:28px;font:16px/1.7 system-ui,sans-serif;color:#29252b;background:white;border:1px solid #e8dde2;border-radius:20px">
     <strong style="font-size:26px">Bright Copter website preview</strong>
     <p style="margin-top:16px">The interactive website will appear here when it finishes opening.</p>
     <p style="margin-top:16px">If this message stays on screen, download the HTML file and open it in a full browser such as Chrome, Edge or Safari. Some chat and phone file viewers block the scripts needed to run the website.</p>

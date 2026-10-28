@@ -1,5 +1,6 @@
 import { createServer, loadEnv } from 'vite';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,15 +19,23 @@ const escape = value => String(value).replaceAll('&','&amp;').replaceAll('<','&l
 const resolveAsset = source => {
   if (/^(data:|https:)/.test(source)) return source;
   const item = manifest[source.replace(/^\//, '')];
-  if (!item) throw new Error(`Missing built image in manifest: ${source}`);
-  return `/${item.file}`;
+  if (item) return `/${item.file}`;
+  // Vite inlines small assets, so they have no manifest entry. The same small
+  // checked-in category thumbnails must also work in the prerendered markup.
+  const local = path.resolve(root, source.replace(/^\//, ''));
+  const mime = {'.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml'}[path.extname(local)];
+  if (local.startsWith(path.join(root, 'src/assets/') ) && mime) {
+    const bytes = readFileSync(local);
+    if (bytes.length <= 4096) return `data:${mime};base64,${bytes.toString('base64')}`;
+  }
+  throw new Error(`Missing built image in manifest: ${source}`);
 };
 const server = await createServer({root, mode: 'production', server: {middlewareMode: true, hmr: false, watch: null}, appType: 'custom', optimizeDeps: {noDiscovery: true, include: []}});
 try {
   const { pageMetadata, safeJson, publicRoutes, privateRoutes } = await server.ssrLoadModule('/src/seo.ts');
-  const { legalPages } = await server.ssrLoadModule('/src/policies.ts');
-  const { products, money } = await server.ssrLoadModule('/src/data.ts');
-  const { careNumber, careDisplay, orderWhatsapp } = await server.ssrLoadModule('/src/contacts.ts');
+  const { productOptions, money } = await server.ssrLoadModule('/src/data.ts');
+  const { careNumber, careDisplay } = await server.ssrLoadModule('/src/contacts.ts');
+  const { renderRoute } = await server.ssrLoadModule('/src/prerender.tsx');
   const { NIMBUS_CSS } = await server.ssrLoadModule('/components/ui/liquid-glass-navbar.tsx');
   const styleHash = `'sha256-${createHash('sha256').update(NIMBUS_CSS).digest('base64')}'`;
   const hashes = new Set();
@@ -36,30 +45,26 @@ try {
     return `<title data-seo>${escape(meta.title)}</title>\n` + [
       ['name','description',meta.description], ['name','robots',meta.index ? 'index,follow' : 'noindex,nofollow'],
       ['property','og:title',meta.title], ['property','og:description',meta.description],
-      ['property','og:type','website'], ['property','og:site_name','Bright Copter'], ['property','og:locale','en_IN'],
+      ['property','og:type',meta.type], ['property','og:site_name','Bright Copter'], ['property','og:locale','en_IN'],
       ['property','og:url',meta.canonical], ['property','og:image',meta.image],
       ['property','og:image:alt',meta.imageAlt],
+      ['property','og:image:width','1200'], ['property','og:image:height','630'], ['property','og:image:type','image/jpeg'],
       ['name','twitter:card','summary_large_image'], ['name','twitter:title',meta.title],
-      ['name','twitter:description',meta.description], ['name','twitter:image',meta.image],
+      ['name','twitter:description',meta.description], ['name','twitter:image',meta.image], ['name','twitter:image:alt',meta.imageAlt],
     ].map(([key, name, content]) => `<meta data-seo ${key}="${escape(name)}" content="${escape(content)}">`).join('\n') +
       (meta.index ? `\n<link data-seo rel="canonical" href="${escape(meta.canonical)}">` : '') +
       `\n<script data-seo type="application/ld+json">${schema}</script>`;
   }
   function body(meta) {
-    const legal = legalPages[meta.path];
-    const nav = '<header class="container"><a href="/" aria-label="Bright Copter home"><img class="brand-image" src="/og-image.png" alt="Bright Copter" width="1672" height="941"></a><nav aria-label="Website"><a href="/products">Our products</a> · <a href="/contact">Contact</a></nav></header>';
-    let content = `<article class="container policy-content glass"><h1>${escape(meta.label)}</h1><p>${escape(meta.description)}</p>`;
-    if (legal) {
-      content += `<nav aria-label="On this page"><h2>On this page</h2><ol>${legal.sections.map(section => `<li><a href="#policy-${section.id}">${escape(section.title)}</a></li>`).join('')}</ol></nav>`;
-      content += legal.sections.map(section => `<section><h2 id="policy-${section.id}">${escape(section.title)}</h2>${section.paragraphs.map(p => `<p>${escape(p)}</p>`).join('')}</section>`).join('');
-    } else if (meta.product) {
-      const product = meta.product;
-      content += `<img class="product-photo" src="${escape(resolveAsset(product.images[product.finish]))}" alt="${escape(product.name)} in ${escape(product.finish)}" width="640" height="440"><h2>${escape(money(product.price))} · ${product.warranty}-year warranty</h2><p>Colours: ${escape(product.colors.join(', '))}. Staff confirms warranty coverage, availability, final total, delivery and payment on WhatsApp.</p><a href="${escape(orderWhatsapp())}">Contact the order team</a>`;
-    } else if (['/', '/products'].includes(meta.path)) {
-      content += `<h2>Models and warranty prices</h2><ul>${products.map(product => `<li><a href="/product/${product.id}">${escape(product.name)} · ${product.warranty} years · ${escape(money(product.price))}</a></li>`).join('')}</ul>`;
-    }
-    content += `<p>Customer care: <a href="tel:+${escape(careNumber)}">${escape(careDisplay)}</a>. Parappur, Thrissur, Kerala, India.</p><noscript><p>JavaScript is needed for the interactive bag, colour selection and checkout. Contact our team directly if scripts are disabled.</p></noscript></article>`;
-    return nav + `<main id="main-content">${content}</main><footer class="container"><a href="/return-policy">Returns & refunds</a> · <a href="/terms-and-conditions">Terms & conditions</a> · <a href="/policies/privacy">Privacy</a></footer>`;
+    let html = renderRoute(meta.path).replace(/\b(src|href)="(\/src\/assets\/[^"]+)"/g,
+      (_match, attribute, source) => `${attribute}="${escape(resolveAsset(source))}"`);
+    // Native GET submission must never put customer details into a URL when JS
+    // is disabled. Interactive forms are mounted by React after startup.
+    html = html.replace(/<form\b[^>]*>[\s\S]*?<\/form>/g,
+      `<aside class="notice"><p>Enable JavaScript to prepare a request, or call Bright Copter on <a href="tel:+${escape(careNumber)}">${escape(careDisplay)}</a>.</p></aside>`);
+    const options = meta.product ? `<ul>${productOptions(meta.product).map(option =>
+      `<li><a href="/product/${option.id}">${escape(option.name)} · ${option.warranty}-year warranty · ${escape(money(option.price))}</a></li>`).join('')}</ul>` : '';
+    return html + `<noscript><aside class="container notice"><p>The catalogue is available here. Enable JavaScript for colour selection, comparison and WhatsApp checkout, or contact customer care on <a href="tel:+${escape(careNumber)}">${escape(careDisplay)}</a>.</p>${options}</aside></noscript>`;
   }
   for (const route of [...publicRoutes, ...privateRoutes, '/404']) {
     const meta = pageMetadata(route, resolveAsset);

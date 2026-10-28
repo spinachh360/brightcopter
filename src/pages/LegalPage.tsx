@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { legalPages } from './policies';
+import { legalPages } from '../policies';
 export function LegalPage({ path }: { path: keyof typeof legalPages }) {
   const page = legalPages[path];
   return <article className="container policy-content glass legal-page">

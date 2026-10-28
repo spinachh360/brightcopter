@@ -140,6 +140,7 @@ export type PreparedRequest = {
 };
 
 export function readStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
   try {
     const value = localStorage.getItem(key);
     return value && value.length <= 1_000_000 ? (JSON.parse(value) as T) : fallback;
@@ -148,6 +149,7 @@ export function readStorage<T>(key: string, fallback: T): T {
   }
 }
 export function writeStorage(key: string, value: unknown) {
+  if (typeof window === "undefined") return false;
   try {
     localStorage.setItem(key, JSON.stringify(value));
     return true;
@@ -189,4 +191,9 @@ export function parseCart(stored: unknown): CartItem[] {
     valid.set(key, {id: item.id, finish: item.finish, quantity: Math.min(20, (previous?.quantity || 0) + item.quantity)});
   }
   return [...valid.values()];
+}
+
+export function saveRequest(request: PreparedRequest) {
+  const existing = getRequests();
+  return writeStorage("bc-requests", [request, ...existing].slice(0, 30));
 }
