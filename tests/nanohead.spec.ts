@@ -1,3 +1,4 @@
+import { defaultContactNumbers } from '../shared/contacts';
 import { test, expect } from '@playwright/test';
 
 test('Nanohead standard and Wood are separate products with all six warranty prices', async ({ page }) => {
@@ -72,7 +73,7 @@ test('mixed Nanohead orders retain product, finish, warranty and exact prices th
   const popup = await opened;
   await popup.waitForLoadState();
   const url = new URL(popup.url());
-  expect(url.pathname).toBe('/917907344474');
+  expect(url.pathname).toBe(`/${defaultContactNumbers.orderNumber}`);
   const message = url.searchParams.get('text')!;
   for (const line of ['Nanohead model — Silver', '5-year warranty option × 1', 'Unit price: ₹3,650', 'Nanohead Wood model — Wood', '7-year warranty option × 2', 'Unit price: ₹4,400', '₹8,800', '₹12,450', 'Nano Test', '680552', 'UPI', 'staff will confirm']) expect(message).toContain(line);
 });

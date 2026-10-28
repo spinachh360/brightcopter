@@ -7,6 +7,24 @@ test("finish previews and product details keep the customer's selection", async 
   await expect(page.locator(".hero-render").getByRole("img")).toHaveAccessibleName(
     "Bright Copter Base model ceiling fan in Brown",
   );
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const width of [320,390,768,1440]) {
+    await page.setViewportSize({width,height:900});
+    const photo = (await page.locator('.hero-render').boundingBox())!;
+    const stage = (await page.locator('.hero-stage').boundingBox())!;
+    const finishes = (await page.locator('.hero-finish-panel').boundingBox())!;
+    const link = (await page.locator('.hero-product-link').boundingBox())!;
+    expect(photo.height).toBeGreaterThan(140);
+    expect(stage.x).toBeGreaterThanOrEqual(0);
+    expect(stage.x + stage.width).toBeLessThanOrEqual(width);
+    expect(photo.y + photo.height).toBeLessThanOrEqual(finishes.y);
+    expect(finishes.y + finishes.height).toBeLessThanOrEqual(link.y);
+    for (const swatch of await page.locator('.hero-swatches button').all()) {
+      const box = (await swatch.boundingBox())!;
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+  }
   await expect(page.getByRole("link", { name: "Shopping bag, 0 items" })).toBeVisible();
   const card = page.locator(".product-card").filter({ hasText: "Base model" });
   await card.getByRole("button", { name: "Base model, Ivory", exact: true }).click();

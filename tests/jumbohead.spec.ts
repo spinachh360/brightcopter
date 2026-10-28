@@ -1,3 +1,4 @@
+import { defaultContactNumbers } from '../shared/contacts';
 import { test, expect } from '@playwright/test';
 
 test('Jumbohead standard and Wood are separate products with all six warranty prices', async ({ page }) => {
@@ -69,7 +70,7 @@ test('mixed Jumbohead orders retain product, finish, warranty and exact prices t
   const popup = await opened;
   await popup.waitForLoadState();
   const url = new URL(popup.url());
-  expect(url.pathname).toBe('/917907344474');
+  expect(url.pathname).toBe(`/${defaultContactNumbers.orderNumber}`);
   const message = url.searchParams.get('text')!;
   for (const line of ['Jumbohead model — Brown', '5-year warranty option × 1', 'Unit price: ₹3,750', 'Jumbohead Wood model — Wood', '7-year warranty option × 2', 'Unit price: ₹4,700', '₹9,400', '₹13,150', 'Jumbo Test', '680552', 'UPI', 'staff will confirm']) expect(message).toContain(line);
 });

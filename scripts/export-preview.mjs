@@ -38,6 +38,7 @@ function PreviewRouter({ children }: { children: React.ReactNode }) {
 ReactDOM.createRoot`);
       },
     }],
+    define: { __INDEXING_ALLOWED__: 'false' },
     build: { outDir, emptyOutDir: true, assetsInlineLimit: () => true },
   });
   let html = await readFile(path.join(outDir, 'index.html'), 'utf8');
@@ -49,6 +50,10 @@ ReactDOM.createRoot`);
   html = html.replace(script[0], () => `<script type="module">${js.replaceAll('</script', '<\\/script')}</script>`);
   html = html.replace(style[0], () => `<style>${css}</style>`);
   const favicon = await readFile(path.join(root, 'public/favicon.svg'));
+  const ico = await readFile(path.join(root, 'public/favicon.ico'));
+  const appleIcon = await readFile(path.join(root, 'public/apple-touch-icon.png'));
+  html = html.replace('/favicon.ico', `data:image/x-icon;base64,${ico.toString('base64')}`);
+  html = html.replace('/apple-touch-icon.png', `data:image/png;base64,${appleIcon.toString('base64')}`);
   html = html.replace('/favicon.svg', `data:image/svg+xml;base64,${favicon.toString('base64')}`);
   // Kept outside the React root so a blocked script or startup error leaves
   // useful opening instructions instead of an empty page.

@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, createContext, useContext } from "r
 import type { FormEvent, KeyboardEvent, ReactNode } from "react";
 import {
   Link,
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -19,14 +20,13 @@ import {
   Plus,
   Minus,
   X,
-  Menu,
   ShoppingBag,
+  LayoutGrid,
   House,
   Search,
   Wind,
   ShieldCheck,
   Headphones,
-  Zap,
   Truck,
   MapPin,
   Phone,
@@ -51,6 +51,13 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ProductPhoto from "./ProductPhoto";
+import baseThumbnail from "./assets/products/thumbnails/base.webp";
+import jumboheadThumbnail from "./assets/products/thumbnails/jumbohead.webp";
+import nanoheadThumbnail from "./assets/products/thumbnails/nanohead.webp";
+import { LegalPage } from "./LegalPage";
+import { Metadata } from "./Metadata";
+import { useFormGuard } from "./FormGuard";
+import { plainText, phoneNumber, validateOrder } from "../shared/validation";
 import { brandLogoUrl } from "./brand";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import type { LiquidNavItem } from "@/components/ui/liquid-glass-navbar";
@@ -60,6 +67,10 @@ import {
   modelProducts,
   productOptions,
   money,
+  cataloguePriceRange,
+  careNumber,
+  careDisplay,
+  orderDisplay,
   finishes,
   readStorage,
   writeStorage,
@@ -68,6 +79,8 @@ import {
   mapLink,
   createReference,
   getRequests,
+  isPreparedRequest,
+  parseCart,
 } from "./data";
 import type { Product, CartItem, PreparedRequest } from "./data";
 
@@ -84,11 +97,16 @@ type Store = {
 const StoreContext = createContext<Store>(null!);
 const useStore = () => useContext(StoreContext);
 const categories = [
-  { label: "All fans", icon: Fan },
-  { label: "Base model", icon: Fan },
-  { label: "Jumbohead model", icon: Fan },
-  { label: "Nanohead model", icon: Fan },
+  { label: "All fans", thumbnail: undefined },
+  { label: "Base model", thumbnail: baseThumbnail },
+  { label: "Jumbohead model", thumbnail: jumboheadThumbnail },
+  { label: "Nanohead model", thumbnail: nanoheadThumbnail },
 ];
+function CategoryThumbnail({ src }: { src?: string }) {
+  return <span className="category-thumbnail" aria-hidden="true">
+    {src ? <img src={src} width={128} height={96} alt="" decoding="async" /> : <LayoutGrid size={20} />}
+  </span>;
+}
 const cx = (...values: (string | false | undefined)[]) =>
   values.filter(Boolean).join(" ");
 
@@ -187,12 +205,14 @@ const primaryNavigation: LiquidNavItem[] = [
   },
   {
     label: "Our products",
+    shortLabel: "Products",
     href: "/products",
     icon: <Fan size={17} aria-hidden="true" />,
     fx: "spin",
   },
   {
     label: "Our story",
+    shortLabel: "Story",
     href: "/about",
     icon: <Heart size={17} aria-hidden="true" />,
     fx: "pop",
@@ -237,32 +257,30 @@ function navigationSection(pathname: string) {
 
 function Header() {
   const { cart } = useStore();
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    setOpen(false);
     setSearch(false);
   }, [location.pathname, location.search]);
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
   return (
     <>
       <div className="announcement">
-        <span>From our home in Kerala, to yours.</span>
+        <span>Ceiling fan service across Kerala.</span>
         <Link to="/support">
-          Real people. A message away. <ArrowUpRight size={12} />
+          Request service <ArrowUpRight size={12} />
         </Link>
       </div>
       <header
         className="site-header"
         onKeyDown={(event) => {
-          if (event.key === "Escape" && open) {
-            setOpen(false);
+          if (event.key === "Escape" && search) {
+            setSearch(false);
             (
               event.currentTarget.querySelector(
-                ".mobile-menu",
+                ".search-toggle",
               ) as HTMLButtonElement | null
             )?.focus();
           }
@@ -271,29 +289,15 @@ function Header() {
         <div className="nav-shell container">
           <Brand />
           <LiquidNavbar
-            className={cx("main-nav liquid-main-nav", open && "is-open")}
+            className="main-nav liquid-main-nav"
             ariaLabel="Main navigation"
             items={primaryNavigation}
             active={navigationSection(location.pathname)}
             tone="light"
             compact={false}
             sound={false}
-            renderLink={({ href, onClick, ...props }) => (
-              <Link
-                {...props}
-                to={href || "/"}
-                onClick={(event) => {
-                  onClick?.(event);
-                  if (
-                    !event.metaKey &&
-                    !event.ctrlKey &&
-                    !event.shiftKey &&
-                    !event.altKey &&
-                    event.button === 0
-                  )
-                    setOpen(false);
-                }}
-              />
+            renderLink={({ href, ...props }) => (
+              <Link {...props} to={href || "/"} />
             )}
           />
           <div className="nav-actions">
@@ -316,14 +320,6 @@ function Header() {
             <Link className="button button-small nav-shop" to="/products">
               Explore products <ArrowUpRight size={15} />
             </Link>
-            <button
-              className="icon-button mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <X /> : <Menu />}
-            </button>
           </div>
         </div>
         {search && (
@@ -360,12 +356,9 @@ function Footer() {
           <div className="footer-brand">
             <Brand light />
             <p>
-              A little more comfort.
-              <br />A lasting connection.
+              Ceiling fans from Parappur, Thrissur.
+              <br />Service across Kerala.
             </p>
-            <span className="brand-tagline">
-              LONG LASTING BONDING LIKE A FATHER
-            </span>
           </div>
           <div>
             <h3>Explore</h3>
@@ -383,8 +376,8 @@ function Footer() {
           </div>
           <div className="footer-contact">
             <h3>Let's stay connected</h3>
-            <a href="tel:+919400885633">
-              <Phone size={15} /> +91 94008 85633
+            <a href={`tel:+${careNumber}`}>
+              <Phone size={15} /> {careDisplay}
             </a>
             <a
               href={whatsapp(
@@ -410,8 +403,9 @@ function Footer() {
           </span>
           <div>
             <Link to="/policies/privacy">Privacy</Link>
-            <Link to="/policies/terms">Terms</Link>
-            <Link to="/policies/warranty">Warranty & returns</Link>
+            <Link to="/terms-and-conditions">Terms & conditions</Link>
+            <Link to="/return-policy">Returns & refunds</Link>
+            <Link to="/policies/warranty">Warranty</Link>
           </div>
           <span>
             Made for the everyday. <Heart size={12} />
@@ -436,12 +430,12 @@ function Home() {
         <section className="hero-section container">
           <div className="hero-copy">
             <div className="hero-label">
-              <span className="live-dot" /> EVERYDAY LIVING, A LITTLE BRIGHTER
+              <span className="live-dot" /> BASE · JUMBOHEAD · NANOHEAD
             </div>
             <h1>Comfort.<br />Considered.<br /><span>Yours.</span></h1>
             <p>
-              A better breeze. A brighter home. Explore our ceiling fans,
-              with a real team to help you choose.
+              Ceiling fans priced {cataloguePriceRange}, with 2-, 3-, 5- or 7-year
+              warranty options depending on the model. Service available across Kerala.
             </p>
             <div className="hero-cta">
               <Link className="button" to="/products">
@@ -457,14 +451,10 @@ function Home() {
             </div>
           </div>
           <div className="hero-stage">
-            <div className="hero-orbit orbit-one" aria-hidden="true" />
-            <div className="hero-orbit orbit-two" aria-hidden="true" />
-            <span className="hero-stage-type" aria-hidden="true">breathe.</span>
             <div className="hero-product-caption">
               <span>THE BASE MODEL</span>
-              <b>Less fuss. More comfort.</b>
+              <b>2- or 3-year warranty</b>
             </div>
-            <span className="hero-edition"><Fan size={16} /> Made for your everyday</span>
             <div className="hero-render" key={heroFinish}>
               <ProductPhoto hero finish={heroFinish} />
             </div>
@@ -484,10 +474,9 @@ function Home() {
               </div>
             </div>
             <Link to="/products" className="hero-product-link">
-              <span>Find your everyday favourite<small>From {money(2350)} · 2-year warranty</small></span>
+              <span>View Base model<small>From {money(2350)} · 2-year warranty</small></span>
               <span className="round-arrow"><ArrowUpRight size={21} /></span>
             </Link>
-            <span className="visual-label">Base model · {heroFinish}</span>
           </div>
         </section>
       </FloatingPathsBackground>
@@ -497,24 +486,24 @@ function Home() {
       >
         {[
           {
-            icon: Zap,
-            title: "A smarter breeze",
-            sub: "Explore our ceiling fans",
+            icon: ShoppingBag,
+            title: cataloguePriceRange,
+            sub: "Across the current fan range",
           },
           {
             icon: ShieldCheck,
-            title: "Reassurance, built in",
-            sub: "Warranty options up to 7 years",
+            title: "2–7 year warranty options",
+            sub: "2, 3, 5 or 7 years by model",
           },
           {
-            icon: Wind,
-            title: "Made to feel at home",
-            sub: "Find a finish for your space",
+            icon: MapPin,
+            title: "Service across Kerala",
+            sub: "Request help from customer care",
           },
           {
-            icon: Headphones,
-            title: "People you can talk to",
-            sub: "Personal support from Kerala",
+            icon: MessageCircle,
+            title: "WhatsApp checkout",
+            sub: "Staff confirms payment and delivery",
           },
         ].map((item) => (
           <div className="benefit" key={item.title}>
@@ -528,28 +517,28 @@ function Home() {
       </section>
       <section className="section container home-products">
         <SectionTitle
-          eyebrow="THE EVERYDAY COLLECTION"
-          title="Good things for your home."
+          eyebrow="CEILING FAN COLLECTION"
+          title="Compare models, colours and warranties."
           action={
             <Link className="text-button" to="/products">
               Explore all products <ArrowUpRight size={17} />
             </Link>
           }
         >
-          Explore the range. Find your finish. Make it part of your everyday.
+          Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
         </SectionTitle>
-        <div className="category-tabs" aria-label="Product categories">
+        <div className="category-tabs model-category-tabs" aria-label="Product categories">
           {categories
             .filter((c) => c.label !== "All fans")
-            .map(({ label, icon: Icon }) => (
+            .map(({ label, thumbnail }) => (
               <button
                 key={label}
                 onClick={() => setCategory(label)}
                 aria-pressed={category === label}
                 className={cx("category-tab", category === label && "selected")}
               >
-                <Icon size={17} />
-                {label}
+                <CategoryThumbnail src={thumbnail} />
+                <span>{label}</span>
               </button>
             ))}
         </div>
@@ -566,48 +555,49 @@ function Home() {
           <div className="story-square" />
           <ProductPhoto finish="Brown" />
           <div className="story-art-caption">
-            <span>MADE FOR YOUR MOMENTS</span>
+            <span>BASE MODEL · BROWN</span>
             <strong>
-              Comfort that feels
+              2-year: {money(2350)}
               <br />
-              like coming home.
+              3-year: {money(2550)}
             </strong>
           </div>
-          <span className="story-art-number">01 — EVERYDAY LIVING</span>
+          <span className="story-art-number">BLACK · WHITE · BROWN · IVORY</span>
         </div>
         <div className="story-copy">
           <p className="eyebrow">
             <span />
-            MORE THAN AN APPLIANCE
+            WARRANTY & SERVICE
           </p>
           <h2>
-            Part of your home.
+            2 to 7 years.
             <br />
-            <span>Here for the long run.</span>
+            <span>Service across Kerala.</span>
           </h2>
           <p>
-            From the breeze that starts your morning to the kitchen that brings
-            everyone together — the little things make a home.
+            Choose the warranty duration shown for your model. Before purchase,
+            our team explains covered parts, exclusions and service arrangements.
           </p>
           <p>
-            At Bright Copter, we bring ceiling fans and personal support
-            together. Because a lasting connection begins with everyday care.
+            For service anywhere in Kerala, share your model, purchase details
+            and location with customer care on {careDisplay}. The team will
+            confirm the next step, appointment arrangements and any charges.
           </p>
-          <Link to="/about" className="button button-outline">
-            Get to know us <ArrowUpRight size={17} />
+          <Link to="/support?tab=service" className="button button-outline">
+            Request fan service <ArrowUpRight size={17} />
           </Link>
           <div className="story-signature">
-            <Heart size={18} />
-            <span>Long lasting bonding like a father.</span>
+            <MapPin size={18} />
+            <span>Based in Parappur, Thrissur, Kerala.</span>
           </div>
         </div>
       </section>
       <section className="section container steps-section">
         <SectionTitle
-          eyebrow="FROM OUR RANGE TO YOUR ROOM"
-          title="From your bag to a conversation."
+          eyebrow="ORDER IN THREE STEPS"
+          title="How WhatsApp checkout works."
         >
-          A personal way to order. Our team confirms every detail with you.
+          Review your selection and address before sending your order. Staff confirms the final total, delivery and payment method on WhatsApp.
         </SectionTitle>
         <div className="home-steps">
           {[
@@ -644,7 +634,7 @@ function Home() {
         <span>
           <Building2 size={24} />
           <div>
-            <h3>A brighter business partnership.</h3>
+            <h3>Dealer & bulk orders.</h3>
             <p>Exploring bulk orders or becoming a dealer? Let's talk.</p>
           </div>
         </span>
@@ -664,14 +654,14 @@ function SupportBanner() {
         <span className="support-dot" />
       </div>
       <div>
-        <p className="eyebrow">A LITTLE HELP GOES A LONG WAY</p>
-        <h2>Real people. Ready to help.</h2>
+        <p className="eyebrow">BRIGHT COPTER CUSTOMER CARE</p>
+        <h2>Fan service across Kerala.</h2>
         <p>
-          Questions about a fan? Need a little product care? We're right here.
+          Call {careDisplay} for warranty questions or prepare a service request with your model and purchase details.
         </p>
       </div>
       <Link className="button button-white" to="/support">
-        Let's sort it out <ArrowUpRight size={18} />
+        Get product support <ArrowUpRight size={18} />
       </Link>
       <div className="support-decoration" aria-hidden="true" />
     </section>
@@ -799,7 +789,7 @@ function Products() {
       <section className="container catalog-layout">
         <aside className="catalog-sidebar">
           <h2>Our collections</h2>
-          {categories.map(({ label, icon: Icon }) => (
+          {categories.map(({ label, thumbnail }) => (
             <button
               key={label}
               className={cx(category === label && "active")}
@@ -810,8 +800,8 @@ function Products() {
                 setParams(next);
               }}
             >
-              <Icon size={18} />
-              {label}
+              <CategoryThumbnail src={thumbnail} />
+              <span>{label}</span>
               <ChevronRight size={14} />
             </button>
           ))}
@@ -1460,8 +1450,9 @@ function DownloadRequest({ request }: { request: PreparedRequest }) {
 }
 
 function Checkout() {
-  const { cart, clear, notify } = useStore();
+  const { cart, clear } = useStore();
   const navigate = useNavigate();
+  const guard = useFormGuard("order");
   const [step, setStep] = useState(1);
   const previousStep = useRef(step);
   const [form, setForm] = useState({
@@ -1501,48 +1492,45 @@ function Checkout() {
       });
     }
   }, [step]);
-  function submit(e: FormEvent) {
+  function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (step === 1) {
-      if (
-        !form.name.trim() ||
-        !form.address.trim() ||
-        !form.city.trim() ||
-        !form.state.trim()
-      ) {
-        notify("Please complete your name and delivery address.");
-        return;
-      }
-      if (form.phone.replace(/\D/g, "").length < 10) {
-        notify("Please enter a valid mobile number.");
-        return;
-      }
-      setStep(2);
-      return;
-    }
+    guard.setError("");
+    if (!guard.check(e.currentTarget)) return;
+    let details;
+    try { details = validateOrder(form); }
+    catch (error) { guard.setError(error instanceof Error ? error.message : "Please check your delivery details."); return; }
+    setForm(details);
+    if (step === 1) { setStep(2); return; }
+    if (!guard.check(e.currentTarget, true)) return;
+    try {
     const ref = createReference("ORD");
-    const message = `Hello Bright Copter! I would like to place an order.\n\nORDER REQUEST: ${ref}\n\nCUSTOMER DETAILS\nName: ${form.name.trim()}\nPhone: ${form.phone.trim()}${form.email ? `\nEmail: ${form.email.trim()}` : ""}\n\nMY SELECTION\n${cart
+    const message = `Hello Bright Copter! I would like to place an order.\n\nORDER REQUEST: ${ref}\n\nCUSTOMER DETAILS\nName: ${details.name.trim()}\nPhone: ${details.phone.trim()}${details.email ? `\nEmail: ${details.email.trim()}` : ""}\n\nMY SELECTION\n${cart
       .map((item) => {
         const product = products.find((p) => p.id === item.id)!;
         return `• ${product.name} — ${item.finish}\n  ${product.warranty}-year warranty option × ${item.quantity}\n  Unit price: ${money(product.price!)}\n  Indicative line total: ${money(product.price! * item.quantity)}`;
       })
       .join(
         "\n",
-      )}\n\nIndicative product subtotal: ${money(total)}\n(Taxes, delivery, stock and actual model to be confirmed.)\n\nDELIVERY ADDRESS\n${form.address.trim()}${form.landmark ? `\nLandmark: ${form.landmark.trim()}` : ""}\n${form.city.trim()}, ${form.state.trim()} — ${form.pin}\n\nPAYMENT PREFERENCE\n${payment}\nI understand your staff will confirm the available payment method and payment instructions on WhatsApp. No payment has been made through the website.${form.note ? `\n\nADDITIONAL NOTES\n${form.note.trim()}` : ""}\n\nPlease confirm the actual model, finish, warranty terms, availability, final total and delivery arrangements. Thank you!`;
+      )}\n\nIndicative product subtotal: ${money(total)}\n(Taxes, delivery, stock and actual model to be confirmed.)\n\nDELIVERY ADDRESS\n${details.address.trim()}${details.landmark ? `\nLandmark: ${details.landmark.trim()}` : ""}\n${details.city.trim()}, ${details.state.trim()} — ${details.pin}\n\nPAYMENT PREFERENCE\n${payment}\nI understand your staff will confirm the available payment method and payment instructions on WhatsApp. No payment has been made through the website.${details.note ? `\n\nADDITIONAL NOTES\n${details.note.trim()}` : ""}\n\nPlease confirm the actual model, finish, warranty terms, availability, final total and delivery arrangements. Thank you!`;
     const request: PreparedRequest = {
       reference: ref,
       type: "order",
-      name: form.name.trim(),
+      name: details.name.trim(),
       message,
       date: new Date().toISOString(),
       total,
     };
     const saved = saveRequest(request);
-    window.open(orderWhatsapp(message), "_blank", "noopener,noreferrer");
+    // A blocked app handoff still leaves the saved request and fallback link.
+    try { window.open(orderWhatsapp(message), "_blank", "noopener,noreferrer"); } catch { /* Confirmation provides the handoff link. */ }
     clear();
     navigate("/order/confirmation", {
       state: { reference: ref, request, saved, whatsappOpened: true },
     });
+    } catch {
+      guard.release();
+      guard.setError("We could not prepare your order. Please try again or contact customer care.");
+    }
   }
   if (!cart.length)
     return (
@@ -1569,6 +1557,7 @@ function Checkout() {
       />
       <section className="container checkout-layout">
         <form className="checkout-form glass" onSubmit={submit}>
+          {guard.fields}
           <ol className="checkout-progress" aria-label="Order progress">
             <li className={cx(step === 1 && "active", step > 1 && "complete")} aria-current={step === 1 ? "step" : undefined}>
               <span>{step > 1 ? <Check size={14} /> : "01"}</span><div>Details<small>Address & payment</small></div>
@@ -1742,7 +1731,7 @@ function Checkout() {
                   <MessageCircle size={19} />
                   <p>
                     Your order details will open in WhatsApp for{" "}
-                    <strong>+91 79073 44474</strong>. Tap Send there to share
+                    <strong>{orderDisplay}</strong>. Tap Send there to share
                     your request. Staff will confirm availability, final total,
                     delivery and payment. No payment is collected here.
                   </p>
@@ -1794,7 +1783,7 @@ function Checkout() {
             confirmed by our team.
           </p>
           <span className="summary-reassurance">
-            <MessageCircle size={16} /> WhatsApp orders: +91 79073 44474
+            <MessageCircle size={16} /> WhatsApp orders: {orderDisplay}
           </span>
           <div className="checkout-promise">
             <ShieldCheck size={17} />
@@ -1836,7 +1825,7 @@ function Confirmation() {
   const [params] = useSearchParams();
   const ref = location.state?.reference || params.get("ref");
   const request: PreparedRequest | undefined =
-    location.state?.request || getRequests().find((r) => r.reference === ref);
+    (isPreparedRequest(location.state?.request) ? location.state.request : undefined) || getRequests().find((r) => r.reference === ref);
   return (
     <section className="container confirmation-section">
       <div className="confirmation-card glass">
@@ -1930,7 +1919,7 @@ const faqItems = [
   },
   {
     q: "How do I place an order?",
-    a: "Add your selection to the bag, enter your delivery address and choose a payment preference. Review the details and select Place order via WhatsApp. A ready-to-send order message opens for +91 79073 44474. Tap Send in WhatsApp; our staff then confirms the actual product, total, delivery and final payment mode. No payment is collected on the website.",
+    a: `Add your selection to the bag, enter your delivery address and choose a payment preference. Review the details and select Place order via WhatsApp. A ready-to-send order message opens for ${orderDisplay}. Tap Send in WhatsApp; our staff then confirms the actual product, total, delivery and final payment mode. No payment is collected on the website.`,
   },
   {
     q: "What if my product needs care or repair?",
@@ -2004,8 +1993,8 @@ function Support() {
               >
                 <MessageCircle size={17} /> Chat on WhatsApp
               </a>
-              <a className="text-button" href="tel:+919400885633">
-                <Phone size={16} /> +91 94008 85633
+              <a className="text-button" href={`tel:+${careNumber}`}>
+                <Phone size={16} /> {careDisplay}
               </a>
               <small>Contact us for current response and opening hours.</small>
             </aside>
@@ -2096,11 +2085,22 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
     kind === "service" ? "Ceiling fan support" : "Bulk purchase",
   );
   const [consent, setConsent] = useState(false);
+  const guard = useFormGuard(kind);
   const isService = kind === "service";
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    guard.setError("");
+    if (!consent || !guard.check(e.currentTarget)) return;
     const form = new FormData(e.currentTarget);
-    if (!consent) return;
+    try {
+      for (const [key, max] of Object.entries({name:100, phone:18, model:100, purchase:10, business:150, quantity:6, location:150, details:1500}))
+        if (form.has(key)) form.set(key, plainText(String(form.get(key) || ""), max, key === "details"));
+      form.set("phone", phoneNumber(form.get("phone")));
+      if (!form.get("name") || !form.get("location") || !form.get("details")) throw new Error("Please complete your name, location and enquiry details.");
+      if (form.get("quantity") && (!/^\d+$/.test(String(form.get("quantity"))) || Number(form.get("quantity")) < 1 || Number(form.get("quantity")) > 100000)) throw new Error("Please enter a quantity between 1 and 100,000.");
+    } catch (error) { guard.setError(error instanceof Error ? error.message : "Please check your enquiry details."); return; }
+    if (!guard.check(e.currentTarget, true)) return;
+    try {
     const ref = createReference(isService ? "SVC" : "BIZ");
     const name = String(form.get("name"));
     const message = `Hello Bright Copter, I would like to make a ${isService ? "service" : "business"} enquiry.\nReference: ${ref}\nName: ${name}\nPhone: ${form.get("phone")}\nEnquiry: ${type}\n${isService ? `Product/model: ${form.get("model") || "Not known"}\nPurchase date: ${form.get("purchase") || "Not available"}` : `Business: ${form.get("business") || "Not specified"}\nApproximate quantity: ${form.get("quantity") || "To discuss"}`}\nLocation: ${form.get("location")}\nDetails: ${form.get("details")}\nPlease confirm the next step${isService ? ", service coverage, warranty eligibility and any applicable charges" : ", availability and quotation"}.`;
@@ -2115,10 +2115,15 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
     navigate("/order/confirmation", {
       state: { reference: ref, request, saved },
     });
+    } catch {
+      guard.release();
+      guard.setError("We could not prepare your enquiry. Please try again or call customer care.");
+    }
   }
   return (
     <div className="enquiry-layout">
       <form onSubmit={submit} className="enquiry-form glass">
+        {guard.fields}
         <h2>
           {isService
             ? "A little care starts here."
@@ -2269,7 +2274,7 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
             </div>
           </li>
         </ol>
-        <a className="text-button" href="tel:+919400885633">
+        <a className="text-button" href={`tel:+${careNumber}`}>
           <Phone size={16} /> Prefer to call?
         </a>
       </aside>
@@ -2405,8 +2410,8 @@ function Track() {
           >
             <MessageCircle size={16} /> Ask for an order update
           </a>
-          <a className="text-button" href="tel:+919400885633">
-            <Phone size={16} /> +91 94008 85633
+          <a className="text-button" href={`tel:+${careNumber}`}>
+            <Phone size={16} /> {careDisplay}
           </a>
         </aside>
       </section>
@@ -2509,10 +2514,10 @@ function Contact() {
             conversation on WhatsApp.
           </p>
           <strong>
-            +91 94008 85633 <ArrowUpRight size={17} />
+            {careDisplay} <ArrowUpRight size={17} />
           </strong>
         </a>
-        <a className="contact-card glass" href="tel:+919400885633">
+        <a className="contact-card glass" href={`tel:+${careNumber}`}>
           <IconTile icon={Phone} />
           <h2>Hear a friendly voice.</h2>
           <p>
@@ -2569,6 +2574,7 @@ function Contact() {
 function Policies() {
   const location = useLocation();
   const kind = location.pathname.split("/").pop();
+  if (!["privacy", "warranty"].includes(kind || "")) return <NotFound />;
   const title =
     kind === "privacy"
       ? "Your information, with care."
@@ -2588,25 +2594,25 @@ function Policies() {
             <h2>What happens to your information</h2>
             <p>
               Your bag and prepared requests are stored in this browser using
-              local storage. Request details can include your name, contact
+              local storage. Up to 30 prepared requests are kept; requests older than seven days are removed when saved requests are next accessed. They may remain in browser storage until then or until you clear them. Request details can include your name, contact
               information, delivery address and the message you enter.
             </p>
             <p>
-              Preparing a request does not send that information to Bright
-              Copter. Choosing the WhatsApp handoff opens a prepared message.
-              Sending it shares the information through WhatsApp and with the
-              business, subject to those services' applicable terms.
+              Preparing a request does not send that information to Bright Copter. Choosing the WhatsApp handoff transfers the prepared message to WhatsApp. Tapping Send there shares it with the business, subject to WhatsApp’s applicable terms and privacy practices.
             </p>
             <p>
               There is no payment collection or customer account on this
               website. Do not enter card numbers, bank credentials or sensitive
               documents in enquiry messages.
             </p>
+            <h3>Website hosting</h3><p>The hosting provider may process routine request information, such as IP address, browser information and requested pages, for website delivery and security. This website does not submit your form details to an application backend.</p>
+            <h3>Cookies and visitor analytics</h3>
+            <p>No optional analytics, advertising pixels or tracking cookies are installed. Essential browser storage supports the bag, comparison choices and saved requests. Session storage is used for basic repeat-submission controls. No optional tracking starts without a separate consent-based integration.</p>
             <h3>Your local saved data</h3>
             <p>
               You can remove saved requests from this device using the action
               below. Clearing browser site data also removes saved requests and
-              the shopping bag.
+              the shopping bag. Anyone with access to this browser may be able to read these locally saved details.
             </p>
             <ClearData />
           </>
@@ -2715,12 +2721,14 @@ function NotFound() {
   return (
     <section className="container empty-state glass not-found">
       <Wind size={44} />
+      <p className="not-found-code" aria-label="Error 404">404</p>
       <p className="eyebrow">A LITTLE DETOUR</p>
       <h1>Let’s find your way home.</h1>
       <p>We couldn't find that page, but there's plenty more to explore.</p>
       <Link className="button" to="/">
         Back to Bright Copter <ArrowRight size={17} />
       </Link>
+      <Link className="button button-outline" to="/products">Explore ceiling fans</Link>
     </section>
   );
 }
@@ -2729,37 +2737,13 @@ function RouteEffects() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    const page =
-      location.pathname === "/"
-        ? "Comfort, controlled."
-        : location.pathname.startsWith("/product/")
-          ? "Explore your everyday upgrade"
-          : location.pathname.includes("support")
-            ? "Product care & support"
-            : location.pathname.includes("cart")
-              ? "Your shopping bag"
-              : "Everyday comfort";
-    document.title = `Bright Copter — ${page}`;
   }, [location.pathname]);
   return null;
 }
 
 export default function App() {
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const raw = readStorage<unknown>("bc-cart", []);
-    return Array.isArray(raw)
-      ? raw.filter(
-          (i): i is CartItem =>
-            !!i &&
-            typeof i === "object" &&
-            products.some(
-              (p) => p.id === i.id && !!p.price && p.colors.includes(i.finish),
-            ) &&
-            Number.isInteger(i.quantity) &&
-            i.quantity > 0 &&
-            i.quantity <= 20,
-        )
-      : [];
+    return parseCart(readStorage<unknown>("bc-cart", []));
   });
   const [compare, setCompare] = useState<string[]>(() => {
     const raw = readStorage<unknown>("bc-compare", []);
@@ -2833,6 +2817,7 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
+      <Metadata />
       <RouteEffects />
       <Header />
       <main id="main-content" className="route-content" key={location.pathname}>
@@ -2849,6 +2834,10 @@ export default function App() {
           <Route path="/track" element={<Track />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/return-policy" element={<LegalPage path="/return-policy" />} />
+          <Route path="/terms-and-conditions" element={<LegalPage path="/terms-and-conditions" />} />
+          <Route path="/policies/terms" element={<Navigate to="/terms-and-conditions" replace />} />
+          <Route path="/policies/returns" element={<Navigate to="/return-policy" replace />} />
           <Route path="/policies/:kind" element={<Policies />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

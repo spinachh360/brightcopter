@@ -5,3 +5,6 @@ dist/
 *.tsbuildinfo
 playwright-report/
 test-results/
+.env.*
+!.env.example
+!.env.server.example

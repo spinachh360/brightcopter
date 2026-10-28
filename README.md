@@ -4,7 +4,9 @@ A responsive React + TypeScript storefront for Bright Copter, with frosted surfa
 
 The refreshed design uses white, restrained rose glass and Bright Copter red. Shared tokens in `src/styles.css` define the surfaces, control shadows, typography, focus rings and motion. Primary actions use red; secondary buttons and selected tabs use translucent white. The responsive stylesheet replaces the previous layered styling rather than adding another override sheet.
 
-The homepage includes interactive fan-finish previews and a simpler visual hierarchy. Product cards use labelled Add to bag buttons, and their selected finish carries through to the detail page. Catalogue filters sit above the range and scroll horizontally on smaller screens. Checkout shows Details → Review → WhatsApp, preserves edits, and returns keyboard focus to the current step. Product-information tabs support arrows and Home/End. Phone inputs are 16px to avoid automatic iOS zoom. Animation respects reduced motion; the liquid navbar and flowing background retain their controls and fallbacks.
+The homepage includes interactive fan-finish previews and a simpler visual hierarchy. The hero separates the fan photo, finish controls and product link into rows, with the decorative orbits, background word, edition badge and duplicate label removed. Product cards use labelled Add to bag buttons, and their selected finish carries through to the detail page. Model category controls use thumbnails of the supplied Base, Jumbohead and Nanohead photos. Phones show all three home categories in a row and catalogue filters in a two-column grid. Checkout shows Details → Review → WhatsApp, preserves edits, and returns keyboard focus to the current step. Product-information tabs support arrows and Home/End. Phone inputs are 16px to avoid automatic iOS zoom. Animation respects reduced motion; the liquid navbar and flowing background retain their controls and fallbacks.
+
+Category thumbnails are checked-in 128 × 96 WebP derivatives, keeping the original product photos intact. Run `npm run assets:thumbnails` to regenerate them from the Base Black, Jumbohead Brown and Nanohead Silver photos. The normal build uses the checked-in files and does not need a browser for resizing.
 
 ## Components, Tailwind and shadcn
 
@@ -59,7 +61,7 @@ The optional `showControls` prop enables a small Play/Pause flow button and is e
 
 Props include `items`, `active` or `defaultActive`, `onChange`, `tone`, `compact`, `sound`, `className`, `style`, `ariaLabel` and `renderLink`. No new dependency, context provider or image asset is needed; React and Lucide were already installed. Sound is disabled on the storefront. Icon effects, ripples, stretch/split/merge physics and the WebGL shader are retained, with white/pale-red styling to fit the brand.
 
-Keyboard arrows and Home/End move link focus; Enter activates a link. Escape closes the mobile menu and returns focus to its button. Small tablets use labelled-for-accessibility icons; phone menus show icons and small visible labels. The component uses unique refraction filter IDs, pauses when hidden or off-screen, responds to reduced-motion preference changes, cleans up rendering/audio resources, and falls back to a CSS selection drop if WebGL is unavailable.
+Keyboard arrows and Home/End move link focus; Enter activates a link. Phones and tablets show all five navigation links in a persistent row below a compact, proportional logo and search/bag controls. Visible labels and targets of at least 44 × 44 pixels remain available down to 320 pixels. Escape closes product search and returns focus to its button. At widths up to 900 pixels or with a coarse pointer, the navbar uses the CSS selection drop and rests when idle; desktop keeps the liquid water effect. The component uses unique refraction filter IDs, pauses when hidden or off-screen, responds to reduced-motion preference changes, cleans up rendering/audio resources, and also falls back to the CSS drop if WebGL is unavailable.
 
 The project already has the required TypeScript, Tailwind 4, shadcn aliases and root `components/ui/` structure. Setup and component-add commands are documented above; no reinitialization is necessary.
 
@@ -89,17 +91,19 @@ Browser tests use the installed `/usr/bin/chromium` if available. Else run `npx 
 - Finish selection, quantities, and a shopping bag persisted in browser local storage.
 - Fan warranty option comparison.
 - Two website steps: delivery/contact details and payment preference, then review. The third progress milestone is the WhatsApp handoff.
-- Final action opens WhatsApp for **+91 79073 44474** with the complete order message. The customer still taps Send in WhatsApp.
+- Final action opens WhatsApp for the configured order team with the complete order message. The customer still taps Send in WhatsApp.
 - Payment preference is **not** a guaranteed or processed payment method. Staff confirms the final method, price, actual model, stock and fulfillment directly on WhatsApp.
 - A fallback WhatsApp link and downloadable request copy remain available if an app handoff is blocked or unavailable.
-- Service and dealer enquiry forms prepare separate handoffs to the supplied customer care number, **+91 94008 85633**.
+- Service and dealer enquiry forms prepare separate handoffs to the configured customer care number.
 - Saved request lookup is local to the browser. It does not claim to track actual acceptance, payment, shipment or message delivery.
 - Support FAQs, warranty guidance, contact, story and explanatory policy pages.
 - Reduced-motion support, keyboard navigation, labelled forms and responsive layouts.
 
 ## Configuration
 
-Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Rebuild after changing `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
+Default customer care and order numbers are defined once in `shared/contacts.ts`. `src/contacts.ts` resolves public environment overrides and derives display text and WhatsApp links; existing imports through `src/data.ts` remain supported. Call links, checkout notices, FAQs, recovery screens, policies, static HTML and SEO/schema all use these shared values.
+
+Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Leave the number overrides blank to use the shared defaults; otherwise enter international digits including the country code without `+` or spaces. Rebuild after changing numbers or `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
 
 `src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/base/`.
 
@@ -143,3 +147,15 @@ Run `node scripts/export-preview.mjs` to export a self-contained HTML preview to
 The Playwright suite checks liquid navigation and browser history, keyboard interaction, WebGL fallback and responsive navbar layout, catalogue filtering, hero-finish previews, selected finishes carried into product details, keyboard product tabs, finish/quantity persistence, comparison, the complete WhatsApp order payload and destination, service enquiries, malformed stored data, mobile layouts and checkout/edit focus, floating-path animation and reduced-motion behavior, and automated WCAG A/AA checks for the homepage and checkout. Contrast checks wait for finite page-entry transitions to finish so the scan measures the settled interface. Automated accessibility checks are useful coverage and do not replace manual testing.
 
 Run `npm run preview:test` to rebuild the portable HTML and check it in a normal browser, an opaque sandbox frame, a script-blocked frame and a browser with JavaScript disabled. Interactive cases verify the logo, product navigation, bag and checkout entry; blocked cases must display opening instructions.
+
+## Technical files, policies and security
+
+The canonical origin is configured as `https://brightcopter.netlify.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
+
+The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, per-route static HTML with Open Graph/Twitter metadata, canonical links and JSON-LD, and Netlify security headers/routing. `public/` contains an ICO converted from the existing SVG favicon, an Apple icon and the original logo as the social image. Sitemap/robots snapshots in `public/` are refreshed from the same generator; the build always regenerates the deployed versions.
+
+The footer links directly to `/return-policy` and `/terms-and-conditions`. Both use original Bright Copter wording, semantic sections and contents links, with static HTML in the build. Legacy policy links redirect. Returns guidance explains assessment and staff confirmation without inventing a return window, fee or refund deadline. Statutory consumer rights remain protected. Privacy and warranty pages describe the actual local-storage and WhatsApp flow.
+
+There are no private frontend credentials or optional tracking integrations. Cookie consent is therefore not displayed. See [SECURITY.md](SECURITY.md) for the environment allowlist, Netlify CSP/headers, input validation, client spam controls, error/success states, retention, future API CORS/rate-limit template, limitations and verification commands. The API template is inactive and does not accept orders.
+
+To refresh the complete review ZIPs after building/exporting, run `npm run package:project` (Python 3 and Git required). It packages Git-listed source, excludes real environment files and symlinks, and includes the current built site and portable preview.

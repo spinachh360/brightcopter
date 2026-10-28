@@ -1,3 +1,4 @@
+import { defaultContactNumbers } from '../shared/contacts';
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -116,7 +117,9 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   await page.goto("/product/base-model-2-year");
   await page.getByRole("button", { name: "Choose Brown" }).click();
   await page.locator(".detail-copy").getByRole("button", { name: "Choose 3-year warranty" }).click();
+  await expect(page.locator(".detail-copy").getByRole("button", { name: "Choose 3-year warranty" })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Increase quantity" }).click();
+  await expect(page.locator(".quantity-control > span")).toHaveText("2");
   await page.getByRole("button", { name: "Add to bag" }).click();
   await page.goto("/checkout");
   await page.getByRole("button", { name: "Review your order" }).click();
@@ -152,7 +155,7 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   await popup.waitForLoadState();
   const handoff = new URL(popup.url());
   expect(handoff.hostname).toBe("wa.me");
-  expect(handoff.pathname).toBe("/917907344474");
+  expect(handoff.pathname).toBe(`/${defaultContactNumbers.orderNumber}`);
   const message = handoff.searchParams.get("text")!;
   for (const detail of [
     "Anu Test",
@@ -177,7 +180,7 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Open WhatsApp & send" }),
-  ).toHaveAttribute("href", /wa.me\/917907344474/);
+  ).toHaveAttribute("href", new RegExp(`wa\\.me/${defaultContactNumbers.orderNumber}`));
   const reference = await page.locator(".reference-box > strong").textContent();
   await page.goto("/track");
   await page.getByLabel("Request reference").fill(reference!);
@@ -203,7 +206,7 @@ test("service enquiry prepares an honest handoff to customer care", async ({
   await page.getByRole("button", { name: "Prepare service request" }).click();
   await expect(
     page.getByRole("link", { name: "Open WhatsApp & send" }),
-  ).toHaveAttribute("href", /wa.me\/919400885633/);
+  ).toHaveAttribute("href", new RegExp(`wa\\.me/${defaultContactNumbers.careNumber}`));
   await page.getByText("Preview the message you'll share").click();
   await expect(page.locator(".request-preview pre")).toContainText(
     "TEST-MODEL",
@@ -237,13 +240,13 @@ test("mobile navigation and all public layouts fit a small screen", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Open menu" }).click();
+  await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
   await page
     .locator(".main-nav")
     .getByRole("link", { name: "Our products" })
     .click();
   await expect(page).toHaveURL(/products/);
-  await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     for (const route of [

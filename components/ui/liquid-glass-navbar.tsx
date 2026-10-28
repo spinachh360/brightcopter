@@ -24,6 +24,8 @@ export type NimbusFx =
 
 export type LiquidNavItem = {
   label: string;
+  /** Optional shorter visible label for narrow layouts; accessible name stays complete. */
+  shortLabel?: string;
   href?: string;
   icon?: React.ReactNode;
   /** the little scene the icon plays when tapped */
@@ -71,7 +73,7 @@ const DEFAULT_ITEMS: LiquidNavItem[] = [
 const PAD = 14; // canvas bleed around the pill, for shadows and ripples
 
 /* ---------- styles ---------- */
-const NIMBUS_CSS = `
+export const NIMBUS_CSS = `
 .nimbus-nav{--n-tint:rgba(255,255,255,.14);--n-fg:#0B132B;--n-fg-soft:rgba(11,19,43,.6);--n-rim:rgba(255,255,255,.7);
   position:relative;display:inline-flex;align-items:center;gap:2px;padding:6px;border-radius:999px;isolation:isolate;
   font-family:ui-sans-serif,-apple-system,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -91,6 +93,7 @@ const NIMBUS_CSS = `
   font-family:inherit;font-weight:500;font-size:14px;line-height:1;letter-spacing:-.01em;text-decoration:none;cursor:pointer;transition:color .25s}
 .nimbus-item:hover,.nimbus-item[aria-current="page"]{color:var(--n-fg)}
 .nimbus-item:focus-visible{outline:2px solid var(--n-focus,#d81830);outline-offset:2px}
+.nimbus-label-short{display:none}
 .nv-ico{position:relative;display:inline-flex;flex:none}
 .nv-ico svg{transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
 .nimbus-item[aria-current="page"] .nv-ico svg{transform:translateY(-1px) scale(1.08)}
@@ -485,9 +488,9 @@ export function LiquidNavbar({
       step(dt, now);
       draw();
       const busy =
-        s.moving || s.rips.length || s.sats.length || s.mouse.s > 0.01;
-      // ambient water keeps moving while visible; reduced-motion only animates on change
-      if (s.visible && (!s.reduce || busy)) s.raf = requestAnimationFrame(tick);
+        s.moving || s.rips.length || s.sats.length || (s.glc && s.mouse.s > 0.01);
+      // The CSS drop rests when idle. Ambient water is desktop-only.
+      if (s.visible && ((s.glc && !s.reduce) || busy)) s.raf = requestAnimationFrame(tick);
       else s.raf = 0;
     };
     s.raf = requestAnimationFrame(tick);
@@ -536,14 +539,22 @@ export function LiquidNavbar({
   }, [current, loop]);
 
   React.useEffect(() => {
-    setRefract(supportsRefraction());
     const s = st.current;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const lightweight = window.matchMedia("(max-width: 900px), (pointer: coarse)");
     s.reduce = media.matches;
     const canvas = canvasRef.current;
-    const resource = canvas ? initGL(canvas) : null;
-    s.glc = resource;
-    setGl(resource ? "on" : "off");
+    let resource: GLContext | null = null;
+    const syncRendering = () => {
+      resource?.dispose();
+      // Keep spring selection and icon feedback on phones without a continuous shader.
+      resource = canvas && !lightweight.matches ? initGL(canvas) : null;
+      s.glc = resource;
+      setGl(resource ? "on" : "off");
+      setRefract(!lightweight.matches && supportsRefraction());
+      loop();
+    };
+    syncRendering();
     const syncVisibility = () => {
       s.visible = s.inViewport && document.visibilityState === "visible";
       if (s.visible) loop();
@@ -562,12 +573,7 @@ export function LiquidNavbar({
       setGl("off");
       draw();
     };
-    const restored = () => {
-      resource?.dispose();
-      s.glc = canvas ? initGL(canvas) : null;
-      setGl(s.glc ? "on" : "off");
-      loop();
-    };
+    const restored = () => syncRendering();
     canvas?.addEventListener("webglcontextlost", lost);
     canvas?.addEventListener("webglcontextrestored", restored);
     const observer = new IntersectionObserver(([entry]) => {
@@ -577,12 +583,14 @@ export function LiquidNavbar({
     if (navRef.current) observer.observe(navRef.current);
     document.addEventListener("visibilitychange", syncVisibility);
     media.addEventListener("change", preferenceChanged);
+    lightweight.addEventListener("change", syncRendering);
     return () => {
       canvas?.removeEventListener("webglcontextlost", lost);
       canvas?.removeEventListener("webglcontextrestored", restored);
       observer.disconnect();
       document.removeEventListener("visibilitychange", syncVisibility);
       media.removeEventListener("change", preferenceChanged);
+      lightweight.removeEventListener("change", syncRendering);
       cancelAnimationFrame(s.raf);
       s.raf = 0;
       s.glc?.dispose();
@@ -748,7 +756,7 @@ export function LiquidNavbar({
         } as React.CSSProperties
       }
     >
-      <style dangerouslySetInnerHTML={{ __html: NIMBUS_CSS }} />
+      <style>{NIMBUS_CSS}</style>
       <svg
         width="0"
         height="0"
@@ -808,7 +816,7 @@ export function LiquidNavbar({
                 {it.icon}
               </span>
             )}
-            <span className="nimbus-label">{it.label}</span>
+            <span className="nimbus-label">{it.shortLabel ? <><span className="nimbus-label-full">{it.label}</span><span className="nimbus-label-short">{it.shortLabel}</span></> : it.label}</span>
           </>
         );
         if (it.href) {
