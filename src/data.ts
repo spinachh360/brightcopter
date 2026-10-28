@@ -147,7 +147,7 @@ export type PreparedRequest = {
 export function readStorage<T>(key: string, fallback: T): T {
   try {
     const value = localStorage.getItem(key);
-    return value ? (JSON.parse(value) as T) : fallback;
+    return value && value.length <= 1_000_000 ? (JSON.parse(value) as T) : fallback;
   } catch {
     return fallback;
   }
@@ -161,20 +161,37 @@ export function writeStorage(key: string, value: unknown) {
   }
 }
 export function createReference(prefix: string) {
-  return `BC-${prefix}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+  const bytes = new Uint8Array(4);
+  globalThis.crypto.getRandomValues(bytes);
+  return `BC-${prefix}-${Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("").toUpperCase()}`;
 }
 
+export function isPreparedRequest(value: unknown): value is PreparedRequest {
+  if (!value || typeof value !== "object") return false;
+  const r = value as Partial<PreparedRequest>;
+  return typeof r.reference === "string" && /^BC-(ORD|SVC|BIZ|REG)-[A-Z0-9-]{6,40}$/.test(r.reference)
+    && typeof r.name === "string" && r.name.length <= 100
+    && typeof r.message === "string" && r.message.length <= 50_000
+    && typeof r.date === "string" && Number.isFinite(Date.parse(r.date))
+    && Date.parse(r.date) > Date.now() - 7 * 24 * 60 * 60 * 1000 && Date.parse(r.date) <= Date.now() + 300_000
+    && typeof r.type === "string" && ["order", "service", "dealer", "registration"].includes(r.type);
+}
 export function getRequests(): PreparedRequest[] {
   const stored = readStorage<unknown>("bc-requests", []);
   if (!Array.isArray(stored)) return [];
-  return stored.filter(
-    (r): r is PreparedRequest =>
-      !!r &&
-      typeof r === "object" &&
-      typeof r.reference === "string" &&
-      typeof r.name === "string" &&
-      typeof r.message === "string" &&
-      typeof r.date === "string" &&
-      ["order", "service", "dealer", "registration"].includes(r.type),
-  );
+  const valid = stored.filter(isPreparedRequest).slice(0, 30);
+  if (valid.length !== stored.length) writeStorage("bc-requests", valid);
+  return valid;
+}
+export function parseCart(stored: unknown): CartItem[] {
+  if (!Array.isArray(stored)) return [];
+  const valid = new Map<string, CartItem>();
+  for (const item of stored.slice(0, 200)) {
+    if (!item || typeof item !== "object" || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 20) continue;
+    if (!products.some(p => p.id === item.id && p.price && p.colors.includes(item.finish))) continue;
+    const key = `${item.id}:${item.finish}`;
+    const previous = valid.get(key);
+    valid.set(key, {id: item.id, finish: item.finish, quantity: Math.min(20, (previous?.quantity || 0) + item.quantity)});
+  }
+  return [...valid.values()];
 }

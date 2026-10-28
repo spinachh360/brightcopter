@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[context.deploy-preview.environment]
+  # Deployment previews must not be indexed under a temporary hostname.
+  ROBOTS_PREVIEW = "true"
+
+[context.branch-deploy.environment]
+  ROBOTS_PREVIEW = "true"

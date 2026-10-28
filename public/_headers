@@ -1,0 +1,12 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-78l99ND/NpmsErxqmi+v7WqZNp4UmUTuEoUswhfiUVM=' 'sha256-3CRkvBHSWFehnOOEHbN1PtvHsfg8eyDuloWIPBRWa14=' 'sha256-tLzj92CWAeYiJLGyKCqOcyQANd/Xs/3adb6AMH4FLF4=' 'sha256-4daLsyJQFyoeY4aOAOAgzkkP/1REVquJLPQQNMdOcBM=' 'sha256-1Y66M5PIo9e/dckSDKi3joB3cy+2EU68Ch8yGt6nGqQ=' 'sha256-2C+M7fRqUdb1stH26wzPqXQJG2IsCNL7IZaQQS12XtY=' 'sha256-pf0rmblYlKIKX7DDaJ5EOeevpB8Msw+qvf4UvPgg3vA=' 'sha256-8+FuRzhiK/tC50aGKsUPcQg/P7RZoUTsk2Qx2u7S+GA=' 'sha256-LY/pbNhBjl9vbQagdQrCCvyiS/aUNCB+uIK93gAP9k8=' 'sha256-TptCWRswzHCdIVfn3S+YqgKLVM90Ve6Da3ymX9ODFwE=' 'sha256-1QGlilcShv+oRBpXx5kCPhOSbM8B3Nk48fKcUknqvZs=' 'sha256-k8aC7M1Lc1mSnT88DqgKUDF4RZatnMUlVoLbXI7wcSM=' 'sha256-DwA/IigV0/PmX91zLBcoIakPBQEKyaDK1vGvP+R3STU=' 'sha256-OeoNMfs4zXRYsnFHXDNeeL3toPwvyJvIZNB9ksoRzUw=' 'sha256-JUDNL4E3JcPINTGJ1W2PmpctoUNK3wzoyu0CJai0TwI=' 'sha256-QAaddXwqM/dGSpt+uWvHChvhxVKfE3DAifX+0YSoQ+E=' 'sha256-tGpvZe5Z3nqcplJoSnN+ZQbw1LsAcTsc6T6u+1REdVQ=' 'sha256-fBhS9+jH/ojQfZNk3qs3+MtVNlhzHZJTAdxW/OVoDsg=' 'sha256-teak7OYRfC5CHs2mXxbnTXvCbZkqxpcCu1LWdNk3wb0=' 'sha256-m0Ms2g8Q8NyZa95iNiI+pbCQCJvtcPC0mmxJ3MVaIRo=' 'sha256-Olovyy1LBt8j4rJxJQiXxhEkNxJROzJN8R5+kSUiEYs=' 'sha256-x2wbZdvXM3C8YVBIouBA2juH5KV4BhGFMWkLzZfPVgs=' 'sha256-NMHurCF1Sldy2PV3+S7L10dWEBAcfhq2m5i9O5jkrDA=' 'sha256-k/8kSxQAFk45uWBHa6fejQ5SAZ5f0QhdKDBxc4iAzYM=' 'sha256-zZpTpG/CyeZ3fDnmLj6Tt+RZCVWdElgKHCAJEEeqLIo='; style-src 'self' 'sha256-LpEi1kxycE2Cy+VREuT47WsbjeT1Ai2CwZxg+NlwnO8='; style-src-elem 'self' 'sha256-LpEi1kxycE2Cy+VREuT47WsbjeT1Ai2CwZxg+NlwnO8='; style-src-attr 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Cache-Control: no-cache
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

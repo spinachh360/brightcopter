@@ -143,3 +143,15 @@ Run `node scripts/export-preview.mjs` to export a self-contained HTML preview to
 The Playwright suite checks liquid navigation and browser history, keyboard interaction, WebGL fallback and responsive navbar layout, catalogue filtering, hero-finish previews, selected finishes carried into product details, keyboard product tabs, finish/quantity persistence, comparison, the complete WhatsApp order payload and destination, service enquiries, malformed stored data, mobile layouts and checkout/edit focus, floating-path animation and reduced-motion behavior, and automated WCAG A/AA checks for the homepage and checkout. Contrast checks wait for finite page-entry transitions to finish so the scan measures the settled interface. Automated accessibility checks are useful coverage and do not replace manual testing.
 
 Run `npm run preview:test` to rebuild the portable HTML and check it in a normal browser, an opaque sandbox frame, a script-blocked frame and a browser with JavaScript disabled. Interactive cases verify the logo, product navigation, bag and checkout entry; blocked cases must display opening instructions.
+
+## Technical files, policies and security
+
+The canonical origin is configured as `https://brightcopter.netlify.com`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
+
+The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, per-route static HTML with Open Graph/Twitter metadata, canonical links and JSON-LD, and Netlify security headers/routing. `public/` contains an ICO converted from the existing SVG favicon, an Apple icon and the original logo as the social image. Sitemap/robots snapshots in `public/` are refreshed from the same generator; the build always regenerates the deployed versions.
+
+The footer links directly to `/return-policy` and `/terms-and-conditions`. Both use original Bright Copter wording, semantic sections and contents links, with static HTML in the build. Legacy policy links redirect. Returns guidance explains assessment and staff confirmation without inventing a return window, fee or refund deadline. Statutory consumer rights remain protected. Privacy and warranty pages describe the actual local-storage and WhatsApp flow.
+
+There are no private frontend credentials or optional tracking integrations. Cookie consent is therefore not displayed. See [SECURITY.md](SECURITY.md) for the environment allowlist, Netlify CSP/headers, input validation, client spam controls, error/success states, retention, future API CORS/rate-limit template, limitations and verification commands. The API template is inactive and does not accept orders.
+
+To refresh the complete review ZIPs after building/exporting, run `npm run package:project` (Python 3 and Git required). It packages Git-listed source, excludes real environment files and symlinks, and includes the current built site and portable preview.

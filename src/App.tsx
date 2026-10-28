@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, createContext, useContext } from "r
 import type { FormEvent, KeyboardEvent, ReactNode } from "react";
 import {
   Link,
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -51,6 +52,10 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ProductPhoto from "./ProductPhoto";
+import { LegalPage } from "./LegalPage";
+import { Metadata } from "./Metadata";
+import { useFormGuard } from "./FormGuard";
+import { plainText, phoneNumber, validateOrder } from "../shared/validation";
 import { brandLogoUrl } from "./brand";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import type { LiquidNavItem } from "@/components/ui/liquid-glass-navbar";
@@ -68,6 +73,8 @@ import {
   mapLink,
   createReference,
   getRequests,
+  isPreparedRequest,
+  parseCart,
 } from "./data";
 import type { Product, CartItem, PreparedRequest } from "./data";
 
@@ -410,8 +417,9 @@ function Footer() {
           </span>
           <div>
             <Link to="/policies/privacy">Privacy</Link>
-            <Link to="/policies/terms">Terms</Link>
-            <Link to="/policies/warranty">Warranty & returns</Link>
+            <Link to="/terms-and-conditions">Terms & conditions</Link>
+            <Link to="/return-policy">Returns & refunds</Link>
+            <Link to="/policies/warranty">Warranty</Link>
           </div>
           <span>
             Made for the everyday. <Heart size={12} />
@@ -1460,8 +1468,9 @@ function DownloadRequest({ request }: { request: PreparedRequest }) {
 }
 
 function Checkout() {
-  const { cart, clear, notify } = useStore();
+  const { cart, clear } = useStore();
   const navigate = useNavigate();
+  const guard = useFormGuard("order");
   const [step, setStep] = useState(1);
   const previousStep = useRef(step);
   const [form, setForm] = useState({
@@ -1501,48 +1510,45 @@ function Checkout() {
       });
     }
   }, [step]);
-  function submit(e: FormEvent) {
+  function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (step === 1) {
-      if (
-        !form.name.trim() ||
-        !form.address.trim() ||
-        !form.city.trim() ||
-        !form.state.trim()
-      ) {
-        notify("Please complete your name and delivery address.");
-        return;
-      }
-      if (form.phone.replace(/\D/g, "").length < 10) {
-        notify("Please enter a valid mobile number.");
-        return;
-      }
-      setStep(2);
-      return;
-    }
+    guard.setError("");
+    if (!guard.check(e.currentTarget)) return;
+    let details;
+    try { details = validateOrder(form); }
+    catch (error) { guard.setError(error instanceof Error ? error.message : "Please check your delivery details."); return; }
+    setForm(details);
+    if (step === 1) { setStep(2); return; }
+    if (!guard.check(e.currentTarget, true)) return;
+    try {
     const ref = createReference("ORD");
-    const message = `Hello Bright Copter! I would like to place an order.\n\nORDER REQUEST: ${ref}\n\nCUSTOMER DETAILS\nName: ${form.name.trim()}\nPhone: ${form.phone.trim()}${form.email ? `\nEmail: ${form.email.trim()}` : ""}\n\nMY SELECTION\n${cart
+    const message = `Hello Bright Copter! I would like to place an order.\n\nORDER REQUEST: ${ref}\n\nCUSTOMER DETAILS\nName: ${details.name.trim()}\nPhone: ${details.phone.trim()}${details.email ? `\nEmail: ${details.email.trim()}` : ""}\n\nMY SELECTION\n${cart
       .map((item) => {
         const product = products.find((p) => p.id === item.id)!;
         return `• ${product.name} — ${item.finish}\n  ${product.warranty}-year warranty option × ${item.quantity}\n  Unit price: ${money(product.price!)}\n  Indicative line total: ${money(product.price! * item.quantity)}`;
       })
       .join(
         "\n",
-      )}\n\nIndicative product subtotal: ${money(total)}\n(Taxes, delivery, stock and actual model to be confirmed.)\n\nDELIVERY ADDRESS\n${form.address.trim()}${form.landmark ? `\nLandmark: ${form.landmark.trim()}` : ""}\n${form.city.trim()}, ${form.state.trim()} — ${form.pin}\n\nPAYMENT PREFERENCE\n${payment}\nI understand your staff will confirm the available payment method and payment instructions on WhatsApp. No payment has been made through the website.${form.note ? `\n\nADDITIONAL NOTES\n${form.note.trim()}` : ""}\n\nPlease confirm the actual model, finish, warranty terms, availability, final total and delivery arrangements. Thank you!`;
+      )}\n\nIndicative product subtotal: ${money(total)}\n(Taxes, delivery, stock and actual model to be confirmed.)\n\nDELIVERY ADDRESS\n${details.address.trim()}${details.landmark ? `\nLandmark: ${details.landmark.trim()}` : ""}\n${details.city.trim()}, ${details.state.trim()} — ${details.pin}\n\nPAYMENT PREFERENCE\n${payment}\nI understand your staff will confirm the available payment method and payment instructions on WhatsApp. No payment has been made through the website.${details.note ? `\n\nADDITIONAL NOTES\n${details.note.trim()}` : ""}\n\nPlease confirm the actual model, finish, warranty terms, availability, final total and delivery arrangements. Thank you!`;
     const request: PreparedRequest = {
       reference: ref,
       type: "order",
-      name: form.name.trim(),
+      name: details.name.trim(),
       message,
       date: new Date().toISOString(),
       total,
     };
     const saved = saveRequest(request);
-    window.open(orderWhatsapp(message), "_blank", "noopener,noreferrer");
+    // A blocked app handoff still leaves the saved request and fallback link.
+    try { window.open(orderWhatsapp(message), "_blank", "noopener,noreferrer"); } catch { /* Confirmation provides the handoff link. */ }
     clear();
     navigate("/order/confirmation", {
       state: { reference: ref, request, saved, whatsappOpened: true },
     });
+    } catch {
+      guard.release();
+      guard.setError("We could not prepare your order. Please try again or contact customer care.");
+    }
   }
   if (!cart.length)
     return (
@@ -1569,6 +1575,7 @@ function Checkout() {
       />
       <section className="container checkout-layout">
         <form className="checkout-form glass" onSubmit={submit}>
+          {guard.fields}
           <ol className="checkout-progress" aria-label="Order progress">
             <li className={cx(step === 1 && "active", step > 1 && "complete")} aria-current={step === 1 ? "step" : undefined}>
               <span>{step > 1 ? <Check size={14} /> : "01"}</span><div>Details<small>Address & payment</small></div>
@@ -1836,7 +1843,7 @@ function Confirmation() {
   const [params] = useSearchParams();
   const ref = location.state?.reference || params.get("ref");
   const request: PreparedRequest | undefined =
-    location.state?.request || getRequests().find((r) => r.reference === ref);
+    (isPreparedRequest(location.state?.request) ? location.state.request : undefined) || getRequests().find((r) => r.reference === ref);
   return (
     <section className="container confirmation-section">
       <div className="confirmation-card glass">
@@ -2096,11 +2103,22 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
     kind === "service" ? "Ceiling fan support" : "Bulk purchase",
   );
   const [consent, setConsent] = useState(false);
+  const guard = useFormGuard(kind);
   const isService = kind === "service";
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    guard.setError("");
+    if (!consent || !guard.check(e.currentTarget)) return;
     const form = new FormData(e.currentTarget);
-    if (!consent) return;
+    try {
+      for (const [key, max] of Object.entries({name:100, phone:18, model:100, purchase:10, business:150, quantity:6, location:150, details:1500}))
+        if (form.has(key)) form.set(key, plainText(String(form.get(key) || ""), max, key === "details"));
+      form.set("phone", phoneNumber(form.get("phone")));
+      if (!form.get("name") || !form.get("location") || !form.get("details")) throw new Error("Please complete your name, location and enquiry details.");
+      if (form.get("quantity") && (!/^\d+$/.test(String(form.get("quantity"))) || Number(form.get("quantity")) < 1 || Number(form.get("quantity")) > 100000)) throw new Error("Please enter a quantity between 1 and 100,000.");
+    } catch (error) { guard.setError(error instanceof Error ? error.message : "Please check your enquiry details."); return; }
+    if (!guard.check(e.currentTarget, true)) return;
+    try {
     const ref = createReference(isService ? "SVC" : "BIZ");
     const name = String(form.get("name"));
     const message = `Hello Bright Copter, I would like to make a ${isService ? "service" : "business"} enquiry.\nReference: ${ref}\nName: ${name}\nPhone: ${form.get("phone")}\nEnquiry: ${type}\n${isService ? `Product/model: ${form.get("model") || "Not known"}\nPurchase date: ${form.get("purchase") || "Not available"}` : `Business: ${form.get("business") || "Not specified"}\nApproximate quantity: ${form.get("quantity") || "To discuss"}`}\nLocation: ${form.get("location")}\nDetails: ${form.get("details")}\nPlease confirm the next step${isService ? ", service coverage, warranty eligibility and any applicable charges" : ", availability and quotation"}.`;
@@ -2115,10 +2133,15 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
     navigate("/order/confirmation", {
       state: { reference: ref, request, saved },
     });
+    } catch {
+      guard.release();
+      guard.setError("We could not prepare your enquiry. Please try again or call customer care.");
+    }
   }
   return (
     <div className="enquiry-layout">
       <form onSubmit={submit} className="enquiry-form glass">
+        {guard.fields}
         <h2>
           {isService
             ? "A little care starts here."
@@ -2569,6 +2592,7 @@ function Contact() {
 function Policies() {
   const location = useLocation();
   const kind = location.pathname.split("/").pop();
+  if (!["privacy", "warranty"].includes(kind || "")) return <NotFound />;
   const title =
     kind === "privacy"
       ? "Your information, with care."
@@ -2588,25 +2612,25 @@ function Policies() {
             <h2>What happens to your information</h2>
             <p>
               Your bag and prepared requests are stored in this browser using
-              local storage. Request details can include your name, contact
+              local storage. Up to 30 prepared requests are kept; requests older than seven days are removed when saved requests are next accessed. They may remain in browser storage until then or until you clear them. Request details can include your name, contact
               information, delivery address and the message you enter.
             </p>
             <p>
-              Preparing a request does not send that information to Bright
-              Copter. Choosing the WhatsApp handoff opens a prepared message.
-              Sending it shares the information through WhatsApp and with the
-              business, subject to those services' applicable terms.
+              Preparing a request does not send that information to Bright Copter. Choosing the WhatsApp handoff transfers the prepared message to WhatsApp. Tapping Send there shares it with the business, subject to WhatsApp’s applicable terms and privacy practices.
             </p>
             <p>
               There is no payment collection or customer account on this
               website. Do not enter card numbers, bank credentials or sensitive
               documents in enquiry messages.
             </p>
+            <h3>Website hosting</h3><p>The hosting provider may process routine request information, such as IP address, browser information and requested pages, for website delivery and security. This website does not submit your form details to an application backend.</p>
+            <h3>Cookies and visitor analytics</h3>
+            <p>No optional analytics, advertising pixels or tracking cookies are installed. Essential browser storage supports the bag, comparison choices and saved requests. Session storage is used for basic repeat-submission controls. No optional tracking starts without a separate consent-based integration.</p>
             <h3>Your local saved data</h3>
             <p>
               You can remove saved requests from this device using the action
               below. Clearing browser site data also removes saved requests and
-              the shopping bag.
+              the shopping bag. Anyone with access to this browser may be able to read these locally saved details.
             </p>
             <ClearData />
           </>
@@ -2715,12 +2739,14 @@ function NotFound() {
   return (
     <section className="container empty-state glass not-found">
       <Wind size={44} />
+      <p className="not-found-code" aria-label="Error 404">404</p>
       <p className="eyebrow">A LITTLE DETOUR</p>
       <h1>Let’s find your way home.</h1>
       <p>We couldn't find that page, but there's plenty more to explore.</p>
       <Link className="button" to="/">
         Back to Bright Copter <ArrowRight size={17} />
       </Link>
+      <Link className="button button-outline" to="/products">Explore ceiling fans</Link>
     </section>
   );
 }
@@ -2729,37 +2755,13 @@ function RouteEffects() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    const page =
-      location.pathname === "/"
-        ? "Comfort, controlled."
-        : location.pathname.startsWith("/product/")
-          ? "Explore your everyday upgrade"
-          : location.pathname.includes("support")
-            ? "Product care & support"
-            : location.pathname.includes("cart")
-              ? "Your shopping bag"
-              : "Everyday comfort";
-    document.title = `Bright Copter — ${page}`;
   }, [location.pathname]);
   return null;
 }
 
 export default function App() {
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const raw = readStorage<unknown>("bc-cart", []);
-    return Array.isArray(raw)
-      ? raw.filter(
-          (i): i is CartItem =>
-            !!i &&
-            typeof i === "object" &&
-            products.some(
-              (p) => p.id === i.id && !!p.price && p.colors.includes(i.finish),
-            ) &&
-            Number.isInteger(i.quantity) &&
-            i.quantity > 0 &&
-            i.quantity <= 20,
-        )
-      : [];
+    return parseCart(readStorage<unknown>("bc-cart", []));
   });
   const [compare, setCompare] = useState<string[]>(() => {
     const raw = readStorage<unknown>("bc-compare", []);
@@ -2833,6 +2835,7 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
+      <Metadata />
       <RouteEffects />
       <Header />
       <main id="main-content" className="route-content" key={location.pathname}>
@@ -2849,6 +2852,10 @@ export default function App() {
           <Route path="/track" element={<Track />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/return-policy" element={<LegalPage path="/return-policy" />} />
+          <Route path="/terms-and-conditions" element={<LegalPage path="/terms-and-conditions" />} />
+          <Route path="/policies/terms" element={<Navigate to="/terms-and-conditions" replace />} />
+          <Route path="/policies/returns" element={<Navigate to="/return-policy" replace />} />
           <Route path="/policies/:kind" element={<Policies />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

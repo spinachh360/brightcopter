@@ -71,7 +71,7 @@ const DEFAULT_ITEMS: LiquidNavItem[] = [
 const PAD = 14; // canvas bleed around the pill, for shadows and ripples
 
 /* ---------- styles ---------- */
-const NIMBUS_CSS = `
+export const NIMBUS_CSS = `
 .nimbus-nav{--n-tint:rgba(255,255,255,.14);--n-fg:#0B132B;--n-fg-soft:rgba(11,19,43,.6);--n-rim:rgba(255,255,255,.7);
   position:relative;display:inline-flex;align-items:center;gap:2px;padding:6px;border-radius:999px;isolation:isolate;
   font-family:ui-sans-serif,-apple-system,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -748,7 +748,7 @@ export function LiquidNavbar({
         } as React.CSSProperties
       }
     >
-      <style dangerouslySetInnerHTML={{ __html: NIMBUS_CSS }} />
+      <style>{NIMBUS_CSS}</style>
       <svg
         width="0"
         height="0"

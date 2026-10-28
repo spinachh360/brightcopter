@@ -1088,3 +1088,20 @@ p { line-height: 1.75; }
 .warranty-prices p { font-size: 13px; line-height: 1.9; color: var(--neutral); margin-top: 8px; }
 /* Product names must wrap in the comparison picker on narrow screens. */
 .compare-selection .chip { white-space: normal; text-align: left; min-width: 0; }
+.form-trap { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.form-error { border: 1px solid #d7909e; background: #fff0f3; color: #8e1830; padding: 15px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; }
+.runtime-error { margin-block: 60px; }
+.runtime-error .button, .not-found .button { margin: 20px 8px 0; }
+.not-found-code { font: 600 clamp(76px,12vw,140px)/1 "Manrope Variable",sans-serif; letter-spacing: -5px; color: var(--red); margin-bottom: 24px; }
+.legal-page { margin-block: 48px 70px; }
+.legal-page h1 { font-size: clamp(32px,4vw,46px); font-weight: 550; letter-spacing: -1.5px; line-height: 1.2; margin-top: 18px; }
+.legal-page header > p:last-child { color: var(--neutral); }
+.legal-page > section { padding-top: 30px; }
+.legal-page > section h2 { scroll-margin-top: 135px; font-size: 23px; margin-bottom: 16px; }
+.policy-contents { margin-block: 26px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff8; }
+.policy-contents h2 { font-size: 18px; margin-bottom: 12px; }
+.policy-contents ol { padding-left: 0; list-style: none; margin: 0; }
+.policy-contents a { display: block; padding-block: 7px; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.legal-links { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; border-top: 1px solid var(--line); margin-top: 32px; padding-top: 24px; font-size: 13px; }
+.legal-links > a:not(.button) { text-decoration: underline; text-underline-offset: 4px; }
+@media(max-width:640px) { .legal-page { margin-block: 28px 45px; } .footer-bottom > div { row-gap: 12px; } }

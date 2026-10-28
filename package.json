@@ -4,12 +4,17 @@
   "description": "Bright Copter appliance storefront and customer enquiry experience",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/build-technical.mjs",
     "preview": "vite preview --host 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
     "preview:export": "node scripts/export-preview.mjs",
-    "preview:test": "npm run preview:export && node scripts/verify-preview.mjs"
+    "preview:test": "npm run preview:export && node scripts/verify-preview.mjs",
+    "test:server": "node --test server/*.test.mjs",
+    "security:check": "node scripts/check-security.mjs",
+    "server:example": "node --env-file-if-exists=.env.server server/example.mjs",
+    "technical:test": "node scripts/verify-technical.mjs",
+    "package:project": "python3 scripts/package-project.py"
   },
   "repository": {
     "type": "git",
