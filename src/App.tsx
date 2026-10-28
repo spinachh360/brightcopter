@@ -504,7 +504,7 @@ function Home() {
           {
             icon: ShieldCheck,
             title: "Reassurance, built in",
-            sub: "Base model: 2 or 3 years",
+            sub: "Warranty options up to 7 years",
           },
           {
             icon: Wind,
@@ -559,7 +559,7 @@ function Home() {
           ))}
         </div>
         {!homeProducts.length && <div className="empty-state glass"><Fan size={32} /><h2>{category}</h2><p>Photos and pricing will be added soon.</p></div>}
-        <p className="catalogue-note">Base model: 2-year warranty ₹2,350 · 3-year warranty ₹2,550. Our team confirms availability, delivery and complete warranty terms on WhatsApp.</p>
+        <p className="catalogue-note">Choose your model and warranty to see its price. Our team confirms availability, delivery and complete warranty terms on WhatsApp.</p>
       </section>
       <section className="story-panel container">
         <div className="story-art">
@@ -709,7 +709,7 @@ function ProductCard({ product: initialProduct }: { product: Product }) {
         <Link to={detailUrl} aria-label={`View ${product.name}`}>
           <ProductPhoto product={product} finish={finish} />
         </Link>
-        <div className="finish-dots" aria-label={`${product.name} finish`}>
+        {product.colors.length > 1 && <div className="finish-dots" aria-label={`${product.name} finish`}>
           {product.colors.map((color) => (
             <button
               key={color}
@@ -721,7 +721,7 @@ function ProductCard({ product: initialProduct }: { product: Product }) {
               style={{ "--finish": finishes[color] } as React.CSSProperties}
             />
           ))}
-        </div>
+        </div>}
       </div>
       <div className="product-card-info">
         <div>
@@ -873,7 +873,7 @@ function Products() {
             </div>
           )}
           <p className="catalogue-note">
-            Base model photos, colours and warranty prices are supplied by Bright Copter. Availability, delivery and complete warranty terms are confirmed by our team before an order is accepted.
+            Product photos, colours and warranty prices are supplied by Bright Copter. Availability, delivery and complete warranty terms are confirmed by our team before an order is accepted.
           </p>
         </div>
       </section>
@@ -883,7 +883,7 @@ function Products() {
 }
 
 function WarrantyChoices({ product, onChange }: { product: Product; onChange: (product: Product) => void }) {
-  return <fieldset className="warranty-picker">
+  return <fieldset className="warranty-picker" aria-label={`${product.name} warranty options`}>
     <legend>Choose your warranty</legend>
     <div>{productOptions(product).map(option => <button type="button" key={option.id}
       aria-label={`Choose ${option.warranty}-year warranty`} aria-pressed={option.id === product.id}
@@ -891,6 +891,13 @@ function WarrantyChoices({ product, onChange }: { product: Product; onChange: (p
       <span><ShieldCheck size={15} /> {option.warranty} years</span><strong>{money(option.price!)}</strong>
     </button>)}</div>
   </fieldset>;
+}
+
+function WarrantyPrices() {
+  return <div className="warranty-prices">{modelProducts.map(model => <section key={model.modelId}>
+    <h3>{model.name}</h3>
+    <p>{productOptions(model).map(option => `${option.warranty}-year warranty: ${money(option.price!)}`).join(" · ")}</p>
+  </section>)}</div>;
 }
 
 function moveTabFocus(event: KeyboardEvent<HTMLDivElement>) {
@@ -976,7 +983,7 @@ function Detail() {
               </Link>
             </div>
           )}
-          <fieldset className="finish-picker">
+          {product.colors.length > 1 ? <fieldset className="finish-picker">
             <legend>
               Choose your finish <span>{selectedFinish}</span>
             </legend>
@@ -998,7 +1005,7 @@ function Detail() {
                 </button>
               ))}
             </div>
-          </fieldset>
+          </fieldset> : <p className="fixed-finish">Finish: <strong>{selectedFinish}</strong></p>}
           {product.price && (
             <div className="purchase-row">
               <Quantity
@@ -1112,7 +1119,7 @@ function Detail() {
               <h2>Make room for everyday comfort.</h2>
               <p>{product.description}</p>
               <p>
-                Choose from the four supplied colours and two warranty options. Our team can confirm specifications, availability and delivery for your location.
+                {product.colors.length > 1 ? `Choose from ${product.colors.join(", ")}. ` : `This product has a ${product.finish} finish. `}Warranty options: {productOptions(product).map(option => `${option.warranty} years`).join(", ")}. Our team can confirm specifications, availability and delivery for your location.
               </p>
             </>
           ) : tab === "Specifications" ? (
@@ -1178,14 +1185,14 @@ function Detail() {
           )}
         </div>
       </section>
-      {modelProducts.some(p => p.category !== product.category) && <section className="section container">
+      {modelProducts.some(p => p.modelId !== product.modelId) && <section className="section container">
         <SectionTitle
           eyebrow="KEEP EXPLORING"
           title="There’s more to feel at home with."
         />
         <div className="product-grid">
           {modelProducts
-            .filter((p) => p.category !== product.category)
+            .filter((p) => p.modelId !== product.modelId)
             .slice(0, 3)
             .map((p) => (
               <ProductCard product={p} key={p.id} />
@@ -1235,12 +1242,12 @@ function Compare() {
       <PageIntro
         eyebrow="A CLOSER LOOK"
         title="Find the one for you."
-        description="Compare Base model warranty choices side by side: 2 years at ₹2,350 or 3 years at ₹2,550."
+        description="Compare Base model, Jumbohead and Jumbohead Wood warranty options and their prices side by side."
       />
       <section className="container compare-section">
         <div className="compare-selection glass">
           <GitCompareArrows size={21} />
-          <span>Choose warranty options to compare</span>
+          <span>Choose up to three warranty options to compare</span>
           {fans.map((p) => (
             <button
               key={p.id}
@@ -1317,7 +1324,7 @@ function Compare() {
           </div>
         )}
         <p className="catalogue-note">
-          These Base model options use the supplied prices and photographs. Confirm complete warranty coverage, specifications and delivery with our team.
+          These fan options use the supplied prices and photographs. Confirm complete warranty coverage, specifications and delivery with our team.
         </p>
       </section>
     </>
@@ -1517,7 +1524,7 @@ function Checkout() {
     const message = `Hello Bright Copter! I would like to place an order.\n\nORDER REQUEST: ${ref}\n\nCUSTOMER DETAILS\nName: ${form.name.trim()}\nPhone: ${form.phone.trim()}${form.email ? `\nEmail: ${form.email.trim()}` : ""}\n\nMY SELECTION\n${cart
       .map((item) => {
         const product = products.find((p) => p.id === item.id)!;
-        return `• ${product.name} — ${item.finish}\n  ${product.warranty}-year warranty option × ${item.quantity}\n  Indicative line total: ${money(product.price! * item.quantity)}`;
+        return `• ${product.name} — ${item.finish}\n  ${product.warranty}-year warranty option × ${item.quantity}\n  Unit price: ${money(product.price!)}\n  Indicative line total: ${money(product.price! * item.quantity)}`;
       })
       .join(
         "\n",
@@ -1911,7 +1918,7 @@ const faqItems = [
   },
   {
     q: "What warranty options are available?",
-    a: "The Base model offers a 2-year warranty at ₹2,350 or a 3-year warranty at ₹2,550. Covered parts, exclusions, service arrangements and model availability must be confirmed with Bright Copter before purchase.",
+    a: "Base model has 2-year and 3-year warranty choices. Jumbohead model and the separately listed Jumbohead Wood model each have 3-year, 5-year and 7-year warranty choices, with different prices for Wood. Choose a product and warranty to see the price. Confirm covered parts, exclusions and service arrangements with Bright Copter before purchase.",
   },
   {
     q: "Can you deliver to my location?",
@@ -2011,10 +2018,9 @@ function Support() {
               <IconTile icon={ShieldCheck} />
               <h2>Reassurance starts with clarity.</h2>
               <p>
-                Our Base model has 2-year and 3-year warranty options. Exact
-                coverage depends on the model and the applicable terms confirmed
-                at purchase.
+                Base model offers 2-year and 3-year warranties. Jumbohead and Jumbohead Wood offer 3-year, 5-year and 7-year warranties. Exact coverage and any extension conditions are confirmed at purchase.
               </p>
+              <WarrantyPrices />
               <h3>Before you request support</h3>
               <ul>
                 <li>
@@ -2608,7 +2614,7 @@ function Policies() {
           <>
             <h2>Confirm the details for your actual product</h2>
             <p>
-              Bright Copter supplies the Base model in Black, White, Brown and Ivory. The 2-year warranty option costs ₹2,350 and the 3-year warranty option costs ₹2,550. Product photographs and these prices are supplied by the business.
+              Bright Copter supplies Base model, Jumbohead model and the separately priced Jumbohead Wood model. Product photographs and these warranty prices are supplied by the business.
             </p>
             <p>
               Confirm the current model, features, finish, stock, full price
@@ -2617,6 +2623,7 @@ function Policies() {
               arrangements with Bright Copter before accepting a quotation or
               paying.
             </p>
+            <WarrantyPrices />
             <h3>Delivery and installation</h3>
             <p>
               Serviceability, charges and timing depend on your location and are

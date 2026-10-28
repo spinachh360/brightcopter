@@ -3,8 +3,14 @@ import white from "./assets/products/base/white.png";
 import brown from "./assets/products/base/brown.png";
 import ivory from "./assets/products/base/ivory.png";
 
+import jumboBlack from "./assets/products/jumbohead/black.png";
+import jumboWhite from "./assets/products/jumbohead/white.png";
+import jumboBrown from "./assets/products/jumbohead/brown.png";
+import jumboWood from "./assets/products/jumbohead/wood.png";
+
 export type Product = {
   id: string;
+  modelId: string;
   name: string;
   category: "Base model" | "Jumbohead model" | "Nanohead model";
   price?: number;
@@ -18,6 +24,7 @@ export type Product = {
 };
 
 const base = {
+  modelId: "base-model",
   name: "Base model",
   category: "Base model" as const,
   finish: "Black",
@@ -28,17 +35,46 @@ const base = {
   kind: "fan" as const,
 };
 
+const jumbohead = {
+  modelId: "jumbohead-model",
+  name: "Jumbohead model",
+  category: "Jumbohead model" as const,
+  finish: "Black",
+  colors: ["Black", "White", "Brown"],
+  images: { Black: jumboBlack, White: jumboWhite, Brown: jumboBrown },
+  description: "The Bright Copter Jumbohead model ceiling fan, available in Black, White and Brown. Choose a 3-year, 5-year or 7-year warranty option.",
+  tag: "Ceiling fan",
+  kind: "fan" as const,
+};
+const jumboheadWood = {
+  modelId: "jumbohead-wood-model",
+  name: "Jumbohead Wood model",
+  category: "Jumbohead model" as const,
+  finish: "Wood",
+  colors: ["Wood"],
+  images: { Wood: jumboWood },
+  description: "The Bright Copter Jumbohead Wood model ceiling fan in a Wood finish. Choose a 3-year, 5-year or 7-year warranty option.",
+  tag: "Wood finish",
+  kind: "fan" as const,
+};
+
 // Each warranty has a stable variant ID so different warranties remain separate
 // bag lines and the chosen price is used throughout checkout and WhatsApp.
 export const products: Product[] = [
   { ...base, id: "base-model-2-year", warranty: 2, price: 2350 },
   { ...base, id: "base-model-3-year", warranty: 3, price: 2550 },
+  { ...jumbohead, id: "jumbohead-model-3-year", warranty: 3, price: 3550 },
+  { ...jumbohead, id: "jumbohead-model-5-year", warranty: 5, price: 3750 },
+  { ...jumbohead, id: "jumbohead-model-7-year", warranty: 7, price: 4300 },
+  { ...jumboheadWood, id: "jumbohead-wood-model-3-year", warranty: 3, price: 3950 },
+  { ...jumboheadWood, id: "jumbohead-wood-model-5-year", warranty: 5, price: 4150 },
+  { ...jumboheadWood, id: "jumbohead-wood-model-7-year", warranty: 7, price: 4700 },
 ];
 export const modelProducts = products.filter(
-  (product, index) => products.findIndex(p => p.category === product.category) === index,
+  (product, index) => products.findIndex(p => p.modelId === product.modelId) === index,
 );
 export const productOptions = (product: Product) =>
-  products.filter(p => p.category === product.category);
+  products.filter(p => p.modelId === product.modelId);
 
 export const money = (amount: number) =>
   new Intl.NumberFormat("en-IN", {
@@ -60,6 +96,7 @@ export const finishes: Record<string, string> = {
   White: "#f2f2f2",
   Brown: "#80451f",
   Ivory: "#e7dec2",
+  Wood: "#ab642c",
 };
 export type CartItem = { id: string; finish: string; quantity: number };
 export type PreparedRequest = {

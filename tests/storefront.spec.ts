@@ -50,10 +50,9 @@ test("catalogue filters, search and reset expose the right offerings", async ({
   page,
 }) => {
   await page.goto("/products");
-  await expect(page.locator(".product-card")).toHaveCount(1);
+  await expect(page.locator(".product-card")).toHaveCount(3);
   await page.getByRole("button", { name: "Jumbohead model", exact: true }).click();
-  await expect(page.locator(".product-card")).toHaveCount(0);
-  await expect(page.getByText("Photos and pricing will be added soon.")).toBeVisible();
+  await expect(page.locator(".product-card")).toHaveCount(2);
   await page.getByRole("button", { name: "Nanohead model", exact: true }).click();
   await expect(page.locator(".product-card")).toHaveCount(0);
   await page.getByRole("button", { name: "All fans", exact: true }).click();
@@ -64,7 +63,7 @@ test("catalogue filters, search and reset expose the right offerings", async ({
     page.getByRole("heading", { name: "No matches just yet." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Show all products" }).click();
-  await expect(page.locator(".product-card")).toHaveCount(1);
+  await expect(page.locator(".product-card")).toHaveCount(3);
 });
 
 test("finish, quantities and bag survive navigation and reload", async ({
@@ -116,7 +115,7 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
   );
   await page.goto("/product/base-model-2-year");
   await page.getByRole("button", { name: "Choose Brown" }).click();
-  await page.getByRole("button", { name: "Choose 3-year warranty" }).click();
+  await page.locator(".detail-copy").getByRole("button", { name: "Choose 3-year warranty" }).click();
   await page.getByRole("button", { name: "Increase quantity" }).click();
   await page.getByRole("button", { name: "Add to bag" }).click();
   await page.goto("/checkout");
