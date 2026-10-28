@@ -34,7 +34,6 @@ import {
   SlidersHorizontal,
   GitCompareArrows,
   Timer,
-  Lightbulb,
   Fan,
   Heart,
   Package,
@@ -47,19 +46,19 @@ import {
   Send,
   Download,
   RefreshCw,
-  CookingPot,
-  Droplets,
   ExternalLink,
   Trash2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import ProductVisual from "./ProductVisual";
+import ProductPhoto from "./ProductPhoto";
 import { brandLogoUrl } from "./brand";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import type { LiquidNavItem } from "@/components/ui/liquid-glass-navbar";
 import { FloatingPathsBackground } from "@/components/ui/floating-paths";
 import {
   products,
+  modelProducts,
+  productOptions,
   money,
   finishes,
   readStorage,
@@ -85,11 +84,10 @@ type Store = {
 const StoreContext = createContext<Store>(null!);
 const useStore = () => useContext(StoreContext);
 const categories = [
-  { label: "All products", icon: Package },
-  { label: "Fans", icon: Fan },
-  { label: "Kitchen", icon: CookingPot },
-  { label: "Water heating", icon: Droplets },
-  { label: "Lighting", icon: Lightbulb },
+  { label: "All fans", icon: Fan },
+  { label: "Base model", icon: Fan },
+  { label: "Jumbohead model", icon: Fan },
+  { label: "Nanohead model", icon: Fan },
 ];
 const cx = (...values: (string | false | undefined)[]) =>
   values.filter(Boolean).join(" ");
@@ -342,7 +340,7 @@ function Header() {
               aria-label="Search product catalogue"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search fans, mixers, lighting…"
+              placeholder="Search Base model, Jumbohead, Nanohead…"
             />
             <button className="button button-small">
               Search <ArrowRight size={16} />
@@ -371,8 +369,8 @@ function Footer() {
           </div>
           <div>
             <h3>Explore</h3>
-            <Link to="/products?category=Fans">BLDC fans</Link>
-            <Link to="/products">Home appliances</Link>
+            <Link to="/products">Ceiling fans</Link>
+            <Link to="/products">All fans</Link>
             <Link to="/compare">Compare fans</Link>
             <Link to="/about">Our story</Link>
           </div>
@@ -425,12 +423,9 @@ function Footer() {
 }
 
 function Home() {
-  const [category, setCategory] = useState("Fans");
-  const [heroFinish, setHeroFinish] = useState("Pearl white");
-  const homeProducts =
-    category === "Fans"
-      ? products.filter((p) => p.kind === "fan")
-      : products.filter((p) => p.category === category);
+  const [category, setCategory] = useState("Base model");
+  const [heroFinish, setHeroFinish] = useState("Black");
+  const homeProducts = modelProducts.filter(p => p.category === category);
   return (
     <>
       <FloatingPathsBackground
@@ -445,11 +440,11 @@ function Home() {
             </div>
             <h1>Comfort.<br />Considered.<br /><span>Yours.</span></h1>
             <p>
-              A better breeze. A brighter home. Explore BLDC fans and everyday
-              appliances, with a real team to help you choose.
+              A better breeze. A brighter home. Explore our ceiling fans,
+              with a real team to help you choose.
             </p>
             <div className="hero-cta">
-              <Link className="button" to="/products?category=Fans">
+              <Link className="button" to="/products">
                 Find your perfect fan <ArrowUpRight size={18} />
               </Link>
               <Link className="button button-outline" to="/compare">
@@ -466,17 +461,17 @@ function Home() {
             <div className="hero-orbit orbit-two" aria-hidden="true" />
             <span className="hero-stage-type" aria-hidden="true">breathe.</span>
             <div className="hero-product-caption">
-              <span>THE BLDC COLLECTION</span>
+              <span>THE BASE MODEL</span>
               <b>Less fuss. More comfort.</b>
             </div>
             <span className="hero-edition"><Fan size={16} /> Made for your everyday</span>
             <div className="hero-render" key={heroFinish}>
-              <ProductVisual hero finish={heroFinish} />
+              <ProductPhoto hero finish={heroFinish} />
             </div>
             <div className="hero-finish-panel">
               <div><span>YOUR FINISH</span><strong>{heroFinish}</strong></div>
               <div className="hero-swatches" role="group" aria-label="Preview a fan finish">
-                {["Pearl white", "Earth brown", "Silver"].map((color) => (
+                {["Black", "White", "Brown", "Ivory"].map((color) => (
                   <button
                     type="button"
                     key={color}
@@ -488,11 +483,11 @@ function Home() {
                 ))}
               </div>
             </div>
-            <Link to="/products?category=Fans" className="hero-product-link">
-              <span>Find your everyday favourite<small>Fan options from {money(3350)} · indicative price</small></span>
+            <Link to="/products" className="hero-product-link">
+              <span>Find your everyday favourite<small>From {money(2350)} · 2-year warranty</small></span>
               <span className="round-arrow"><ArrowUpRight size={21} /></span>
             </Link>
-            <span className="visual-label">Illustrative product visual</span>
+            <span className="visual-label">Base model · {heroFinish}</span>
           </div>
         </section>
       </FloatingPathsBackground>
@@ -504,12 +499,12 @@ function Home() {
           {
             icon: Zap,
             title: "A smarter breeze",
-            sub: "BLDC motor technology",
+            sub: "Explore our ceiling fans",
           },
           {
             icon: ShieldCheck,
             title: "Reassurance, built in",
-            sub: "3, 5 & 7-year warranty options",
+            sub: "Base model: 2 or 3 years",
           },
           {
             icon: Wind,
@@ -545,7 +540,7 @@ function Home() {
         </SectionTitle>
         <div className="category-tabs" aria-label="Product categories">
           {categories
-            .filter((c) => c.label !== "All products")
+            .filter((c) => c.label !== "All fans")
             .map(({ label, icon: Icon }) => (
               <button
                 key={label}
@@ -554,7 +549,7 @@ function Home() {
                 className={cx("category-tab", category === label && "selected")}
               >
                 <Icon size={17} />
-                {label === "Fans" ? "Ceiling fans" : label}
+                {label}
               </button>
             ))}
         </div>
@@ -563,15 +558,13 @@ function Home() {
             <ProductCard product={p} key={p.id} />
           ))}
         </div>
-        <p className="catalogue-note">
-          Collection names and visuals are illustrative. Confirm current models,
-          prices, features and warranty terms with our team.
-        </p>
+        {!homeProducts.length && <div className="empty-state glass"><Fan size={32} /><h2>{category}</h2><p>Photos and pricing will be added soon.</p></div>}
+        <p className="catalogue-note">Base model: 2-year warranty ₹2,350 · 3-year warranty ₹2,550. Our team confirms availability, delivery and complete warranty terms on WhatsApp.</p>
       </section>
       <section className="story-panel container">
         <div className="story-art">
           <div className="story-square" />
-          <ProductVisual finish="Earth brown" />
+          <ProductPhoto finish="Brown" />
           <div className="story-art-caption">
             <span>MADE FOR YOUR MOMENTS</span>
             <strong>
@@ -597,7 +590,7 @@ function Home() {
             everyone together — the little things make a home.
           </p>
           <p>
-            At Bright Copter, we bring fans, appliances and personal support
+            At Bright Copter, we bring ceiling fans and personal support
             together. Because a lasting connection begins with everyday care.
           </p>
           <Link to="/about" className="button button-outline">
@@ -685,7 +678,9 @@ function SupportBanner() {
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product: initialProduct }: { product: Product }) {
+  const [variant, setVariant] = useState(initialProduct.id);
+  const product = products.find(p => p.id === variant) || initialProduct;
   const { compare, toggleCompare, add } = useStore();
   const [finish, setFinish] = useState(product.finish);
   const detailUrl = `/product/${product.id}?finish=${encodeURIComponent(finish)}`;
@@ -712,7 +707,7 @@ function ProductCard({ product }: { product: Product }) {
           </button>
         )}
         <Link to={detailUrl} aria-label={`View ${product.name}`}>
-          <ProductVisual kind={product.kind} finish={finish} />
+          <ProductPhoto product={product} finish={finish} />
         </Link>
         <div className="finish-dots" aria-label={`${product.name} finish`}>
           {product.colors.map((color) => (
@@ -731,26 +726,23 @@ function ProductCard({ product }: { product: Product }) {
       <div className="product-card-info">
         <div>
           <span className="product-kicker">
-            {product.category === "Fans"
-              ? "REMOTE-CONTROL BLDC FAN"
-              : product.tag.toUpperCase()}
+            CEILING FAN / {product.warranty}-YEAR WARRANTY
           </span>
           <h3>
             <Link to={detailUrl}>{product.name}</Link>
           </h3>
           <p>
             {finish}
-            {product.category === "Fans"
-              ? " · BLDC collection"
-              : " · Ask for available models"}
+            {" · "}{product.warranty}-year warranty
           </p>
         </div>
+        <WarrantyChoices product={product} onChange={p => setVariant(p.id)} />
         <div className="product-card-bottom">
           <div>
             {product.price ? (
               <>
                 <strong>{money(product.price)}</strong>
-                <small>Indicative price</small>
+                <small>{product.warranty}-year warranty</small>
               </>
             ) : (
               <strong className="enquiry-price">Let's find your fit</strong>
@@ -781,12 +773,12 @@ function ProductCard({ product }: { product: Product }) {
 
 function Products() {
   const [params, setParams] = useSearchParams();
-  const category = params.get("category") || "All products";
+  const category = params.get("category") || "All fans";
   const query = params.get("q") || "";
   const [sort, setSort] = useState("featured");
-  let shown = products.filter(
+  let shown = modelProducts.filter(
     (p) =>
-      (category === "All products" || p.category === category) &&
+      (category === "All fans" || category === "Fans" || p.category === category) &&
       `${p.name} ${p.category} ${p.tag} ${p.description}`
         .toLowerCase()
         .includes(query.toLowerCase()),
@@ -802,7 +794,7 @@ function Products() {
       <PageIntro
         eyebrow="THE BRIGHT COPTER COLLECTION"
         title="Your home. Your kind of comfort."
-        description="Explore fans, kitchen essentials, water heating and lighting. A little more ease, in every room."
+        description="Explore Base model, Jumbohead model and Nanohead model ceiling fans. Choose your colour and warranty, then confirm your order on WhatsApp."
       />
       <section className="container catalog-layout">
         <aside className="catalog-sidebar">
@@ -858,7 +850,7 @@ function Products() {
           </div>
           <div className="catalog-result">
             <span>
-              {shown.length} {shown.length === 1 ? "collection" : "collections"}{" "}
+              {shown.length} {shown.length === 1 ? "model" : "models"}{" "}
               to explore
             </span>
             <Link to="/compare">
@@ -873,23 +865,32 @@ function Products() {
           {!shown.length && (
             <div className="empty-state glass">
               <Search size={36} />
-              <h2>No matches just yet.</h2>
-              <p>Try another search or explore the full collection.</p>
+              <h2>{!query && ["Jumbohead model", "Nanohead model"].includes(category) ? category : "No matches just yet."}</h2>
+              <p>{!query && ["Jumbohead model", "Nanohead model"].includes(category) ? "Photos and pricing will be added soon." : "Try another search or explore all fans."}</p>
               <button className="button" onClick={() => setParams({})}>
                 Show all products
               </button>
             </div>
           )}
           <p className="catalogue-note">
-            Collection names and visuals are illustrative. Prices and warranty
-            options are supplied by the business and need confirmation before an
-            order is accepted.
+            Base model photos, colours and warranty prices are supplied by Bright Copter. Availability, delivery and complete warranty terms are confirmed by our team before an order is accepted.
           </p>
         </div>
       </section>
       <SupportBanner />
     </>
   );
+}
+
+function WarrantyChoices({ product, onChange }: { product: Product; onChange: (product: Product) => void }) {
+  return <fieldset className="warranty-picker">
+    <legend>Choose your warranty</legend>
+    <div>{productOptions(product).map(option => <button type="button" key={option.id}
+      aria-label={`Choose ${option.warranty}-year warranty`} aria-pressed={option.id === product.id}
+      onClick={() => onChange(option)}>
+      <span><ShieldCheck size={15} /> {option.warranty} years</span><strong>{money(option.price!)}</strong>
+    </button>)}</div>
+  </fieldset>;
 }
 
 function moveTabFocus(event: KeyboardEvent<HTMLDivElement>) {
@@ -906,6 +907,7 @@ function moveTabFocus(event: KeyboardEvent<HTMLDivElement>) {
 }
 
 function Detail() {
+  const navigate = useNavigate();
   const location = useLocation();
   const product = products.find(
     (p) => p.id === location.pathname.split("/").pop(),
@@ -921,9 +923,10 @@ function Detail() {
     setFinish(
       requestedFinish && product?.colors.includes(requestedFinish)
         ? requestedFinish
-        : product?.finish || "Pearl white",
+        : product?.finish || "Black",
     );
-    setQuantity(1);
+    const requestedQuantity = Number(new URLSearchParams(location.search).get("quantity"));
+    setQuantity(Number.isInteger(requestedQuantity) && requestedQuantity >= 1 && requestedQuantity <= 20 ? requestedQuantity : 1);
     setTab("Overview");
     setPin("");
     setPinStatus("");
@@ -940,9 +943,9 @@ function Detail() {
       <section className="container detail-layout">
         <div className="detail-image glass">
           <span className="product-tag">{product.tag}</span>
-          <ProductVisual kind={product.kind} finish={selectedFinish} />
+          <ProductPhoto product={product} finish={selectedFinish} />
           <span className="visual-label">
-            Illustrative visual · actual models and finishes may vary
+            {product.name} · {selectedFinish}
           </span>
         </div>
         <div className="detail-copy">
@@ -955,7 +958,7 @@ function Detail() {
           {product.price ? (
             <div className="detail-price">
               {money(product.price)}
-              <span>Indicative price · confirm final total with our team</span>
+              <span>{product.warranty}-year warranty · delivery and final total confirmed by staff</span>
             </div>
           ) : (
             <div className="detail-price enquiry-price">
@@ -963,6 +966,7 @@ function Detail() {
               <span>Ask our team about current models and pricing.</span>
             </div>
           )}
+          <WarrantyChoices product={product} onChange={option => navigate(`/product/${option.id}?finish=${encodeURIComponent(selectedFinish)}&quantity=${quantity}`)} />
           {product.warranty && (
             <div className="warranty-chip">
               <ShieldCheck size={18} />
@@ -1108,9 +1112,7 @@ function Detail() {
               <h2>Make room for everyday comfort.</h2>
               <p>{product.description}</p>
               <p>
-                Our team will help you choose a current model and confirm the
-                features that matter to your home. Product images and collection
-                names on this website are illustrative.
+                Choose from the four supplied colours and two warranty options. Our team can confirm specifications, availability and delivery for your location.
               </p>
             </>
           ) : tab === "Specifications" ? (
@@ -1125,12 +1127,7 @@ function Detail() {
                   <span>Selected finish</span>
                   <b>{selectedFinish}</b>
                 </p>
-                {product.kind === "fan" && (
-                  <p>
-                    <span>Motor technology</span>
-                    <b>BLDC</b>
-                  </p>
-                )}
+                <p><span>Selected warranty</span><b>{product.warranty} years</b></p>
                 <p>
                   <span>Exact model, dimensions & ratings</span>
                   <b>Confirm with our team</b>
@@ -1181,20 +1178,20 @@ function Detail() {
           )}
         </div>
       </section>
-      <section className="section container">
+      {modelProducts.some(p => p.category !== product.category) && <section className="section container">
         <SectionTitle
           eyebrow="KEEP EXPLORING"
           title="There’s more to feel at home with."
         />
         <div className="product-grid">
-          {products
-            .filter((p) => p.id !== product.id && p.kind === "fan")
+          {modelProducts
+            .filter((p) => p.category !== product.category)
             .slice(0, 3)
             .map((p) => (
               <ProductCard product={p} key={p.id} />
             ))}
         </div>
-      </section>
+      </section>}
     </>
   );
 }
@@ -1238,12 +1235,12 @@ function Compare() {
       <PageIntro
         eyebrow="A CLOSER LOOK"
         title="Find the one for you."
-        description="See our BLDC fan warranty options side by side. Our team can help confirm the finer details."
+        description="Compare Base model warranty choices side by side: 2 years at ₹2,350 or 3 years at ₹2,550."
       />
       <section className="container compare-section">
         <div className="compare-selection glass">
           <GitCompareArrows size={21} />
-          <span>Choose up to three collections</span>
+          <span>Choose warranty options to compare</span>
           {fans.map((p) => (
             <button
               key={p.id}
@@ -1256,7 +1253,7 @@ function Compare() {
               ) : (
                 <Plus size={14} />
               )}{" "}
-              {p.name}
+              {p.name} · {p.warranty}-year warranty
             </button>
           ))}
         </div>
@@ -1268,8 +1265,8 @@ function Compare() {
                   <th scope="col">The little details</th>
                   {selected.map((p) => (
                     <th scope="col" key={p.id}>
-                      <ProductVisual finish={p.finish} />
-                      <h2>{p.name}</h2>
+                      <ProductPhoto product={p} finish={p.finish} />
+                      <h2>{p.name} · {p.warranty} years</h2>
                       <Link to={`/product/${p.id}`} className="text-button">
                         Explore collection <ArrowUpRight size={14} />
                       </Link>
@@ -1288,7 +1285,7 @@ function Compare() {
                     value: (p: Product) =>
                       `${p.warranty} years · terms to confirm`,
                   },
-                  { label: "Motor", value: () => "BLDC" },
+
                   {
                     label: "Finishes to explore",
                     value: (p: Product) => p.colors.join(", "),
@@ -1320,9 +1317,7 @@ function Compare() {
           </div>
         )}
         <p className="catalogue-note">
-          These are illustrative collection labels, not verified SKU names.
-          Confirm specifications, price and complete warranty terms before
-          ordering.
+          These Base model options use the supplied prices and photographs. Confirm complete warranty coverage, specifications and delivery with our team.
         </p>
       </section>
     </>
@@ -1354,11 +1349,11 @@ function Cart() {
                     className="cart-item glass"
                     key={item.id + item.finish}
                   >
-                    <Link to={`/product/${p.id}`} className="cart-item-image">
-                      <ProductVisual finish={item.finish} />
+                    <Link to={`/product/${p.id}?finish=${encodeURIComponent(item.finish)}`} className="cart-item-image">
+                      <ProductPhoto product={p} finish={item.finish} />
                     </Link>
                     <div className="cart-item-copy">
-                      <span className="product-kicker">BLDC COLLECTION</span>
+                      <span className="product-kicker">CEILING FAN</span>
                       <h2>
                         <Link to={`/product/${p.id}`}>{p.name}</Link>
                       </h2>
@@ -1376,7 +1371,7 @@ function Cart() {
                       <button
                         className="text-button"
                         onClick={() => remove(item.id, item.finish)}
-                        aria-label={`Remove ${p.name} in ${item.finish}`}
+                        aria-label={`Remove ${p.name} in ${item.finish}, ${p.warranty}-year warranty`}
                       >
                         <Trash2 size={15} />
                         Remove
@@ -1777,7 +1772,7 @@ function Checkout() {
                   <strong>
                     {product.name} × {item.quantity}
                   </strong>
-                  <small>{item.finish}</small>
+                  <small>{item.finish} · {product.warranty}-year warranty</small>
                 </div>
                 <b>{money(product.price! * item.quantity)}</b>
               </div>
@@ -1911,12 +1906,12 @@ function Confirmation() {
 
 const faqItems = [
   {
-    q: "How do I choose the right BLDC fan?",
+    q: "How do I choose the right Ceiling fan?",
     a: "Consider your room, preferred finish and the features you need. Our team can help compare current models, specifications and warranty options. Exact features vary by model.",
   },
   {
     q: "What warranty options are available?",
-    a: "The business has shared 3, 5 and 7-year fan warranty options. Covered parts, exclusions, service arrangements and model availability must be confirmed with Bright Copter before purchase.",
+    a: "The Base model offers a 2-year warranty at ₹2,350 or a 3-year warranty at ₹2,550. Covered parts, exclusions, service arrangements and model availability must be confirmed with Bright Copter before purchase.",
   },
   {
     q: "Can you deliver to my location?",
@@ -2016,7 +2011,7 @@ function Support() {
               <IconTile icon={ShieldCheck} />
               <h2>Reassurance starts with clarity.</h2>
               <p>
-                Our fan range includes 3, 5 and 7-year warranty options. Exact
+                Our Base model has 2-year and 3-year warranty options. Exact
                 coverage depends on the model and the applicable terms confirmed
                 at purchase.
               </p>
@@ -2092,7 +2087,7 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
   const navigate = useNavigate();
   const { notify } = useStore();
   const [type, setType] = useState(
-    kind === "service" ? "BLDC fan support" : "Bulk purchase",
+    kind === "service" ? "Ceiling fan support" : "Bulk purchase",
   );
   const [consent, setConsent] = useState(false);
   const isService = kind === "service";
@@ -2136,7 +2131,7 @@ function EnquiryForm({ kind }: { kind: "service" | "dealer" }) {
             <select value={type} onChange={(e) => setType(e.target.value)}>
               {(isService
                 ? [
-                    "BLDC fan support",
+                    "Ceiling fan support",
                     "Mixer / grinder support",
                     "Other appliance support",
                     "Local electrical service",
@@ -2292,7 +2287,7 @@ function Business() {
           {
             icon: Fan,
             title: "A range to explore",
-            text: "Fans, kitchen appliances, lighting and more.",
+            text: "Base model, Jumbohead model and Nanohead model fans.",
           },
           {
             icon: MessageCircle,
@@ -2419,11 +2414,11 @@ function About() {
       <PageIntro
         eyebrow="HELLO, WE’RE BRIGHT COPTER"
         title="Everyday comfort. Lasting connections."
-        description="Fans, appliances and a little more care, from Parappur, Thrissur, Kerala."
+        description="Ceiling fans and a little more care, from Parappur, Thrissur, Kerala."
       />
       <section className="container about-feature">
         <div className="about-art glass">
-          <ProductVisual hero finish="Earth brown" />
+          <ProductPhoto hero finish="Brown" />
           <span>ROOTED IN KERALA. MADE FOR YOUR EVERYDAY.</span>
         </div>
         <div>
@@ -2441,8 +2436,8 @@ function About() {
             appliances we live with become part of those everyday moments.
           </p>
           <p>
-            Bright Copter brings together BLDC ceiling fans and a wider range of
-            home appliances, with product guidance and local support from
+            Bright Copter offers Base model, Jumbohead model and Nanohead model fans,
+            with product guidance and local support from
             Parappur in Thrissur.
           </p>
           <p>
@@ -2461,7 +2456,7 @@ function About() {
           {
             icon: Wind,
             title: "Comfort at the centre",
-            text: "Explore fans and appliances that fit your everyday needs.",
+            text: "Explore ceiling fans that fit your everyday needs.",
           },
           {
             icon: Heart,
@@ -2613,10 +2608,7 @@ function Policies() {
           <>
             <h2>Confirm the details for your actual product</h2>
             <p>
-              The business has supplied indicative fan prices of ₹3,350, ₹3,650
-              and ₹4,000 for 3, 5 and 7-year warranty options respectively. This
-              website uses illustrative collection names and product visuals.
-              These do not identify verified SKUs.
+              Bright Copter supplies the Base model in Black, White, Brown and Ivory. The 2-year warranty option costs ₹2,350 and the 3-year warranty option costs ₹2,550. Product photographs and these prices are supplied by the business.
             </p>
             <p>
               Confirm the current model, features, finish, stock, full price
@@ -2654,9 +2646,7 @@ function Policies() {
               arrangements directly with you.
             </p>
             <p>
-              Product visuals and collection names are illustrative. Features
-              vary by actual model; confirm specifications and complete terms
-              before making a purchasing decision.
+              Product photographs and pricing are supplied by Bright Copter. Confirm specifications, warranty coverage and complete terms before making a purchasing decision.
             </p>
             <p>
               For confirmed orders, enquiries, changes or concerns, contact
@@ -2807,7 +2797,7 @@ export default function App() {
               { id: p.id, finish, quantity: Math.min(20, quantity) },
             ];
       });
-      setToast(`${p.name} in ${finish.toLowerCase()} added to your bag.`);
+      setToast(`${p.name}, ${p.warranty}-year warranty, in ${finish.toLowerCase()} added to your bag.`);
     },
     update: (id, finish, delta) =>
       setCart((current) =>

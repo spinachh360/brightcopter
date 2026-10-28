@@ -48,7 +48,7 @@ try {
       await scope.getByRole('navigation', { name: 'Main navigation' })
         .getByRole('link', { name: 'Our products' }).click();
       await expect(scope.getByRole('heading', { name: 'Your home. Your kind of comfort.' })).toBeVisible();
-      await scope.getByRole('button', { name: 'Add BLDC Essential to bag' }).click();
+      await scope.getByRole('button', { name: 'Add Base model to bag' }).click();
       await scope.getByRole('link', { name: 'Shopping bag, 1 items' }).click();
       await scope.getByRole('link', { name: 'Continue to checkout' }).click();
       await expect(scope.getByRole('heading', { name: 'Your delivery details' })).toBeVisible();

@@ -22,7 +22,7 @@ test("liquid navigation preserves the app and follows routes and browser history
   await expect(
     nav.getByRole("link", { name: "Home", exact: true }),
   ).toHaveAttribute("aria-current", "page");
-  await page.goto("/product/bldc-essential");
+  await page.goto("/product/base-model-2-year");
   await expect(nav.getByRole("link", { name: "Our products" })).toHaveAttribute(
     "aria-current",
     "page",

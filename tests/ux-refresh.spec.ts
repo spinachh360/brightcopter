@@ -2,20 +2,20 @@ import { test, expect } from "@playwright/test";
 
 test("finish previews and product details keep the customer's selection", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Preview Earth brown" }).click();
-  await expect(page.locator(".hero-finish-panel strong")).toHaveText("Earth brown");
+  await page.getByRole("button", { name: "Preview Brown" }).click();
+  await expect(page.locator(".hero-finish-panel strong")).toHaveText("Brown");
   await expect(page.locator(".hero-render").getByRole("img")).toHaveAccessibleName(
-    "Illustrative earth brown ceiling fan",
+    "Bright Copter Base model ceiling fan in Brown",
   );
   await expect(page.getByRole("link", { name: "Shopping bag, 0 items" })).toBeVisible();
-  const card = page.locator(".product-card").filter({ hasText: "BLDC Essential" });
-  await card.getByRole("button", { name: "BLDC Essential, Silver", exact: true }).click();
-  await card.getByRole("link", { name: "View BLDC Essential" }).click();
-  await expect(page.getByRole("button", { name: "Choose Silver" })).toHaveAttribute("aria-pressed", "true");
+  const card = page.locator(".product-card").filter({ hasText: "Base model" });
+  await card.getByRole("button", { name: "Base model, Ivory", exact: true }).click();
+  await card.getByRole("link", { name: "View Base model" }).click();
+  await expect(page.getByRole("button", { name: "Choose Ivory" })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("tab", { name: "Overview", exact: true }).focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("tab", { name: "Specifications" })).toBeFocused();
-  await expect(page.getByRole("tabpanel")).toContainText("Silver");
+  await expect(page.getByRole("tabpanel")).toContainText("Ivory");
   await page.keyboard.press("End");
   await expect(page.getByRole("tab", { name: "Delivery & installation" })).toBeFocused();
   await expect(page.getByRole("tabpanel")).toContainText("A clear plan for getting it home.");
@@ -25,7 +25,7 @@ test("finish previews and product details keep the customer's selection", async 
 
 test("phone checkout stays readable and returns focus when editing the review", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 });
-  await page.goto("/product/bldc-essential");
+  await page.goto("/product/base-model-2-year");
   await page.getByRole("button", { name: "Add to bag", exact: true }).click();
   await page.goto("/checkout");
   await expect(page.getByLabel("Full name")).toHaveCSS("font-size", "16px");

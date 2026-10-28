@@ -24,7 +24,7 @@ test("floating paths animate behind the hero without intercepting product naviga
     .poll(() => path.getAttribute("stroke-dashoffset"))
     .not.toBe(offset);
   await page.getByRole("link", { name: "Find your perfect fan" }).click();
-  await expect(page).toHaveURL(/products\?category=Fans/);
+  await expect(page).toHaveURL(/products$/);
 });
 
 test("floating paths remain static when reduced motion is requested", async ({
@@ -50,13 +50,13 @@ test("catalogue filters, search and reset expose the right offerings", async ({
   page,
 }) => {
   await page.goto("/products");
-  await expect(page.locator(".product-card")).toHaveCount(6);
-  await page.getByRole("button", { name: "Kitchen", exact: true }).click();
   await expect(page.locator(".product-card")).toHaveCount(1);
-  await expect(page.locator(".product-card")).toContainText(
-    "Kitchen essentials",
-  );
-  await page.getByRole("button", { name: "All products", exact: true }).click();
+  await page.getByRole("button", { name: "Jumbohead model", exact: true }).click();
+  await expect(page.locator(".product-card")).toHaveCount(0);
+  await expect(page.getByText("Photos and pricing will be added soon.")).toBeVisible();
+  await page.getByRole("button", { name: "Nanohead model", exact: true }).click();
+  await expect(page.locator(".product-card")).toHaveCount(0);
+  await page.getByRole("button", { name: "All fans", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Filter products" })
     .fill("unavailable-example");
@@ -64,25 +64,25 @@ test("catalogue filters, search and reset expose the right offerings", async ({
     page.getByRole("heading", { name: "No matches just yet." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Show all products" }).click();
-  await expect(page.locator(".product-card")).toHaveCount(6);
+  await expect(page.locator(".product-card")).toHaveCount(1);
 });
 
 test("finish, quantities and bag survive navigation and reload", async ({
   page,
 }) => {
-  await page.goto("/product/bldc-essential");
-  await page.getByRole("button", { name: "Choose Earth brown" }).click();
+  await page.goto("/product/base-model-2-year");
+  await page.getByRole("button", { name: "Choose Brown" }).click();
   await page.getByRole("button", { name: "Increase quantity" }).click();
   await page.getByRole("button", { name: "Add to bag" }).click();
   await page.goto("/cart");
-  await expect(page.locator(".cart-item")).toContainText("Earth brown");
-  await expect(page.locator(".cart-item-price")).toContainText("₹6,700");
+  await expect(page.locator(".cart-item")).toContainText("Brown");
+  await expect(page.locator(".cart-item-price")).toContainText("₹4,700");
   await page.reload();
   await expect(page.locator(".quantity-control > span")).toHaveText("2");
   await page.getByRole("button", { name: "Increase quantity" }).click();
-  await expect(page.locator(".cart-item-price")).toContainText("₹10,050");
+  await expect(page.locator(".cart-item-price")).toContainText("₹7,050");
   await page
-    .getByRole("button", { name: "Remove BLDC Essential in Earth brown" })
+    .getByRole("button", { name: "Remove Base model in Brown, 2-year warranty" })
     .click();
   await expect(
     page.getByRole("heading", { name: "A little space for something good." }),
@@ -93,12 +93,12 @@ test("comparison selects and removes the actual collections", async ({
   page,
 }) => {
   await page.goto("/compare");
-  await page.getByRole("button", { name: "BLDC Essential" }).click();
-  await page.getByRole("button", { name: "BLDC Signature" }).click();
+  await page.getByRole("button", { name: "Base model · 2-year warranty" }).click();
+  await page.getByRole("button", { name: "Base model · 3-year warranty" }).click();
   await expect(page.locator("thead th")).toHaveCount(3);
-  await expect(page.locator(".compare-table")).toContainText("₹4,000");
-  await expect(page.locator(".compare-table")).toContainText("7 years");
-  await page.getByRole("button", { name: "BLDC Essential" }).click();
+  await expect(page.locator(".compare-table")).toContainText("₹2,550");
+  await expect(page.locator(".compare-table")).toContainText("3 years");
+  await page.getByRole("button", { name: "Base model · 2-year warranty" }).click();
   await expect(page.locator("thead th")).toHaveCount(2);
 });
 
@@ -114,8 +114,9 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
       body: "<title>Intercepted WhatsApp handoff</title>",
     }),
   );
-  await page.goto("/product/bldc-essential");
-  await page.getByRole("button", { name: "Choose Earth brown" }).click();
+  await page.goto("/product/base-model-2-year");
+  await page.getByRole("button", { name: "Choose Brown" }).click();
+  await page.getByRole("button", { name: "Choose 3-year warranty" }).click();
   await page.getByRole("button", { name: "Increase quantity" }).click();
   await page.getByRole("button", { name: "Add to bag" }).click();
   await page.goto("/checkout");
@@ -158,9 +159,10 @@ test("WhatsApp checkout validates details, preserves edits and hands off the com
     "Anu Test",
     "9876543210",
     "anu@example.test",
-    "Earth brown",
+    "Brown",
     "× 2",
-    "₹6,700",
+    "₹5,100",
+    "3-year warranty option",
     "Test House, Test Street",
     "Near test library",
     "Thrissur, Kerala — 680552",
@@ -248,7 +250,7 @@ test("mobile navigation and all public layouts fit a small screen", async ({
     for (const route of [
       "/",
       "/products",
-      "/product/bldc-essential",
+      "/product/base-model-2-year",
       "/cart",
       "/compare",
       "/support",
@@ -295,7 +297,7 @@ test("home and checkout do not have serious automated accessibility violations",
       nodes: v.nodes.map((n) => n.target),
     })),
   ).toEqual([]);
-  await page.getByRole("button", { name: "Add BLDC Essential to bag" }).click();
+  await page.getByRole("button", { name: "Add Base model to bag" }).click();
   await page.goto("/checkout");
   await page.evaluate(async () => {
     await document.fonts.ready;

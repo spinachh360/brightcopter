@@ -1,90 +1,44 @@
+import black from "./assets/products/base/black.png";
+import white from "./assets/products/base/white.png";
+import brown from "./assets/products/base/brown.png";
+import ivory from "./assets/products/base/ivory.png";
+
 export type Product = {
   id: string;
   name: string;
-  category: "Fans" | "Kitchen" | "Water heating" | "Lighting";
+  category: "Base model" | "Jumbohead model" | "Nanohead model";
   price?: number;
   warranty?: number;
   finish: string;
   colors: string[];
+  images: Record<string, string>;
   description: string;
   tag: string;
   kind: "fan" | "mixer" | "heater" | "light";
 };
 
+const base = {
+  name: "Base model",
+  category: "Base model" as const,
+  finish: "Black",
+  colors: ["Black", "White", "Brown", "Ivory"],
+  images: { Black: black, White: white, Brown: brown, Ivory: ivory },
+  description: "The Bright Copter Base model ceiling fan, available in Black, White, Brown and Ivory. Choose a 2-year or 3-year warranty to suit your home.",
+  tag: "Ceiling fan",
+  kind: "fan" as const,
+};
+
+// Each warranty has a stable variant ID so different warranties remain separate
+// bag lines and the chosen price is used throughout checkout and WhatsApp.
 export const products: Product[] = [
-  {
-    id: "bldc-essential",
-    name: "BLDC Essential",
-    category: "Fans",
-    price: 3350,
-    warranty: 3,
-    finish: "Pearl white",
-    colors: ["Pearl white", "Earth brown", "Silver"],
-    description:
-      "Everyday comfort, with the simplicity of remote control. Explore our three-year warranty option.",
-    tag: "Everyday favourite",
-    kind: "fan",
-  },
-  {
-    id: "bldc-plus",
-    name: "BLDC Plus",
-    category: "Fans",
-    price: 3650,
-    warranty: 5,
-    finish: "Earth brown",
-    colors: ["Earth brown", "Pearl white", "Silver"],
-    description:
-      "A considered addition to your favourite space. Explore our five-year warranty option.",
-    tag: "A little more reassurance",
-    kind: "fan",
-  },
-  {
-    id: "bldc-signature",
-    name: "BLDC Signature",
-    category: "Fans",
-    price: 4000,
-    warranty: 7,
-    finish: "Silver",
-    colors: ["Silver", "Earth brown", "Pearl white"],
-    description:
-      "Comfort for the long run. Explore our seven-year warranty option and available finishes.",
-    tag: "Extended warranty option",
-    kind: "fan",
-  },
-  {
-    id: "kitchen-mixer",
-    name: "Kitchen essentials",
-    category: "Kitchen",
-    finish: "Classic white",
-    colors: ["Classic white"],
-    description:
-      "Discover mixers and grinders for the moments that bring everyone to the table. Ask our team about available models.",
-    tag: "Mixers & grinders",
-    kind: "mixer",
-  },
-  {
-    id: "water-heating",
-    name: "A warmer everyday",
-    category: "Water heating",
-    finish: "Classic white",
-    colors: ["Classic white"],
-    description:
-      "Find a water heater for your home. Our team can help you explore current models, capacities, and prices.",
-    tag: "Water heaters",
-    kind: "heater",
-  },
-  {
-    id: "home-lighting",
-    name: "Light up your space",
-    category: "Lighting",
-    finish: "Classic white",
-    colors: ["Classic white"],
-    description:
-      "Explore LED tube lights and lighting accessories. Get in touch for the current range and specifications.",
-    tag: "LED lighting",
-    kind: "light",
-  },
+  { ...base, id: "base-model-2-year", warranty: 2, price: 2350 },
+  { ...base, id: "base-model-3-year", warranty: 3, price: 2550 },
 ];
+export const modelProducts = products.filter(
+  (product, index) => products.findIndex(p => p.category === product.category) === index,
+);
+export const productOptions = (product: Product) =>
+  products.filter(p => p.category === product.category);
 
 export const money = (amount: number) =>
   new Intl.NumberFormat("en-IN", {
@@ -102,10 +56,10 @@ export const orderWhatsapp = (message: string) =>
   `https://wa.me/${orderNumber}?text=${encodeURIComponent(message)}`;
 export const mapLink = "https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8";
 export const finishes: Record<string, string> = {
-  "Pearl white": "#eeeae1",
-  "Earth brown": "#695145",
-  Silver: "#afb7ba",
-  "Classic white": "#eeeae1",
+  Black: "#242424",
+  White: "#f2f2f2",
+  Brown: "#80451f",
+  Ivory: "#e7dec2",
 };
 export type CartItem = { id: string; finish: string; quantity: number };
 export type PreparedRequest = {

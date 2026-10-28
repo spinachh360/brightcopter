@@ -1053,3 +1053,29 @@ p { line-height: 1.75; }
 @supports not (backdrop-filter: blur(1px)) {
   .site-header, .glass, .hero-finish-panel, .finish-dots, .category-tab.selected { background-color: #fff; }
 }
+/* Real product photos and warranty choices. Keep the supplied images intact. */
+.product-photo { object-fit: contain; }
+.product-image:has(.product-photo), .detail-image:has(.product-photo) { background: #fff; }
+.hero-stage:has(.product-photo) { background: #ffffffb8; }
+.hero-stage:has(.product-photo) .hero-stage-type, .hero-stage:has(.product-photo) .hero-orbit { display: none; }
+.hero-render > .product-photo { width: 100%; left: 0; height: 65%; top: 80px; }
+.story-art > .product-photo { top: 0; width: 100%; left: 0; height: 73%; }
+.about-art .product-photo { top: 0; height: 92%; }
+.warranty-picker { padding: 0; border: 0; margin: 20px 0; min-width: 0; }
+.warranty-picker legend { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.warranty-picker > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.warranty-picker button { padding: 12px; min-height: 60px; background: #ffffffa6; border: 1px solid var(--line); border-radius: 13px; text-align: left; }
+.warranty-picker button[aria-pressed="true"] { border-color: #c28896; background: #fff4f7; box-shadow: var(--glass-control-shadow); }
+.warranty-picker button > span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--neutral); }
+.warranty-picker button strong { display: block; margin-top: 6px; font-size: 17px; font-weight: 600; }
+@media (hover: hover) { .product-card:hover .product-photo { transform: scale(1.025); } }
+@media (max-width:640px) { .hero-render > .product-photo { top: 72px; height: 61%; } }
+.product-grid:has(> .product-card:only-child) { grid-template-columns: minmax(0, 1fr); }
+.product-grid > .product-card:only-child { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; }
+.product-grid > .product-card:only-child .product-image { height: 400px; }
+.product-grid > .product-card:only-child .product-card-info { align-self: center; padding: 24px; }
+@media (max-width:640px) {
+  .product-grid > .product-card:only-child { display: block; }
+  .product-grid > .product-card:only-child .product-image { height: 280px; }
+  .product-grid > .product-card:only-child .product-card-info { padding: 22px 16px 16px; }
+}

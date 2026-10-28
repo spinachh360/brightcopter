@@ -1,6 +1,6 @@
 # Bright Copter
 
-A responsive React + TypeScript storefront for Bright Copter, with frosted surfaces, locally hosted fonts, original illustrative product renders, and WhatsApp order checkout. Built with Vite, React Router, Tailwind CSS 4, Motion and Lucide icons, with a shadcn-compatible component structure.
+A responsive React + TypeScript storefront for Bright Copter, with frosted surfaces, locally hosted fonts, the supplied Base model photographs, and WhatsApp order checkout. Built with Vite, React Router, Tailwind CSS 4, Motion and Lucide icons, with a shadcn-compatible component structure.
 
 The refreshed design uses white, restrained rose glass and Bright Copter red. Shared tokens in `src/styles.css` define the surfaces, control shadows, typography, focus rings and motion. Primary actions use red; secondary buttons and selected tabs use translucent white. The responsive stylesheet replaces the previous layered styling rather than adding another override sheet.
 
@@ -87,7 +87,7 @@ Browser tests use the installed `/usr/bin/chromium` if available. Else run `npx 
 
 - Homepage with interactive finish previews, filterable/searchable collections and product details.
 - Finish selection, quantities, and a shopping bag persisted in browser local storage.
-- Three-way BLDC fan comparison.
+- Fan warranty option comparison.
 - Two website steps: delivery/contact details and payment preference, then review. The third progress milestone is the WhatsApp handoff.
 - Final action opens WhatsApp for **+91 79073 44474** with the complete order message. The customer still taps Send in WhatsApp.
 - Payment preference is **not** a guaranteed or processed payment method. Staff confirms the final method, price, actual model, stock and fulfillment directly on WhatsApp.
@@ -101,7 +101,11 @@ Browser tests use the installed `/usr/bin/chromium` if available. Else run `npx 
 
 Copy `.env.example` to `.env.local` if you need to override the public numbers or logo location. Rebuild after changing `VITE_` configuration. Never put private credentials in Vite environment variables; they are included in the client bundle.
 
-`src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductVisual.tsx` contains original illustrative product artwork. These visuals do not represent verified Bright Copter SKUs.
+`src/data.ts` holds the catalogue, prices, finish options and WhatsApp destinations. `src/ProductPhoto.tsx` renders the original product photographs from `src/assets/products/base/`.
+
+The catalogue currently has one Base model with four colours: Black, White, Brown and Ivory. A 2-year warranty costs ₹2,350; a 3-year warranty costs ₹2,550. Each warranty uses a stable variant ID (`base-model-2-year`, `base-model-3-year`), so different warranties in the same colour remain distinct bag lines. Model cards group the variants and offer a warranty selector. Both the chosen photo and price follow the selection through the bag, review and WhatsApp message.
+
+The Base model images are exact PNGs extracted from `base model colors.zip`, matched by their supplied filenames. They have not been regenerated, cropped or recoloured. Jumbohead model and Nanohead model have category filters but no purchasable products until their photos and prices are supplied. Old sample catalogue items are discarded from persisted bags and comparison selections by existing validation. Motor type, power, speed, remote features and dimensions have not been assumed from the photographs.
 
 The original lion-and-cub logo from `Bright Copter Lion Bond Logo.zip` is included at `src/assets/brand-logo.png` and displayed in the header and footer. Its red background, wordmark and tagline are preserved, without cropping or redrawing. `src/brand.ts` bundles the original PNG automatically; the downloadable preview embeds the image so it works without an external logo URL. The header scales it for smaller screens, and the footer uses a larger version. `VITE_BRAND_LOGO_URL` remains an optional override for a separately hosted image.
 
@@ -113,9 +117,9 @@ The privacy page includes a two-step action to remove saved requests. Request cr
 
 ## Before public launch
 
-1. Add actual product photographs; the original logo is already included.
-2. Replace the clearly labelled illustrative collection names with verified SKU names, finishes and specifications.
-3. Confirm the owner-supplied indicative prices and warranty durations, then supply complete warranty/returns, tax, delivery and installation terms.
+1. Add Jumbohead and Nanohead photographs, prices, finishes and warranty options. Base model photographs and the original logo are included.
+2. Supply any additional model numbers and verified specifications.
+3. Supply complete warranty coverage/returns, tax, delivery and installation terms for the owner-supplied prices.
 4. Verify the published address and all public contact details. The order number was explicitly supplied by the owner for WhatsApp checkout.
 5. Confirm operational handling for order, service and trade messages. Test the real WhatsApp app handoff on a phone and desktop without treating app opening as order acceptance.
 6. Add business-approved legal and privacy terms appropriate to actual operations. Current pages explain this enquiry flow and do not invent a returns policy.
