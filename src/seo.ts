@@ -9,7 +9,7 @@ export const publicRoutes = [
 ];
 export const privateRoutes = ['/cart', '/checkout', '/compare', '/order/confirmation', '/track'];
 const pages: Record<string, [string, string]> = {
-  '/': [`Ceiling Fans in Kerala from ${money(catalogueStartingPrice)}`, `വീട്ടിലാകെ നല്ല കാറ്റ്. Bright Copter ceiling fans from ${money(catalogueStartingPrice)}. Choose 2–7 year warranty options by model, with service across Kerala. Order via WhatsApp.`],
+  '/': [`Ceiling Fans in Kerala from ${money(catalogueStartingPrice)}`, `ചൂടിന് ഇത്ര ജാഡ വേണ്ട. Bright Copter ceiling fans from ${money(catalogueStartingPrice)}. Choose 2–7 year warranty options by model, with service across Kerala. Order via WhatsApp.`],
   '/products': ['Ceiling Fan Prices & Warranty Options in Kerala', `വീടിന് ചേരുന്ന ഫാൻ തിരഞ്ഞെടുക്കൂ. Compare Base, Jumbohead and Nanohead ceiling fans at ${cataloguePriceRange}, colours and warranty options. Order via WhatsApp.`],
   '/support': ['Ceiling Fan Service & Warranty Support in Kerala', 'Bright Copter fan service across Kerala. Ask about repairs and warranty options, or prepare a service request with your model and purchase details.'],
   '/business': ['Ceiling Fan Dealer & Bulk Enquiries in Kerala', 'Buying ceiling fans for a shop or project? Discuss Base, Jumbohead and Nanohead models, quantities, availability and delivery with Bright Copter in Thrissur.'],

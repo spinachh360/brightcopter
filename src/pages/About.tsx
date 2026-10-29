@@ -11,7 +11,7 @@ export function About() {
       <PageIntro
         eyebrow="HELLO, WE’RE BRIGHT COPTER"
         title="From Thrissur. For your home."
-        localLine="നമ്മുടെ നാട്ടിൽ നിന്ന്, നിങ്ങളുടെ വീട്ടിലേക്ക്."
+        localLine="നമ്മുടെ തൃശൂരിൽ നിന്നൊരു ഫാൻ ബ്രാൻഡ്."
         description="Meet Bright Copter, an appliance brand based in Parappur, Thrissur. Explore our ceiling fan models, warranty options and service across Kerala."
       />
       <section className="container about-feature">

@@ -43,7 +43,7 @@ try {
       await expect(help).toBeVisible();
       await expect(help).toContainText('download the HTML file and open it in a full browser');
     } else {
-      await expect(scope.getByRole('heading', { name: 'Ceiling fans. വീട്ടിലാകെ നല്ല കാറ്റ്.' })).toBeVisible();
+      await expect(scope.getByRole('heading', { name: 'Ceiling fans. ചൂടിന് ഇത്ര ജാഡ വേണ്ട.' })).toBeVisible();
       await expect(scope.getByLabel('Opening the website')).toHaveCount(0);
       await expect.poll(() => scope.locator('.site-header .brand-image').evaluate(img => img.naturalWidth)).toBe(1672);
       await scope.getByRole('navigation', { name: 'Main navigation' })

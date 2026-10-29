@@ -9,7 +9,7 @@ export function Business() {
       <PageIntro
         eyebrow="GROW WITH BRIGHT COPTER"
         title="Fans for your next bulk order."
-        localLine="കടയിലേക്കോ പ്രോജക്റ്റിലേക്കോ? നമുക്ക് സംസാരിക്കാം."
+        localLine="വേണ്ട മോഡലും എണ്ണവും പറഞ്ഞോളൂ. ബാക്കി സംസാരിക്കാം."
         description="Buying ceiling fans for your shop, project or business? Share the models and quantities you need. Our team confirms availability, pricing and delivery arrangements."
       />
       <section className="container">

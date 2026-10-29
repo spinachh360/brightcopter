@@ -16,7 +16,7 @@ export function Support() {
       <PageIntro
         eyebrow="BRIGHT COPTER CUSTOMER CARE"
         title="Fan service. Across Kerala."
-        localLine="സഹായം വേണോ? ഞങ്ങളോട് ചോദിക്കൂ."
+        localLine="ഫാനിന് പ്രശ്നമുണ്ടോ? എന്താണെന്ന് പറഞ്ഞോളൂ."
         description="Ask about your fan, check warranty coverage or prepare a service request. Share your model, purchase details and location so our team can guide you."
       />
       <section className="container support-hub">

@@ -10,7 +10,7 @@ export function Contact() {
       <PageIntro
         eyebrow="PARAPPUR, THRISSUR · KERALA"
         title="Let’s find the right fan for you."
-        localLine="വാങ്ങുന്നതിന് മുമ്പ് ചോദിച്ചറിയാം."
+        localLine="ചോദിച്ചെന്നു കരുതി വാങ്ങണമെന്നില്ല."
         description="Compare models, check your delivery PIN code or ask about warranty options. Message or call Bright Copter for product guidance and service enquiries."
       />
       <section className="container contact-grid">

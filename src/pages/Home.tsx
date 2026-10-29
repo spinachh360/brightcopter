@@ -30,7 +30,7 @@ export function Home() {
             <div className="hero-label">
               <span className="live-dot" /> BRIGHT COPTER · THRISSUR, KERALA
             </div>
-            <h1>Ceiling fans. <span className="hero-local-title" lang="ml">വീട്ടിലാകെ<br />നല്ല കാറ്റ്.</span></h1>
+            <h1>Ceiling fans. <span className="hero-local-title" lang="ml">ചൂടിന് ഇത്ര<br />ജാഡ വേണ്ട.</span></h1>
             <p>
               <strong>From {money(catalogueStartingPrice)}.</strong> Find your fit with Base, Jumbohead or Nanohead.
               Choose a 2-, 3-, 5- or 7-year warranty, depending on the model.
@@ -125,7 +125,7 @@ export function Home() {
           }
         >
           Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
-          <span className="local-support-copy" lang="ml">നിങ്ങളുടെ വീടിന് ചേരുന്ന ഫാൻ തിരഞ്ഞെടുക്കൂ.</span>
+          <span className="local-support-copy" lang="ml">വീട്ടിൽ എല്ലാവർക്കും ഒരേ കളർ ഇഷ്ടമാകണമെന്നില്ലല്ലോ.</span>
         </SectionTitle>
         <div className="category-tabs model-category-tabs" role="group" aria-label="Product categories">
           {categories

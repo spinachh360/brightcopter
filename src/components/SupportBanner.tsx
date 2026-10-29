@@ -12,7 +12,7 @@ export function SupportBanner() {
       <div>
         <p className="eyebrow">BRIGHT COPTER CUSTOMER CARE</p>
         <h2>Fan service across Kerala.</h2>
-        <p className="support-local-line" lang="ml">സഹായം വേണോ? ഞങ്ങളോട് ചോദിക്കൂ.</p>
+        <p className="support-local-line" lang="ml">സംശയമോ സർവീസോ, ഞങ്ങളോട് പറഞ്ഞോളൂ.</p>
         <p>
           Call {careDisplay} for warranty questions or prepare a service request with your model and purchase details.
         </p>

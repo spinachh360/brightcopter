@@ -32,7 +32,7 @@ export function Products() {
       <PageIntro
         eyebrow="THE BRIGHT COPTER COLLECTION"
         title="Find your fan. See your price."
-        localLine="വീടിന് ചേരുന്ന ഫാൻ, ബജറ്റിന് ചേരുന്ന വില."
+        localLine="കളർ ഏത് വേണമെന്ന് വീട്ടിൽ ചർച്ചയായിക്കോട്ടെ. വില ഇവിടെ കാണാം."
         description={`Compare Base, Jumbohead and Nanohead ceiling fans priced ${cataloguePriceRange}. Pick your finish and warranty, then send your order request on WhatsApp.`}
       />
       <section className="container catalog-layout">
