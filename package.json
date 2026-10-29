@@ -11,6 +11,7 @@
     "preview:export": "node scripts/export-preview.mjs",
     "preview:test": "npm run preview:export && node scripts/verify-preview.mjs",
     "assets:thumbnails": "node scripts/generate-category-thumbnails.mjs",
+    "assets:brand": "node scripts/generate-brand-webp.mjs",
     "assets:social": "node scripts/generate-social-images.mjs",
     "test:server": "node --test server/*.test.mjs",
     "security:check": "node scripts/check-security.mjs",

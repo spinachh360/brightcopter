@@ -96,7 +96,7 @@ export function Header() {
           }
         }}
       >
-        <div className="nav-shell container">
+        <div className="nav-shell">
           <Brand />
           <LiquidNavbar
             className="main-nav liquid-main-nav"

@@ -150,8 +150,11 @@ p { line-height: 1.75; }
 .announcement { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 34px; padding: 8px max(32px, calc((100% - 1280px)/2)); font-size: 11px; color: var(--neutral); border-bottom: 1px solid #ededee; }
 .announcement a { display: inline-flex; align-items: center; gap: 9px; }
 .site-header { position: sticky; top: 0; z-index: 50; background: #ffffff99; border-bottom: 1px solid #ffffffc7; backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 6px 28px -20px #37213030; }
-.nav-shell { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; padding-block: 6px 10px; }
+.nav-shell { --nav-gutter: 18px; width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; padding: 6px var(--nav-gutter) 10px 0; }
 .brand { display: inline-flex; flex-shrink: 0; }
+.nav-shell > .brand { justify-self: start; width: max-content; border-radius: 0 16px 16px 0; overflow: hidden; }
+.nav-shell > .brand:focus-visible { outline-offset: -3px; }
+.nav-shell > .brand .brand-image { width: 120px; height: auto; border-radius: 0; }
 .brand-wordmark { position: relative; color: var(--ink); font-family: "Manrope Variable", sans-serif; font-size: 24px; font-weight: 850; line-height: 1.25; letter-spacing: -1.35px; }
 .brand-wordmark sup { position: absolute; top: 2px; margin-left: 3px; font: 8px Arial, sans-serif; letter-spacing: 0; }
 .brand-wordmark small { display: block; font-family: "DM Sans Variable", sans-serif; font-size: 6px; font-weight: 550; letter-spacing: .85px; margin-top: 7px; color: var(--neutral); }
@@ -172,7 +175,8 @@ p { line-height: 1.75; }
   display: inline-flex;
   grid-column: 1 / -1;
   grid-row: 2;
-  width: 100%;
+  width: calc(100% - var(--nav-gutter));
+  margin-left: var(--nav-gutter);
   min-width: 0;
   flex-shrink: 0;
   gap: 2px;
@@ -231,20 +235,24 @@ p { line-height: 1.75; }
 .main-nav.liquid-main-nav .nimbus-label-full { display: none; }
 .main-nav.liquid-main-nav .nimbus-label-short { display: inline; }
 @media (max-width: 900px) {
-  html { scroll-padding-top: 145px; }
+  html { scroll-padding-top: 160px; }
   .nav-actions .icon-button { width: 44px; height: 44px; }
 }
 @media (min-width: 901px) {
-  .nav-shell { min-height: 88px; display: flex; justify-content: space-between; gap: 24px; padding-block: 0; }
+  .nav-shell { --nav-gutter: max(48px, calc((100% - 1280px) / 2)); min-height: 88px; display: flex; justify-content: space-between; gap: 24px; padding-block: 0; }
   .brand-image { width: 160px; height: 90px; }
+  .nav-shell > .brand .brand-image { width: 176px; }
   .site-header:has(.brand-image) .nav-shell { min-height: 110px; }
-  .main-nav.liquid-main-nav { width: auto; padding: 6px; border-radius: 999px; }
+  .main-nav.liquid-main-nav { width: auto; margin-left: 0; padding: 6px; border-radius: 999px; }
   .main-nav.liquid-main-nav .nimbus-item { flex: initial; flex-direction: row; height: 44px; padding-inline: 13px; font-size: 13px; }
   .main-nav.liquid-main-nav .nimbus-label-full { display: inline; }
   .main-nav.liquid-main-nav .nimbus-label-short { display: none; }
 }
 @media (min-width: 901px) and (max-width: 1200px) {
   .nav-shell { gap: 16px; }
+}
+@media (min-width: 641px) and (max-width: 900px) {
+  .nav-shell { --nav-gutter: 32px; }
 }
 @media (min-width: 1201px) {
   .nav-shop { display: inline-flex; }
