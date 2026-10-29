@@ -8,3 +8,7 @@ test-results/
 .env.*
 !.env.example
 !.env.server.example
+.firebase/
+.firebase-build.json
+firebase-debug.log*
+ui-debug.log*

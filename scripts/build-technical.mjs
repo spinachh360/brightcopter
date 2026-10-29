@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { normalizeSiteUrl, defaultSiteUrl, indexingAllowed } from '../config/site.mjs';
+import { firebaseHostingConfig } from '../config/firebase.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const dist = path.join(root, 'dist');
 const env = {...loadEnv('production', root, ''), ...process.env};
@@ -87,6 +88,9 @@ try {
     'Cross-Origin-Opener-Policy': 'same-origin', 'Cross-Origin-Resource-Policy': 'same-origin',
   };
   if (!indexable) security['X-Robots-Tag'] = 'noindex, nofollow';
+  // Firebase does not read Netlify's _headers/_redirects. Export its native
+  // configuration with the same freshly generated CSP hashes on every build.
+  await writeFile(path.join(root, 'firebase.json'), JSON.stringify(firebaseHostingConfig(security, env.FIREBASE_HOSTING_SITE), null, 2) + '\n');
   await writeFile(path.join(dist, '_headers'), '/*\n' + Object.entries(security).map(([name,value]) => `  ${name}: ${value}`).join('\n') + '\n  Cache-Control: no-cache\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n');
   // Existing static files are served directly. Explicit fallbacks cover SPA
   // routes; unknown routes and unknown product IDs retain an HTTP 404 status.
@@ -96,5 +100,5 @@ try {
   if (process.argv.includes('--sync-public')) {
     for (const file of ['sitemap.xml','robots.txt','robot.txt','_headers','_redirects']) await writeFile(path.join(root, 'public', file), await readFile(path.join(dist, file)));
   }
-  console.log(`Generated ${indexable ? publicRoutes.length : 0} indexable pages, sitemap, robots, social metadata, JSON-LD and Netlify security headers for ${origin}.`);
+  console.log(`Generated ${indexable ? publicRoutes.length : 0} indexable pages, sitemap, robots, social metadata, JSON-LD and Firebase/Netlify security headers for ${origin}.`);
 } finally { await server.close(); }

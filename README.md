@@ -141,7 +141,9 @@ The privacy page includes a two-step action to remove saved requests. Request cr
 
 ## Deploy
 
-Run `npm run build` and deploy `dist/` to Netlify with HTTPS. The build renders each known route into its own HTML document and generates `_redirects` and `_headers`. Known routes serve their generated documents; unknown routes serve `404.html` with an HTTP 404. Configure equivalent static route resolution, response headers and 404 handling on another host.
+Firebase Hosting is configured for project `brightcopter-337b5`. See [FIREBASE.md](FIREBASE.md) for the complete sign-in, local preview and deployment steps. Run `npm run firebase:build` and `npm run firebase:check` to prepare and verify; after signing in with `npm run firebase:login`, publish with `npm run firebase:deploy`. The Firebase CLI is pinned and downloaded on demand rather than bundled into the website.
+
+The build renders each known route into its own HTML document and generates `firebase.json` with native security headers, cache rules and policy redirects. Known routes serve their generated documents; unknown routes serve `404.html` with an HTTP 404. `npm run firebase:test` checks the actual Firebase Hosting emulator. `netlify.toml`, `_redirects` and `_headers` remain available for rollback, but Firebase uses its own configuration.
 
 All fonts, icons and product illustrations are served locally. Browsing does not depend on a CDN. External contact links go to WhatsApp or the owner-supplied Google Maps link. No deployment or public publication is performed by the build command.
 
@@ -157,7 +159,7 @@ Run `npm run preview:test` to rebuild the portable HTML and check it in a normal
 
 ## Technical files, policies and security
 
-The canonical origin is configured as `https://brightcopter.netlify.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
+The Firebase project supplied by the owner is `brightcopter-337b5`; its default canonical origin is `https://brightcopter-337b5.web.app`. `SITE_URL` can override a generic build. The Firebase deployment wrapper explicitly derives the origin from the selected Hosting site or `--url` custom domain and updates all metadata before publishing. A Firebase sign-in and successful deploy are still required to make that address live.
 
 The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, and prerendered HTML from the actual React pages through `src/prerender.tsx`. All 24 public routes contain their page content, Open Graph/Twitter metadata, canonical links and JSON-LD before JavaScript runs. Every warranty variant has a product-specific title, price-aware description and Product/Offer schema. The client then mounts the interactive app and reads the customer's local browser state. Private routes remain noindex and never include customer data in the build. Static forms show a call/JavaScript notice to avoid native GET submissions exposing customer details in URLs.
 
@@ -165,6 +167,6 @@ The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `
 
 The footer links directly to `/return-policy` and `/terms-and-conditions`. Both use original Bright Copter wording, semantic sections and contents links, with static HTML in the build. Legacy policy links redirect. Returns guidance explains assessment and staff confirmation without inventing a return window, fee or refund deadline. Statutory consumer rights remain protected. Privacy and warranty pages describe the actual local-storage and WhatsApp flow.
 
-There are no private frontend credentials or optional tracking integrations. Cookie consent is therefore not displayed. See [SECURITY.md](SECURITY.md) for the environment allowlist, Netlify CSP/headers, input validation, client spam controls, error/success states, retention, future API CORS/rate-limit template, limitations and verification commands. The API template is inactive and does not accept orders.
+There are no private frontend credentials or optional tracking integrations. Cookie consent is therefore not displayed. See [SECURITY.md](SECURITY.md) for the environment allowlist, Firebase/Netlify CSP and headers, input validation, client spam controls, error/success states, retention, future API CORS/rate-limit template, limitations and verification commands. The API template is inactive and does not accept orders.
 
 To refresh the complete review ZIPs after building/exporting, run `npm run package:project` (Python 3 and Git required). It packages Git-listed source, excludes real environment files and symlinks, and includes the current built site and portable preview.

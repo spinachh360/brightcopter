@@ -7,4 +7,4 @@ Disallow: /track
 Disallow: /order/
 Disallow: /api/
 
-Sitemap: https://brightcopter.netlify.app/sitemap.xml
+Sitemap: https://brightcopter-337b5.web.app/sitemap.xml
