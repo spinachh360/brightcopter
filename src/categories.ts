@@ -1,10 +1,10 @@
-import baseThumbnail from "./assets/products/thumbnails/base.webp";
-import jumboheadThumbnail from "./assets/products/thumbnails/jumbohead.webp";
-import nanoheadThumbnail from "./assets/products/thumbnails/nanohead.webp";
+import baseIcon from "./assets/products/icons/base.webp";
+import jumboheadIcon from "./assets/products/icons/jumbohead.webp";
+import nanoheadIcon from "./assets/products/icons/nanohead.webp";
 
 export const categories = [
-  { label: "All fans", thumbnail: undefined },
-  { label: "Base model", thumbnail: baseThumbnail },
-  { label: "Jumbohead model", thumbnail: jumboheadThumbnail },
-  { label: "Nanohead model", thumbnail: nanoheadThumbnail },
+  { label: "All fans", icon: undefined },
+  { label: "Base model", icon: baseIcon },
+  { label: "Jumbohead model", icon: jumboheadIcon },
+  { label: "Nanohead model", icon: nanoheadIcon },
 ];

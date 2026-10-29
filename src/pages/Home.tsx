@@ -1,5 +1,5 @@
 import { categories } from "../categories";
-import { CategoryThumbnail } from "../components/CategoryThumbnail";
+import { CategoryIcon } from "../components/CategoryIcon";
 import { IconTile } from "../components/IconTile";
 import { ProductCard } from "../components/ProductCard";
 import ProductPhoto from "../components/ProductPhoto";
@@ -124,17 +124,17 @@ export function Home() {
         >
           Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
         </SectionTitle>
-        <div className="category-tabs model-category-tabs" aria-label="Product categories">
+        <div className="category-tabs model-category-tabs" role="group" aria-label="Product categories">
           {categories
             .filter((c) => c.label !== "All fans")
-            .map(({ label, thumbnail }) => (
+            .map(({ label, icon }) => (
               <button
                 key={label}
                 onClick={() => setCategory(label)}
                 aria-pressed={category === label}
                 className={cx("category-tab", category === label && "selected")}
               >
-                <CategoryThumbnail src={thumbnail} />
+                <CategoryIcon src={icon} />
                 <span>{label}</span>
               </button>
             ))}

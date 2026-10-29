@@ -1,5 +1,5 @@
 import { categories } from "../categories";
-import { CategoryThumbnail } from "../components/CategoryThumbnail";
+import { CategoryIcon } from "../components/CategoryIcon";
 import { PageIntro } from "../components/PageIntro";
 import { ProductCard } from "../components/ProductCard";
 import { SupportBanner } from "../components/SupportBanner";
@@ -35,9 +35,9 @@ export function Products() {
         description="Explore Base model, Jumbohead model and Nanohead model ceiling fans. Choose your colour and warranty, then confirm your order on WhatsApp."
       />
       <section className="container catalog-layout">
-        <aside className="catalog-sidebar">
+        <aside className="catalog-sidebar" aria-label="Product categories">
           <h2>Our collections</h2>
-          {categories.map(({ label, thumbnail }) => (
+          {categories.map(({ label, icon }) => (
             <button
               key={label}
               className={cx(category === label && "active")}
@@ -48,7 +48,7 @@ export function Products() {
                 setParams(next);
               }}
             >
-              <CategoryThumbnail src={thumbnail} />
+              <CategoryIcon src={icon} />
               <span>{label}</span>
               <ChevronRight size={14} />
             </button>
