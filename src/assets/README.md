@@ -15,3 +15,7 @@ Its rounded, flush-left header badge is styled in CSS; the footer remains contai
 
 Original PNG SHA-256:
 `b825c7c7f6a6ece5a34e304c06985fadbab99b4937da16f4b0b3d2bae245d038`
+
+`favicon-source.png` is the square lion-and-cub favicon rendition prepared from
+the supplied favicon reference. `npm run assets:icons` exports browser and Apple
+touch sizes from this file; it does not change the header or footer wordmark.

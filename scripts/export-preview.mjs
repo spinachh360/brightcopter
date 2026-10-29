@@ -49,12 +49,11 @@ ReactDOM.createRoot`);
   const css = await readFile(path.join(outDir, style[1].replace(/^\//, '')), 'utf8');
   html = html.replace(script[0], () => `<script type="module">${js.replaceAll('</script', '<\\/script')}</script>`);
   html = html.replace(style[0], () => `<style>${css}</style>`);
-  const favicon = await readFile(path.join(root, 'public/favicon.svg'));
-  const ico = await readFile(path.join(root, 'public/favicon.ico'));
-  const appleIcon = await readFile(path.join(root, 'public/apple-touch-icon.png'));
-  html = html.replace('/favicon.ico', `data:image/x-icon;base64,${ico.toString('base64')}`);
-  html = html.replace('/apple-touch-icon.png', `data:image/png;base64,${appleIcon.toString('base64')}`);
-  html = html.replace('/favicon.svg', `data:image/svg+xml;base64,${favicon.toString('base64')}`);
+  for (const name of ['favicon.ico', 'favicon-16x16.png', 'favicon-32x32.png', 'favicon-192x192.png', 'favicon-512x512.png', 'apple-touch-icon.png']) {
+    const icon = await readFile(path.join(root, 'public', name));
+    const mime = name.endsWith('.ico') ? 'image/x-icon' : 'image/png';
+    html = html.replace(new RegExp(`/${name.replaceAll('.', '\\.')}(?:\\?v=[a-zA-Z0-9-]+)?`), `data:${mime};base64,${icon.toString('base64')}`);
+  }
   // Kept outside the React root so a blocked script or startup error leaves
   // useful opening instructions instead of an empty page.
   html = html.replace(/<!-- STATIC_CONTENT_START -->[\s\S]*?<!-- STATIC_CONTENT_END -->/, `<aside id="preview-opening-help" aria-label="Opening the website" style="max-width:620px;margin:48px auto;padding:28px;font:16px/1.7 system-ui,sans-serif;color:#29252b;background:white;border:1px solid #e8dde2;border-radius:20px">
