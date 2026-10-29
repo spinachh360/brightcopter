@@ -8,9 +8,10 @@ export function Contact() {
   return (
     <>
       <PageIntro
-        eyebrow="A CONVERSATION STARTS HERE"
-        title="Let’s connect."
-        description="Choosing a product, checking delivery or looking for a little care? We'd love to help."
+        eyebrow="PARAPPUR, THRISSUR · KERALA"
+        title="Let’s find the right fan for you."
+        localLine="വാങ്ങുന്നതിന് മുമ്പ് ചോദിച്ചറിയാം."
+        description="Compare models, check your delivery PIN code or ask about warranty options. Message or call Bright Copter for product guidance and service enquiries."
       />
       <section className="container contact-grid">
         <a
@@ -20,7 +21,7 @@ export function Contact() {
           rel="noreferrer"
         >
           <IconTile icon={MessageCircle} />
-          <h2>A message away.</h2>
+          <h2>Ask on WhatsApp.</h2>
           <p>
             Product questions, availability or help choosing. Start a
             conversation on WhatsApp.
@@ -31,7 +32,7 @@ export function Contact() {
         </a>
         <a className="contact-card glass" href={`tel:+${careNumber}`}>
           <IconTile icon={Phone} />
-          <h2>Hear a friendly voice.</h2>
+          <h2>Call customer care.</h2>
           <p>
             Prefer a phone call? Reach customer care for the right next step.
           </p>
@@ -62,7 +63,7 @@ export function Contact() {
             <span />
             LET’S FIND THE RIGHT TEAM
           </p>
-          <h2>A little direction helps.</h2>
+          <h2>Service request or bulk order?</h2>
           <p>
             For product faults, use a service request so the team has the
             details. For quantity purchases and partnerships, start a business

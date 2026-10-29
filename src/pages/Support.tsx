@@ -14,9 +14,10 @@ export function Support() {
   return (
     <>
       <PageIntro
-        eyebrow="CARE, WITHOUT THE COMPLICATION"
-        title="We've got your everyday."
-        description="A product question, a little troubleshooting or a service request — let's find the right next step."
+        eyebrow="BRIGHT COPTER CUSTOMER CARE"
+        title="Fan service. Across Kerala."
+        localLine="സഹായം വേണോ? ഞങ്ങളോട് ചോദിക്കൂ."
+        description="Ask about your fan, check warranty coverage or prepare a service request. Share your model, purchase details and location so our team can guide you."
       />
       <section className="container support-hub">
         <div className="support-tabs">

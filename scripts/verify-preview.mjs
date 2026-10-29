@@ -10,7 +10,8 @@ const artifact = process.argv[2] || path.join(root, '../brightcopter-artifacts/B
 const html = await readFile(artifact, 'utf8');
 const escaped = html.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
 const server = createServer((request, response) => {
-  response.writeHead(200, { 'Content-Type': 'text/html' });
+  // The outer srcdoc host must decode the embedded Malayalam as UTF-8 too.
+  response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
   if (request.url === '/sandbox' || request.url === '/blocked') {
     const permissions = request.url === '/sandbox' ? 'allow-scripts' : '';
     response.end(`<iframe title="Preview" sandbox="${permissions}" style="width:100%;height:900px;border:0" srcdoc="${escaped}"></iframe>`);
@@ -42,12 +43,12 @@ try {
       await expect(help).toBeVisible();
       await expect(help).toContainText('download the HTML file and open it in a full browser');
     } else {
-      await expect(scope.getByRole('heading', { name: 'Comfort. Considered. Yours.' })).toBeVisible();
+      await expect(scope.getByRole('heading', { name: 'Ceiling fans. വീട്ടിലാകെ നല്ല കാറ്റ്.' })).toBeVisible();
       await expect(scope.getByLabel('Opening the website')).toHaveCount(0);
       await expect.poll(() => scope.locator('.site-header .brand-image').evaluate(img => img.naturalWidth)).toBe(1672);
       await scope.getByRole('navigation', { name: 'Main navigation' })
         .getByRole('link', { name: 'Our products' }).click();
-      await expect(scope.getByRole('heading', { name: 'Your home. Your kind of comfort.' })).toBeVisible();
+      await expect(scope.getByRole('heading', { name: 'Find your fan. See your price.' })).toBeVisible();
       await scope.getByRole('button', { name: 'Add Base model to bag' }).click();
       await scope.getByRole('link', { name: 'Shopping bag, 1 items' }).click();
       await scope.getByRole('link', { name: 'Continue to checkout' }).click();

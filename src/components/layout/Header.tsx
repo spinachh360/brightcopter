@@ -128,7 +128,7 @@ export function Header() {
               {count > 0 && <span className="bag-count">{count}</span>}
             </Link>
             <Link className="button button-small nav-shop" to="/products">
-              Explore products <ArrowUpRight size={15} />
+              Shop ceiling fans <ArrowUpRight size={15} />
             </Link>
           </div>
         </div>

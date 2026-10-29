@@ -10,6 +10,8 @@ The category icons are checked-in transparent 256 × 256 WebPs under `src/assets
 
 The warranty/service section lives in `src/components/WarrantyServiceSection.tsx`. Its image has a bounded frame, and the model caption and two warranty prices follow in normal document flow. Desktop columns align at the top; tablet and phone layouts stack the card above the service copy. The original product photograph is contained without cropping or covering the caption.
 
+The Kerala-facing copy mixes English with short Malayalam hooks. The home hero uses “വീട്ടിലാകെ നല്ല കാറ്റ്.” (a good breeze throughout your home), followed by the current starting price, model names, warranty choices and Kerala-wide service. “See fans & prices” opens the catalogue; “WhatsApp-ൽ ചോദിക്കൂ” opens a product enquiry to the shared sales number. It does not submit a basket or confirm an order. Public page intros use `localLine` for correctly tagged Malayalam text. Noto Sans Malayalam is bundled locally, with script-appropriate spacing and line height. Search titles/descriptions mention Kerala, Thrissur, actual prices and warranty options; home and catalogue descriptions also include Malayalam. The generated structured data identifies the bilingual pages and includes product breadcrumbs. Checkout, payment preferences and order confirmation wording remain unchanged.
+
 ## Components, Tailwind and shadcn
 
 - `src/App.tsx` composes the router and site layout; individual routes live in `src/pages/`.

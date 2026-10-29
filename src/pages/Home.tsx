@@ -6,10 +6,11 @@ import ProductPhoto from "../components/ProductPhoto";
 import { SectionTitle } from "../components/SectionTitle";
 import { SupportBanner } from "../components/SupportBanner";
 import { WarrantyServiceSection } from "../components/WarrantyServiceSection";
-import { cataloguePriceRange, finishes, modelProducts, money } from "../data";
+import { cataloguePriceRange, catalogueStartingPrice, finishes, modelProducts, money } from "../data";
+import { orderWhatsapp } from "../contacts";
 import { FloatingPathsBackground } from "@/components/ui/floating-paths";
 import { cx } from "@/lib/utils";
-import { ArrowUpRight, Building2, Check, Fan, GitCompareArrows, MapPin, MessageCircle, Search, ShieldCheck, ShoppingBag, SlidersHorizontal } from "lucide-react";
+import { ArrowUpRight, Building2, Check, Fan, MapPin, MessageCircle, Search, ShieldCheck, ShoppingBag, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,24 +28,25 @@ export function Home() {
         <section className="hero-section container">
           <div className="hero-copy">
             <div className="hero-label">
-              <span className="live-dot" /> BASE · JUMBOHEAD · NANOHEAD
+              <span className="live-dot" /> BRIGHT COPTER · THRISSUR, KERALA
             </div>
-            <h1>Comfort.<br />Considered.<br /><span>Yours.</span></h1>
+            <h1>Ceiling fans. <span className="hero-local-title" lang="ml">വീട്ടിലാകെ<br />നല്ല കാറ്റ്.</span></h1>
             <p>
-              Ceiling fans priced {cataloguePriceRange}, with 2-, 3-, 5- or 7-year
-              warranty options depending on the model. Service available across Kerala.
+              <strong>From {money(catalogueStartingPrice)}.</strong> Find your fit with Base, Jumbohead or Nanohead.
+              Choose a 2-, 3-, 5- or 7-year warranty, depending on the model.
+              Service across Kerala.
             </p>
             <div className="hero-cta">
               <Link className="button" to="/products">
-                Find your perfect fan <ArrowUpRight size={18} />
+                See fans & prices <ArrowUpRight size={18} />
               </Link>
-              <Link className="button button-outline" to="/compare">
-                Compare fans <GitCompareArrows size={17} />
-              </Link>
+              <a className="button button-outline" href={orderWhatsapp("Hello Bright Copter, please help me choose a ceiling fan and warranty option.")} target="_blank" rel="noreferrer">
+                <MessageCircle size={17} /><span lang="ml">WhatsApp-ൽ ചോദിക്കൂ</span>
+              </a>
             </div>
             <div className="hero-reassurance">
               <MessageCircle size={18} />
-              <span>Choose here. Confirm with us on WhatsApp.</span>
+              <span>Pick your fan here. Our team confirms the details on WhatsApp.</span>
             </div>
           </div>
           <div className="hero-stage">
@@ -115,14 +117,15 @@ export function Home() {
       <section className="section container home-products">
         <SectionTitle
           eyebrow="CEILING FAN COLLECTION"
-          title="Compare models, colours and warranties."
+          title="Your fan. Your finish. Your warranty."
           action={
             <Link className="text-button" to="/products">
-              Explore all products <ArrowUpRight size={17} />
+              Compare all fans & prices <ArrowUpRight size={17} />
             </Link>
           }
         >
           Base model has 2- and 3-year warranty options. Jumbohead and Nanohead offer 3, 5 or 7 years. Wood finishes are listed separately.
+          <span className="local-support-copy" lang="ml">നിങ്ങളുടെ വീടിന് ചേരുന്ന ഫാൻ തിരഞ്ഞെടുക്കൂ.</span>
         </SectionTitle>
         <div className="category-tabs model-category-tabs" role="group" aria-label="Product categories">
           {categories
@@ -151,7 +154,7 @@ export function Home() {
       <section className="section container steps-section">
         <SectionTitle
           eyebrow="ORDER IN THREE STEPS"
-          title="How WhatsApp checkout works."
+          title="Choose here. Confirm on WhatsApp."
         >
           Review your selection and address before sending your order. Staff confirms the final total, delivery and payment method on WhatsApp.
         </SectionTitle>
@@ -160,8 +163,8 @@ export function Home() {
             {
               n: "01",
               icon: Search,
-              title: "Find your favourite",
-              text: "Explore our range and compare the options that matter to you.",
+              title: "Pick your fan & warranty",
+              text: "Compare the model, colour and warranty price. Add your choice to the bag.",
             },
             {
               n: "02",
@@ -172,7 +175,7 @@ export function Home() {
             {
               n: "03",
               icon: MessageCircle,
-              title: "Finish on WhatsApp",
+              title: "Send your order request",
               text: "Send your prepared order. Our staff confirms availability, delivery, total and payment.",
             },
           ].map((s) => (
@@ -190,12 +193,12 @@ export function Home() {
         <span>
           <Building2 size={24} />
           <div>
-            <h3>Dealer & bulk orders.</h3>
-            <p>Exploring bulk orders or becoming a dealer? Let's talk.</p>
+            <h3>Buying for a shop or project?</h3>
+            <p>Talk quantities, models and availability with our team.</p>
           </div>
         </span>
         <Link className="text-button" to="/business">
-          Connect with our team <ArrowUpRight size={18} />
+          Ask about bulk orders <ArrowUpRight size={18} />
         </Link>
       </section>
     </>

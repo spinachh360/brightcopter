@@ -82,6 +82,7 @@ img, svg { vertical-align: middle; }
 button svg, a svg { flex-shrink: 0; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { font-family: "Manrope Variable", sans-serif; text-wrap: balance; }
+:lang(ml) { font-family: "Noto Sans Malayalam Variable", sans-serif; letter-spacing: normal; }
 p { line-height: 1.75; }
 ::selection { background: #fbd1d8; }
 :where(a, button, summary, [tabindex]):focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
@@ -266,9 +267,12 @@ p { line-height: 1.75; }
 .hero-copy { position: relative; min-width: 0; padding-bottom: 4px; }
 .hero-label { display: inline-flex; align-items: center; gap: 10px; color: #7e3c4a; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; line-height: 1.6; }
 .live-dot { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px #c919330b; }
-.hero-copy h1 { font-size: clamp(60px, 6.4vw, 90px); font-weight: 550; line-height: 1.01; letter-spacing: -5.5px; margin-top: 26px; text-wrap: initial; }
+.hero-copy h1 { font-size: clamp(52px, 5.1vw, 74px); font-weight: 550; line-height: 1.12; letter-spacing: -3.5px; margin-top: 26px; text-wrap: initial; }
 .hero-copy h1 > span { color: var(--red); }
+.hero-copy .hero-local-title { display: block; font-size: .7em; font-weight: 600; line-height: 1.6; letter-spacing: 0; margin-top: 12px; }
 .hero-copy > p { max-width: 400px; color: var(--neutral); font-size: 16px; line-height: 1.8; margin-top: 28px; }
+.hero-copy > p > strong { color: var(--ink); font-weight: 650; }
+.local-support-copy { display: block; margin-top: 12px; font-size: .95em; line-height: 1.85; }
 .hero-cta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
 .hero-reassurance { display: flex; align-items: center; gap: 9px; color: var(--neutral); font-size: 12px; margin-top: 25px; }
 .hero-reassurance > svg { color: #955764; flex-shrink: 0; }
@@ -372,6 +376,7 @@ p { line-height: 1.75; }
 .support-banner .eyebrow { font-size: 10px; letter-spacing: 1.5px; color: #914555; }
 .support-banner h2 { font-size: 29px; letter-spacing: -1px; font-weight: 600; margin-block: 10px; }
 .support-banner p:not(.eyebrow) { font-size: 14px; color: var(--neutral); }
+.support-banner .support-local-line { margin-bottom: 8px; line-height: 1.85; }
 .support-banner > .button { margin-left: auto; flex-shrink: 0; }
 .business-strip { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding-block: 25px 65px; }
 .business-strip > span { display: flex; align-items: center; gap: 18px; }
@@ -393,6 +398,7 @@ p { line-height: 1.75; }
 /* Catalogue: put discovery controls above the range so every card has room. */
 .page-intro { padding-block: 58px 38px; }
 .page-intro h1 { font-size: clamp(34px,4.3vw,58px); font-weight: 550; letter-spacing: -2.4px; line-height: 1.15; max-width: 900px; margin-top: 15px; }
+.page-intro .local-intro { color: var(--red-dark); font-size: clamp(15px, 1.6vw, 20px); line-height: 1.9; margin-top: 15px; max-width: 750px; }
 .page-intro > p:last-child { color: var(--neutral); max-width: 700px; font-size: 16px; margin-top: 18px; }
 .catalog-layout { display: block; padding-bottom: 72px; }
 .catalog-sidebar { display: flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; padding: 6px; margin-bottom: 28px; border: 1px solid var(--line); border-radius: 20px; background: #f1eff280; }
@@ -657,7 +663,7 @@ p { line-height: 1.75; }
   .container { width: calc(100% - 64px); }
   .nav-shop { display: none; }
   .hero-section { gap: 32px; grid-template-columns: 1fr 1.1fr; }
-  .hero-copy h1 { font-size: 72px; letter-spacing: -4.6px; }
+  .hero-copy h1 { font-size: clamp(48px, 5.2vw, 62px); letter-spacing: -2.8px; }
   .hero-stage { height: 535px; }
   .hero-cta .button { font-size: 13px; padding-inline: 17px; }
   .benefit-strip { gap: 17px; }
@@ -707,7 +713,7 @@ p { line-height: 1.75; }
   .hero-finish-panel strong { margin-top: 0; min-width: 0; }
   .hero-swatches { justify-content: space-between; }
   .hero-section { grid-template-columns: 1fr 1fr; gap: 24px; padding-block: 38px 58px; }
-  .hero-copy h1 { font-size: 61px; letter-spacing: -3.7px; }
+  .hero-copy h1 { font-size: clamp(36px, 5.8vw, 52px); letter-spacing: -1.8px; }
   .hero-copy > p { font-size: 14px; margin-top: 23px; }
   .hero-label { font-size: 9px; letter-spacing: .8px; }
   .hero-stage { height: 500px; }
@@ -784,7 +790,7 @@ p { line-height: 1.75; }
   .hero-section { grid-template-columns: minmax(0, 1fr); padding-block: 31px 58px; gap: 30px; }
   .hero-copy { padding-inline: 5px; }
   .hero-label { font-size: 9px; letter-spacing: 1.2px; }
-  .hero-copy h1 { font-size: clamp(50px,14.4vw,80px); letter-spacing: -3px; line-height: 1.01; margin-top: 23px; }
+  .hero-copy h1 { font-size: clamp(42px,10vw,64px); letter-spacing: -2px; line-height: 1.12; margin-top: 23px; }
   .hero-copy > p { font-size: 15px; line-height: 1.75; max-width: 430px; margin-top: 22px; }
   .hero-cta { gap: 10px; margin-top: 24px; }
   .hero-cta > .button { padding: 13px 16px; font-size: 12px; gap: 10px; min-height: 50px; }

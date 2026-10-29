@@ -84,8 +84,8 @@ try {
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{window.cspViolations=[];document.addEventListener('securitypolicyviolation',event=>window.cspViolations.push(event.violatedDirective+': '+event.blockedURI));});
  await page.goto(url,{waitUntil:'load'});
- await expect(page.getByRole('heading',{name:'Comfort. Considered. Yours.'})).toBeVisible();
- await expect(page).toHaveTitle('Ceiling fans for everyday comfort | Bright Copter');
+ await expect(page.getByRole('heading',{name:'Ceiling fans. വീട്ടിലാകെ നല്ല കാറ്റ്.'})).toBeVisible();
+ await expect(page).toHaveTitle('Ceiling Fans in Kerala from ₹2,350 | Bright Copter');
  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
  await page.getByRole('link',{name:'Our products',exact:true}).click();
  await expect(page.locator('.product-card')).toHaveCount(5);
@@ -103,7 +103,7 @@ try {
  assert.deepEqual(errors,[]);
  const noJs=await browser.newContext({javaScriptEnabled:false});const staticPage=await noJs.newPage();
  await staticPage.goto(url+'/terms-and-conditions');await expect(staticPage.getByRole('heading',{name:'Terms & conditions',exact:true})).toBeVisible();await expect(staticPage.locator('article section')).toHaveCount(11);
- await staticPage.goto(url+'/');await expect(staticPage.getByRole('heading',{name:'Comfort. Considered. Yours.'})).toBeVisible();
+ await staticPage.goto(url+'/');await expect(staticPage.getByRole('heading',{name:'Ceiling fans. വീട്ടിലാകെ നല്ല കാറ്റ്.'})).toBeVisible();
  await staticPage.goto(url+'/products');await expect(staticPage.locator('.product-card')).toHaveCount(5);
  await staticPage.goto(url+'/product/nanohead-wood-model-7-year');
  await expect(staticPage.getByRole('heading',{name:'Nanohead Wood model',exact:true})).toBeVisible();

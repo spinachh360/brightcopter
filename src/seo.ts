@@ -1,4 +1,4 @@
-import { products, cataloguePriceRange, money } from './data';
+import { products, cataloguePriceRange, catalogueStartingPrice, money } from './data';
 import { legalPages } from './policies';
 import { careNumber, orderNumber, careDisplay, orderDisplay } from './contacts';
 export const siteUrl = __SITE_URL__;
@@ -9,12 +9,12 @@ export const publicRoutes = [
 ];
 export const privateRoutes = ['/cart', '/checkout', '/compare', '/order/confirmation', '/track'];
 const pages: Record<string, [string, string]> = {
-  '/': ['Ceiling fans for everyday comfort', `Bright Copter ceiling fans priced ${cataloguePriceRange}, with 2-, 3-, 5- or 7-year warranty options by model. Service across Kerala. Order on WhatsApp.`],
-  '/products': ['Ceiling fan collection', 'Compare Bright Copter ceiling fans, colours, warranty options and prices. Wood versions are listed separately.'],
-  '/support': ['Product support & warranty guidance', 'Get help with Bright Copter ceiling fans, warranty questions and service requests from our team in Kerala.'],
-  '/business': ['Dealer & bulk enquiries', 'Discuss Bright Copter fan quantities, availability, delivery and trade enquiries with our team.'],
-  '/about': ['About Bright Copter', 'Bright Copter is an appliance brand and electronic goods manufacturer based in Parappur, Thrissur, Kerala, India.'],
-  '/contact': ['Contact Bright Copter', `Contact Bright Copter customer care on ${careDisplay} or the WhatsApp order team on ${orderDisplay}. Based in Parappur, Thrissur, Kerala.`],
+  '/': [`Ceiling Fans in Kerala from ${money(catalogueStartingPrice)}`, `വീട്ടിലാകെ നല്ല കാറ്റ്. Bright Copter ceiling fans from ${money(catalogueStartingPrice)}. Choose 2–7 year warranty options by model, with service across Kerala. Order via WhatsApp.`],
+  '/products': ['Ceiling Fan Prices & Warranty Options in Kerala', `വീടിന് ചേരുന്ന ഫാൻ തിരഞ്ഞെടുക്കൂ. Compare Base, Jumbohead and Nanohead ceiling fans at ${cataloguePriceRange}, colours and warranty options. Order via WhatsApp.`],
+  '/support': ['Ceiling Fan Service & Warranty Support in Kerala', 'Bright Copter fan service across Kerala. Ask about repairs and warranty options, or prepare a service request with your model and purchase details.'],
+  '/business': ['Ceiling Fan Dealer & Bulk Enquiries in Kerala', 'Buying ceiling fans for a shop or project? Discuss Base, Jumbohead and Nanohead models, quantities, availability and delivery with Bright Copter in Thrissur.'],
+  '/about': ['Our Ceiling Fan Brand in Thrissur, Kerala', 'Meet Bright Copter, an appliance brand and electronic goods manufacturer in Parappur, Thrissur. Explore ceiling fans, warranty options and Kerala-wide service.'],
+  '/contact': ['Contact & WhatsApp Orders in Thrissur', `Ask Bright Copter about ceiling fans, warranty or delivery. Customer care: ${careDisplay}. WhatsApp orders: ${orderDisplay}. Parappur, Thrissur, Kerala.`],
   '/policies/privacy': ['Privacy & browser storage', 'How Bright Copter handles locally prepared requests, browser storage and WhatsApp handoffs. No optional visitor tracking is currently installed.'],
   '/policies/warranty': ['Warranty information', 'Compare Bright Copter warranty durations and prices and learn how to request warranty or service assistance.'],
   '/cart': ['Your shopping bag', 'Review your selected fans before starting WhatsApp checkout.'],
@@ -30,14 +30,14 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const legal = legalPages[path as keyof typeof legalPages];
   const found = publicRoutes.includes(path) || privateRoutes.includes(path);
   const [label, description] = product
-    ? [`${product.name} ceiling fan · ${product.warranty}-year warranty`, `${product.name} ceiling fan with ${product.warranty}-year warranty at ${money(product.price!)}. ${product.colors.join(', ')} finishes. Service across Kerala. Confirm total and delivery on WhatsApp.`]
+    ? [`${product.name} ceiling fan · ${product.warranty}-year warranty`, `${product.name} ceiling fan with ${product.warranty}-year warranty at ${money(product.price!)}. Compare finishes. Kerala service; confirm availability and delivery on WhatsApp.`]
     : legal ? [legal.title, legal.description]
     : pages[path] || ['404 — Page not found', 'This page could not be found. Explore Bright Copter ceiling fans or contact our team for help.'];
   const canonical = `${siteUrl}${path === '/' ? '/' : path}`;
   const businessId = `${siteUrl}/#business`;
   const business = {
     '@type': ['Organization', 'LocalBusiness'], '@id': businessId, name: 'Bright Copter', url: `${siteUrl}/`,
-    description: 'Appliance brand and electronic goods manufacturer based in Parappur, Thrissur, Kerala, India.',
+    description: `Ceiling fans priced ${cataloguePriceRange}, with warranty options by model and service across Kerala. Appliance brand based in Parappur, Thrissur, Kerala, India.`,
     logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/social/base-model.jpg`, telephone: `+${careNumber}`,
     areaServed: { '@type': 'State', name: 'Kerala' },
     address: { '@type': 'PostalAddress', addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', addressCountry: 'IN' },
@@ -54,9 +54,14 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
     .filter(source => !source.startsWith('data:')).map(source => new URL(source, `${siteUrl}/`).href) : [];
   const image = `${siteUrl}/social/${product?.modelId || 'base-model'}.jpg`;
   const imageAlt = `Bright Copter ${product?.name || 'Base model'} ceiling fan`;
-  const graph: unknown[] = [business, { '@type': 'WebSite', '@id': `${siteUrl}/#website`, url: `${siteUrl}/`, name: 'Bright Copter', publisher: { '@id': businessId } }];
-  if (found && !privateRoutes.includes(path)) graph.push({ '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: label, description, isPartOf: { '@id': `${siteUrl}/#website` } });
+  const inLanguage = ['en-IN', 'ml-IN'];
+  const graph: unknown[] = [business, { '@type': 'WebSite', '@id': `${siteUrl}/#website`, url: `${siteUrl}/`, name: 'Bright Copter', inLanguage, publisher: { '@id': businessId } }];
+  if (found && !privateRoutes.includes(path)) graph.push({ '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: label, description, inLanguage: ['/', '/products', '/support', '/business', '/about', '/contact'].includes(path) ? inLanguage : 'en-IN', isPartOf: { '@id': `${siteUrl}/#website` } });
   if (product) {
+    graph.push({ '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Ceiling fans', item: `${siteUrl}/products` },
+      { '@type': 'ListItem', position: 2, name: product.name, item: canonical },
+    ] });
     graph.push({
       '@type': 'Product', '@id': `${canonical}#product`, name: label, description,
       ...(productImages.length ? {image: productImages} : {}),

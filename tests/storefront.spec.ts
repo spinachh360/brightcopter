@@ -24,7 +24,7 @@ test("floating paths animate behind the hero without intercepting product naviga
   await expect
     .poll(() => path.getAttribute("stroke-dashoffset"))
     .not.toBe(offset);
-  await page.getByRole("link", { name: "Find your perfect fan" }).click();
+  await page.getByRole("link", { name: "See fans & prices" }).click();
   await expect(page).toHaveURL(/products$/);
 });
 

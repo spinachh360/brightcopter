@@ -3,7 +3,7 @@ import { CategoryIcon } from "../components/CategoryIcon";
 import { PageIntro } from "../components/PageIntro";
 import { ProductCard } from "../components/ProductCard";
 import { SupportBanner } from "../components/SupportBanner";
-import { modelProducts } from "../data";
+import { cataloguePriceRange, modelProducts } from "../data";
 import { cx } from "@/lib/utils";
 import { ArrowUpRight, ChevronRight, GitCompareArrows, Headphones, Search } from "lucide-react";
 import { useState } from "react";
@@ -31,8 +31,9 @@ export function Products() {
     <>
       <PageIntro
         eyebrow="THE BRIGHT COPTER COLLECTION"
-        title="Your home. Your kind of comfort."
-        description="Explore Base model, Jumbohead model and Nanohead model ceiling fans. Choose your colour and warranty, then confirm your order on WhatsApp."
+        title="Find your fan. See your price."
+        localLine="വീടിന് ചേരുന്ന ഫാൻ, ബജറ്റിന് ചേരുന്ന വില."
+        description={`Compare Base, Jumbohead and Nanohead ceiling fans priced ${cataloguePriceRange}. Pick your finish and warranty, then send your order request on WhatsApp.`}
       />
       <section className="container catalog-layout">
         <aside className="catalog-sidebar" aria-label="Product categories">
@@ -68,7 +69,7 @@ export function Products() {
               <Search size={17} />
               <input
                 aria-label="Filter products"
-                placeholder="Find your next favourite…"
+                placeholder="Search Base, Jumbohead, Nanohead…"
                 value={query}
                 onChange={(e) => {
                   const next = new URLSearchParams(params);

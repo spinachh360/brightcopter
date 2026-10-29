@@ -10,8 +10,9 @@ export function About() {
     <>
       <PageIntro
         eyebrow="HELLO, WE’RE BRIGHT COPTER"
-        title="Everyday comfort. Lasting connections."
-        description="Ceiling fans and a little more care, from Parappur, Thrissur, Kerala."
+        title="From Thrissur. For your home."
+        localLine="നമ്മുടെ നാട്ടിൽ നിന്ന്, നിങ്ങളുടെ വീട്ടിലേക്ക്."
+        description="Meet Bright Copter, an appliance brand based in Parappur, Thrissur. Explore our ceiling fan models, warranty options and service across Kerala."
       />
       <section className="container about-feature">
         <div className="about-art glass">
@@ -44,7 +45,7 @@ export function About() {
           </p>
           <blockquote>“Long lasting bonding like a father.”</blockquote>
           <Link className="button" to="/products">
-            Find your everyday favourite <ArrowUpRight size={17} />
+            See ceiling fans & prices <ArrowUpRight size={17} />
           </Link>
         </div>
       </section>
