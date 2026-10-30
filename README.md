@@ -157,7 +157,7 @@ Run `npm run preview:test` to rebuild the portable HTML and check it in a normal
 
 ## Technical files, policies and security
 
-The canonical origin is configured as `https://brightcopter.netlify.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
+The canonical origin is configured as `https://brightcopter-in.web.app`, supplied by the owner. `SITE_URL` can override it at build time. Netlify uses the checked-in `netlify.toml`; build with `npm run build` and publish `dist/`.
 
 The build generates `sitemap.xml`, standard `robots.txt` (plus a compatibility `robot.txt`), a custom `404.html`, and prerendered HTML from the actual React pages through `src/prerender.tsx`. All 24 public routes contain their page content, Open Graph/Twitter metadata, canonical links and JSON-LD before JavaScript runs. Every warranty variant has a product-specific title, price-aware description and Product/Offer schema. The client then mounts the interactive app and reads the customer's local browser state. Private routes remain noindex and never include customer data in the build. Static forms show a call/JavaScript notice to avoid native GET submissions exposing customer details in URLs.
 

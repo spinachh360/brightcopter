@@ -25,7 +25,7 @@ with ZipFile(out / 'bright-copter-website.zip', 'w', ZIP_DEFLATED) as z:
     for file in (root / 'dist').rglob('*'):
         if file.is_file() and not file.is_symlink():
             z.write(file, file.relative_to(root / 'dist'))
-    z.writestr('deployment.txt', 'Deploy these contents to Netlify or another static HTTPS host with equivalent headers and routing. Netlify reads the included _headers and _redirects. The configured canonical origin is https://brightcopter.netlify.app. No publishing is performed by this archive.\n')
+    z.writestr('deployment.txt', 'Deploy these contents to Netlify or another static HTTPS host with equivalent headers and routing. Netlify reads the included _headers and _redirects. The configured canonical origin is https://brightcopter-in.web.app. No publishing is performed by this archive.\n')
 preview = out / 'Bright-Copter-Working-Preview.html'
 if preview.is_file():
     with ZipFile(out / 'Bright-Copter-Browser-Preview.zip', 'w', ZIP_DEFLATED) as z:

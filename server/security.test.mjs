@@ -29,7 +29,7 @@ test('bounded rate limits enforce attempts and expire without trusting proxy hea
  assert.equal(allow('b',3),false); assert.equal(allow('b',101),true);
 });
 test('future API rejects hostile origins, oversized/invalid bodies and unexpected fields without claiming delivery',async()=>{
- const origin='https://brightcopter.netlify.app';
+ const origin='https://brightcopter-in.web.app';
  const server=createApi({origins:allowedOrigins(origin),rateLimit:createRateLimiter({limit:30})});
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const url=`http://127.0.0.1:${server.address().port}`;
@@ -45,7 +45,7 @@ test('future API rejects hostile origins, oversized/invalid bodies and unexpecte
  } finally {await new Promise(resolve=>server.close(resolve));}
 });
 test('future API rate limits return 429 with retry guidance',async()=>{
- const server=createApi({origins:allowedOrigins('https://brightcopter.netlify.app'),rateLimit:createRateLimiter({limit:1})});
+ const server=createApi({origins:allowedOrigins('https://brightcopter-in.web.app'),rateLimit:createRateLimiter({limit:1})});
  server.listen(0,'127.0.0.1');await once(server,'listening');const url=`http://127.0.0.1:${server.address().port}`;
  try {assert.equal((await fetch(url+'/health')).status,200);const response=await fetch(url+'/health');assert.equal(response.status,429);assert.equal(response.headers.get('retry-after'),'60');}
  finally {await new Promise(resolve=>server.close(resolve));}

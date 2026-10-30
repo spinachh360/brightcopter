@@ -29,7 +29,7 @@ try {
  assert.equal((sitemap.match(/<loc>/g)||[]).length,24);
  for(const page of ['return-policy','terms-and-conditions','product/nanohead-wood-model-7-year'])assert(sitemap.includes(page));
  for(const page of ['checkout','/cart','/track','/order/'])assert(!sitemap.includes(page));
- assert((await readFile(path.join(root,'robots.txt'),'utf8')).includes('Sitemap: https://brightcopter.netlify.app/sitemap.xml'));
+ assert((await readFile(path.join(root,'robots.txt'),'utf8')).includes('Sitemap: https://brightcopter-in.web.app/sitemap.xml'));
  const ico=await readFile(path.join(root,'favicon.ico'));assert.equal(ico.readUInt16LE(2),1);assert(ico.readUInt16LE(4)>=1);
  assert(headers['Content-Security-Policy'].includes("script-src 'self' 'sha256-"));
  assert(!headers['Content-Security-Policy'].includes("'unsafe-eval'"));
@@ -51,7 +51,7 @@ try {
   assert(!/<form\b/.test(html),pathname+' must not submit personal details without JavaScript');
   assert(html.includes(`rel="canonical" href="${location}"`),pathname);
   assert.equal(getMeta(html,'og:url'),location);
-  const social=getMeta(html,'og:image');assert(social?.startsWith('https://brightcopter.netlify.app/social/'));
+  const social=getMeta(html,'og:image');assert(social?.startsWith('https://brightcopter-in.web.app/social/'));
   assert.equal(getMeta(html,'twitter:image'),social);socialImages.add(social);
   if(pathname==='/')assert(html.includes('class="hero-section container"'));
   if(pathname==='/products')assert.equal((html.match(/class="product-card glass"/g)||[]).length,5);
@@ -89,12 +89,12 @@ try {
  await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
  await page.getByRole('link',{name:'Our products',exact:true}).click();
  await expect(page.locator('.product-card')).toHaveCount(5);
- await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter.netlify.app/products');
+ await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter-in.web.app/products');
  await page.goto(url+'/product/nanohead-wood-model-7-year?finish=Wood&utm_source=test');
  await expect(page).toHaveTitle('Nanohead Wood model ceiling fan · 7-year warranty — Bright Copter');
  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content',/7-year warranty at ₹4,400/);
- await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter.netlify.app/product/nanohead-wood-model-7-year');
- await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content','https://brightcopter.netlify.app/social/nanohead-wood-model.jpg');
+ await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://brightcopter-in.web.app/product/nanohead-wood-model-7-year');
+ await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content','https://brightcopter-in.web.app/social/nanohead-wood-model.jpg');
  await page.goto(url+'/return-policy');
  await expect(page.getByRole('heading',{name:'Returns, replacements & refunds',exact:true})).toBeVisible();
  await expect(page).toHaveTitle('Returns, replacements & refunds | Bright Copter');

@@ -1,4 +1,4 @@
-export const defaultSiteUrl = 'https://brightcopter.netlify.app';
+export const defaultSiteUrl = 'https://brightcopter-in.web.app';
 export function normalizeSiteUrl(value = defaultSiteUrl) {
   const url = new URL(value);
   if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || url.pathname !== '/')
