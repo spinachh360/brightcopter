@@ -33,10 +33,10 @@ export function FloatingPathsBackground({
         } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
         width: 0.5 + i * 0.03,
         trailOpacity: 0.08 + i * 0.002,
-        flowOpacity: 0.38 + i * 0.004,
+        flowOpacity: 0.28 + i * 0.003,
         phase: (i % 12) / 24,
         // Stable timing prevents parent re-renders from restarting the animation.
-        duration: 6 + ((i * 7) % 5) * 0.6,
+        duration: 10 + ((i * 7) % 5) * 0.8,
       })),
     [position],
   );

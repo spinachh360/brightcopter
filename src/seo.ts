@@ -38,8 +38,9 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const business = {
     '@type': ['Organization', 'LocalBusiness'], '@id': businessId, name: 'Bright Copter', url: `${siteUrl}/`,
     description: `Ceiling fans priced ${cataloguePriceRange}, with warranty options by model and service across Kerala. Appliance brand based in Parappur, Thrissur, Kerala, India.`,
-    logo: `${siteUrl}/og-image.png`, image: `${siteUrl}/social/base-model.jpg`, telephone: `+${careNumber}`,
+    logo: `${siteUrl}/og-image.jpg`, image: `${siteUrl}/social/base-model.jpg`, telephone: `+${careNumber}`,
     areaServed: { '@type': 'State', name: 'Kerala' },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '118' },
     address: { '@type': 'PostalAddress', addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', addressCountry: 'IN' },
     hasMap: 'https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8',
     sameAs: ['https://www.facebook.com/p/Bright-Copter-61566378232921/', 'https://www.indiamart.com/bright-copter/aboutus.html'],

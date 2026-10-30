@@ -1,18 +1,18 @@
-import black from "./assets/products/base/black.png";
-import white from "./assets/products/base/white.png";
-import brown from "./assets/products/base/brown.png";
-import ivory from "./assets/products/base/ivory.png";
+import black from "./assets/products/base/black.webp";
+import white from "./assets/products/base/white.webp";
+import brown from "./assets/products/base/brown.webp";
+import ivory from "./assets/products/base/ivory.webp";
 
-import jumboBlack from "./assets/products/jumbohead/black.png";
-import jumboWhite from "./assets/products/jumbohead/white.png";
-import jumboBrown from "./assets/products/jumbohead/brown.png";
-import jumboWood from "./assets/products/jumbohead/wood.png";
+import jumboBlack from "./assets/products/jumbohead/black.webp";
+import jumboWhite from "./assets/products/jumbohead/white.webp";
+import jumboBrown from "./assets/products/jumbohead/brown.webp";
+import jumboWood from "./assets/products/jumbohead/wood.webp";
 
-import nanoBlack from "./assets/products/nanohead/black.png";
-import nanoSilver from "./assets/products/nanohead/silver.png";
-import nanoWhite from "./assets/products/nanohead/white.png";
-import nanoBrown from "./assets/products/nanohead/brown.png";
-import nanoWood from "./assets/products/nanohead/wood.png";
+import nanoBlack from "./assets/products/nanohead/black.webp";
+import nanoSilver from "./assets/products/nanohead/silver.webp";
+import nanoWhite from "./assets/products/nanohead/white.webp";
+import nanoBrown from "./assets/products/nanohead/brown.webp";
+import nanoWood from "./assets/products/nanohead/wood.webp";
 
 export type Product = {
   id: string;
