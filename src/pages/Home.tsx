@@ -6,6 +6,7 @@ import ProductPhoto from "../components/ProductPhoto";
 import { SectionTitle } from "../components/SectionTitle";
 import { SupportBanner } from "../components/SupportBanner";
 import { WarrantyServiceSection } from "../components/WarrantyServiceSection";
+import { Testimonials } from "../components/Testimonials";
 import { cataloguePriceRange, catalogueStartingPrice, finishes, modelProducts, money } from "../data";
 import { orderWhatsapp } from "../contacts";
 import { FloatingPathsBackground } from "@/components/ui/floating-paths";
@@ -151,6 +152,7 @@ export function Home() {
         <p className="catalogue-note">Choose your model and warranty to see its price. Our team confirms availability, delivery and complete warranty terms on WhatsApp.</p>
       </section>
       <WarrantyServiceSection />
+      <Testimonials />
       <section className="section container steps-section">
         <SectionTitle
           eyebrow="ORDER IN THREE STEPS"

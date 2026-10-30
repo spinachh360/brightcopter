@@ -122,6 +122,7 @@ export const catalogueStartingPrice = Math.min(...cataloguePrices);
 export const cataloguePriceRange = `${money(catalogueStartingPrice)}–${money(Math.max(...cataloguePrices))}`;
 export { careNumber, orderNumber, careDisplay, orderDisplay, whatsapp, orderWhatsapp } from './contacts';
 export const mapLink = "https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8";
+export const reviewsLink = "https://maps.app.goo.gl/XUGNJHhJWiAs6Fcr9";
 export const finishes: Record<string, string> = {
   Black: "#242424",
   White: "#f2f2f2",
