@@ -5,6 +5,7 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { RouteEffects } from './components/layout/RouteEffects';
 import { Home } from './pages/Home';
+import { MalayalamFans } from './pages/MalayalamFans';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
 import { Compare } from './pages/Compare';
@@ -30,6 +31,7 @@ export default function App() {
     <main id="main-content" className="route-content" key={location.pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/malayalam-ceiling-fans" element={<MalayalamFans />} />
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/compare" element={<Compare />} />

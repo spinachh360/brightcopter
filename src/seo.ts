@@ -1,20 +1,23 @@
 import { products, cataloguePriceRange, catalogueStartingPrice, money } from './data';
 import { legalPages } from './policies';
 import { careNumber, orderNumber, careDisplay, orderDisplay } from './contacts';
+import { faqItems } from './faqData';
 export const siteUrl = __SITE_URL__;
 export const publicRoutes = [
   '/', '/products', '/support', '/business', '/about', '/contact',
   '/return-policy', '/terms-and-conditions', '/policies/privacy', '/policies/warranty',
+  '/malayalam-ceiling-fans',
   ...products.map(product => `/product/${product.id}`),
 ];
 export const privateRoutes = ['/cart', '/checkout', '/compare', '/order/confirmation', '/track'];
 const pages: Record<string, [string, string]> = {
-  '/': [`Ceiling Fans in Kerala from ${money(catalogueStartingPrice)}`, `ചൂടിന് ഇത്ര ജാഡ വേണ്ട. Bright Copter ceiling fans from ${money(catalogueStartingPrice)}. Choose 2–7 year warranty options by model, with service across Kerala. Order via WhatsApp.`],
-  '/products': ['Ceiling Fan Prices & Warranty Options in Kerala', `വീടിന് ചേരുന്ന ഫാൻ തിരഞ്ഞെടുക്കൂ. Compare Base, Jumbohead and Nanohead ceiling fans at ${cataloguePriceRange}, colours and warranty options. Order via WhatsApp.`],
-  '/support': ['Ceiling Fan Service & Warranty Support in Kerala', 'Bright Copter fan service across Kerala. Ask about repairs and warranty options, or prepare a service request with your model and purchase details.'],
-  '/business': ['Ceiling Fan Dealer & Bulk Enquiries in Kerala', 'Buying ceiling fans for a shop or project? Discuss Base, Jumbohead and Nanohead models, quantities, availability and delivery with Bright Copter in Thrissur.'],
-  '/about': ['Our Ceiling Fan Brand in Thrissur, Kerala', 'Meet Bright Copter, an appliance brand and electronic goods manufacturer in Parappur, Thrissur. Explore ceiling fans, warranty options and Kerala-wide service.'],
-  '/contact': ['Contact & WhatsApp Orders in Thrissur', `Ask Bright Copter about ceiling fans, warranty or delivery. Customer care: ${careDisplay}. WhatsApp orders: ${orderDisplay}. Parappur, Thrissur, Kerala.`],
+  '/': [`Ceiling Fans in Kerala from ${money(catalogueStartingPrice)}`, `ചൂടിന് ഇത്ര ജാഡ വേണ്ട. BLDC ceiling fans in Kerala from ${money(catalogueStartingPrice)} — affordable, electricity-saving, 2–7 year warranty options, service across Kerala.`],
+  '/products': ['BLDC Ceiling Fans & Prices in Kerala', `വീടിന് ചേരുന്ന BLDC ഫാൻ തിരഞ്ഞെടുക്കൂ. Base, Jumbohead and Nanohead ceiling fans at ${cataloguePriceRange}, colours and 2–7 year warranty options. Order via WhatsApp.`],
+  '/support': ['Fan Service & Repair in Thrissur, Kerala', `Ceiling fan service and repairs across Kerala from Thrissur. Warranty help and service requests — customer care ${careDisplay}.`],
+  '/business': ['Ceiling Fan Dealer & Bulk Orders in Kerala', 'Affordable BLDC ceiling fans for shops and projects. Discuss Base, Jumbohead and Nanohead models, quantities and delivery with Bright Copter, Thrissur.'],
+  '/about': ['BLDC Ceiling Fan Brand in Thrissur, Kerala', 'Bright Copter — BLDC ceiling fans from Parappur, Thrissur. Rated 4.9 stars from 118 Google reviews, 2,560+ orders delivered, service across Kerala.'],
+  '/contact': ['Contact Bright Copter in Thrissur, Kerala', `Ask about BLDC ceiling fans, warranty or delivery. Customer care: ${careDisplay}. WhatsApp orders: ${orderDisplay}. Parappur, Thrissur, Kerala.`],
+  '/malayalam-ceiling-fans': ['BLDC സീലിംഗ് ഫാൻ — കുറഞ്ഞ വൈദ്യുതി, താങ്ങാവുന്ന വില', `BLDC സീലിംഗ് ഫാൻ ₹2,350 മുതൽ. Affordable BLDC ceiling fans in Kerala with 2–7 year warranty options and service across Kerala. Order on WhatsApp from Thrissur.`],
   '/policies/privacy': ['Privacy & browser storage', 'How Bright Copter handles locally prepared requests, browser storage and WhatsApp handoffs. No optional visitor tracking is currently installed.'],
   '/policies/warranty': ['Warranty information', 'Compare Bright Copter warranty durations and prices and learn how to request warranty or service assistance.'],
   '/cart': ['Your shopping bag', 'Review your selected fans before starting WhatsApp checkout.'],
@@ -37,9 +40,10 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const businessId = `${siteUrl}/#business`;
   const business = {
     '@type': ['Organization', 'LocalBusiness'], '@id': businessId, name: 'Bright Copter', url: `${siteUrl}/`,
-    description: `Ceiling fans priced ${cataloguePriceRange}, with warranty options by model and service across Kerala. Appliance brand based in Parappur, Thrissur, Kerala, India.`,
+    description: `BLDC ceiling fans priced ${cataloguePriceRange}, with warranty options by model and service across Kerala. Appliance brand based in Parappur, Thrissur, Kerala, India.`,
+    slogan: 'Long lasting bonding like a father.',
     logo: `${siteUrl}/og-image.jpg`, image: `${siteUrl}/social/base-model.jpg`, telephone: `+${careNumber}`,
-    areaServed: { '@type': 'State', name: 'Kerala' },
+    areaServed: [{ '@type': 'State', name: 'Kerala' }, { '@type': 'City', name: 'Thrissur' }],
     aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.9', reviewCount: '118' },
     review: [
       { '@type': 'Review', author: { '@type': 'Person', name: 'shankarji' }, reviewRating: { '@type': 'Rating', ratingValue: '5' }, reviewBody: 'The remote fan I bought online developed a small fault. I called the company, and a mechanic came the same evening and fixed it. Mechanic Basheer is very experienced and well-mannered. I wish this venture complete success.' },
@@ -49,7 +53,7 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
       { '@type': 'Review', author: { '@type': 'Person', name: 'RAHUL VR' }, reviewRating: { '@type': 'Rating', ratingValue: '5' }, reviewBody: 'Best bldc fan ever i bought. They provide 3 year warranty also in affordable' },
       { '@type': 'Review', author: { '@type': 'Person', name: 'Sreeraj Kandappath' }, reviewRating: { '@type': 'Rating', ratingValue: '5' }, reviewBody: 'Nice product. Good service.' },
     ],
-    address: { '@type': 'PostalAddress', addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', addressCountry: 'IN' },
+    address: { '@type': 'PostalAddress', streetAddress: "ST.JOHN'S BUILDING, Parappur", addressLocality: 'Parappur, Thrissur', addressRegion: 'Kerala', postalCode: '680552', addressCountry: 'IN' },
     hasMap: 'https://maps.app.goo.gl/gfDbwVmzi4jWBNxz8',
     sameAs: ['https://www.facebook.com/p/Bright-Copter-61566378232921/', 'https://www.indiamart.com/bright-copter/aboutus.html'],
     contactPoint: [
@@ -65,7 +69,11 @@ export function pageMetadata(pathname: string, resolveAsset: (src: string) => st
   const imageAlt = `Bright Copter ${product?.name || 'Base model'} ceiling fan`;
   const inLanguage = ['en-IN', 'ml-IN'];
   const graph: unknown[] = [business, { '@type': 'WebSite', '@id': `${siteUrl}/#website`, url: `${siteUrl}/`, name: 'Bright Copter', inLanguage, publisher: { '@id': businessId } }];
-  if (found && !privateRoutes.includes(path)) graph.push({ '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: label, description, inLanguage: ['/', '/products', '/support', '/business', '/about', '/contact'].includes(path) ? inLanguage : 'en-IN', isPartOf: { '@id': `${siteUrl}/#website` } });
+  if (found && !privateRoutes.includes(path)) graph.push({ '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: label, description, inLanguage: path === '/malayalam-ceiling-fans' ? ['ml-IN', 'en-IN'] : ['/', '/products', '/support', '/business', '/about', '/contact', '/malayalam-ceiling-fans'].includes(path) ? inLanguage : 'en-IN', isPartOf: { '@id': `${siteUrl}/#website` } });
+  // FAQPage mirrors the visible FAQ on /support exactly (same data source),
+  // including the three search-intent questions added for BLDC, price and
+  // Thrissur buying. No FAQ schema is emitted anywhere the FAQ is not shown.
+  if (path === '/support') graph.push({ '@type': 'FAQPage', '@id': `${canonical}#faq`, mainEntity: faqItems.map(item => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })) });
   if (product) {
     graph.push({ '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Ceiling fans', item: `${siteUrl}/products` },

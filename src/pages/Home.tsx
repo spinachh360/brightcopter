@@ -152,6 +152,24 @@ export function Home() {
         <p className="catalogue-note">Choose your model and warranty to see its price. Our team confirms availability, delivery and complete warranty terms on WhatsApp.</p>
       </section>
       <WarrantyServiceSection />
+      <section className="section container">
+        <SectionTitle
+          eyebrow="BLDC · ELECTRICITY SAVING"
+          title="A BLDC fan uses less electricity. Here's why."
+        >
+          A BLDC motor is more efficient than a conventional induction motor. It turns more of the electricity it draws into motion and wastes less as heat, so the fan needs less power to move the same air.
+          <span className="local-support-copy" lang="ml">BLDC മോട്ടോർ കുറഞ്ഞ വൈദ്യുതിയിൽ അതേ കാറ്റ് നൽകുന്നു.</span>
+        </SectionTitle>
+        <p>
+          <Link className="text-button" to="/support">
+            Fan questions, prices & warranty <ArrowUpRight size={17} />
+          </Link>
+          {" · "}
+          <Link className="text-button" to="/malayalam-ceiling-fans">
+            <span lang="ml">മലയാളത്തിൽ വായിക്കൂ</span> — read in Malayalam <ArrowUpRight size={17} />
+          </Link>
+        </p>
+      </section>
       <Testimonials />
       <section className="section container steps-section">
         <SectionTitle

@@ -73,7 +73,9 @@ try {
     const target = route === '/' ? path.join(dist, 'index.html') : route === '/404' ? path.join(dist, '404.html') : path.join(dist, route.slice(1), 'index.html');
     await mkdir(path.dirname(target), {recursive: true}); await writeFile(target, html);
   }
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${(indexable ? publicRoutes : []).map(route => `  <url><loc>${escape(origin + (route === '/' ? '/' : route))}</loc></url>`).join('\n')}\n</urlset>\n`;
+  // lastmod records the build date: every page is regenerated on each build.
+  const buildDate = new Date().toISOString().slice(0, 10);
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${(indexable ? publicRoutes : []).map(route => `  <url><loc>${escape(origin + (route === '/' ? '/' : route))}</loc><lastmod>${buildDate}</lastmod></url>`).join('\n')}\n</urlset>\n`;
   const robots = indexable ? `User-agent: *\nAllow: /\nDisallow: /cart\nDisallow: /checkout\nDisallow: /compare\nDisallow: /track\nDisallow: /order/\nDisallow: /api/\n\nSitemap: ${origin}/sitemap.xml\n` : `User-agent: *\nDisallow: /\n`;
   await writeFile(path.join(dist, 'sitemap.xml'), xml);
   await writeFile(path.join(dist, 'robots.txt'), robots);

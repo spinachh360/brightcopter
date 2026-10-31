@@ -1,4 +1,4 @@
-import { careDisplay, careNumber, mapLink, whatsapp } from "../../data";
+import { careDisplay, careNumber, mapLink, orderDisplay, orderWhatsapp } from "../../data";
 import { Brand } from "../Brand";
 import { ArrowRight, ArrowUpRight, Heart, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -21,6 +21,7 @@ export function Footer() {
             <Link to="/products">All fans</Link>
             <Link to="/compare">Compare fans</Link>
             <Link to="/about">Our story</Link>
+            <Link to="/malayalam-ceiling-fans">മലയാളം · Fans in Malayalam</Link>
           </div>
           <div>
             <h3>We're here to help</h3>
@@ -35,17 +36,17 @@ export function Footer() {
               <Phone size={15} /> {careDisplay}
             </a>
             <a
-              href={whatsapp(
-                "Hello Bright Copter! I would like to know more about your products.",
+              href={orderWhatsapp(
+                "Hello Bright Copter! I would like to order a ceiling fan.",
               )}
               target="_blank"
               rel="noreferrer"
             >
-              <MessageCircle size={15} /> Chat on WhatsApp{" "}
+              <MessageCircle size={15} /> WhatsApp orders: {orderDisplay}{" "}
               <ArrowUpRight size={13} />
             </a>
             <a href={mapLink} target="_blank" rel="noreferrer">
-              <MapPin size={15} /> Parappur, Thrissur, Kerala
+              <MapPin size={15} /> ST.JOHN&apos;S BUILDING, Parappur, Thrissur, Keralam 680552
             </a>
             <Link to="/contact" className="footer-directions">
               Find your way to us <ArrowRight size={14} />

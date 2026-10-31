@@ -26,8 +26,8 @@ const url=`http://127.0.0.1:${server.address().port}`;
 let browser;
 try {
  const sitemap=await readFile(path.join(root,'sitemap.xml'),'utf8');
- assert.equal((sitemap.match(/<loc>/g)||[]).length,24);
- for(const page of ['return-policy','terms-and-conditions','product/nanohead-wood-model-7-year'])assert(sitemap.includes(page));
+ assert.equal((sitemap.match(/<loc>/g)||[]).length,25);
+ for(const page of ['return-policy','terms-and-conditions','malayalam-ceiling-fans','product/nanohead-wood-model-7-year'])assert(sitemap.includes(page));
  for(const page of ['checkout','/cart','/track','/order/'])assert(!sitemap.includes(page));
  assert((await readFile(path.join(root,'robots.txt'),'utf8')).includes('Sitemap: https://brightcopter-in.web.app/sitemap.xml'));
  const ico=await readFile(path.join(root,'favicon.ico'));assert.equal(ico.readUInt16LE(2),1);assert(ico.readUInt16LE(4)>=1);
@@ -54,6 +54,7 @@ try {
   const social=getMeta(html,'og:image');assert(social?.startsWith('https://brightcopter-in.web.app/social/'));
   assert.equal(getMeta(html,'twitter:image'),social);socialImages.add(social);
   if(pathname==='/')assert(html.includes('class="hero-section container"'));
+  if(pathname==='/malayalam-ceiling-fans')assert.equal((html.match(/<h1/g)||[]).length,1);
   if(pathname==='/products')assert.equal((html.match(/class="product-card glass"/g)||[]).length,5);
   if(pathname.startsWith('/product/')){
    const title=html.match(/<title[^>]*>([^<]+)<\/title>/)?.[1];
@@ -113,5 +114,5 @@ try {
  await noJs.close();
  const dimensions=await page.evaluate(async urls=>Promise.all(urls.map(async source=>{const image=new Image();image.src=source;await image.decode();return [image.naturalWidth,image.naturalHeight];})),[...socialImages].map(source=>url+new URL(source).pathname));
  assert(dimensions.every(([width,height])=>width===1200&&height===630));
- console.log('Built-site checks passed: all 24 prerendered public routes, 14 unique product titles/descriptions, compressed model sharing images, Open Graph/Twitter/canonical tags, JSON-LD, no-JavaScript catalogue and policies, real 404 status, strict CSP and safe static form fallbacks.');
+ console.log('Built-site checks passed: all 25 prerendered public routes, 14 unique product titles/descriptions, compressed model sharing images, Open Graph/Twitter/canonical tags, JSON-LD, no-JavaScript catalogue and policies, real 404 status, strict CSP and safe static form fallbacks.');
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}
